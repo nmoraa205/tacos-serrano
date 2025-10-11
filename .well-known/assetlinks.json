@@ -1,0 +1,8 @@
+[{
+      "relation": ["delegate_permission/common.handle_all_urls"],
+      "target": {
+        "namespace": "android_app",
+        "package_name": "com.tacosserrano.twa",
+        "sha256_cert_fingerprints": ["67:0A:A5:4B:5B:62:F8:98:9D:DD:57:E8:3C:0A:12:02:AB:A5:EF:FB:CB:26:48:57:8E:7B:A6:D7:D4:A2:B3:FA"]
+      }
+    }]
