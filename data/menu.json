@@ -1,0 +1,61 @@
+{
+  "last_updated": "2025-10-11T05:45:55.036334Z",
+  "categories": [
+    {
+      "id": "wraps",
+      "name": "Wraps"
+    },
+    {
+      "id": "hamburguesas",
+      "name": "Hamburguesas"
+    },
+    {
+      "id": "combos",
+      "name": "Combos"
+    }
+  ],
+  "products": [
+    {
+      "id": "wrap-aloha",
+      "name": "Wrap Aloha",
+      "price": 2500,
+      "category": "wraps",
+      "image": "/static/images/uploads/wrap-aloha.jpg",
+      "available": true,
+      "description": "Pollo crispy, cheddar líquido y salsa de piña con maracuyá."
+    },
+    {
+      "id": "crunchy-king",
+      "name": "Crunchy King",
+      "price": 3500,
+      "category": "hamburguesas",
+      "image": "/static/images/uploads/crunchy-king.jpg",
+      "available": true,
+      "description": "Cebolla crispy, salsa especial con pepinillos, mostaza y mayo, tocineta y queso."
+    }
+  ],
+  "options": {
+    "proteinas": [
+      "Pollo crispy",
+      "Res",
+      "Cerdo",
+      "Mixto"
+    ],
+    "aderezos": [
+      "Mostaza miel",
+      "BBQ",
+      "Chipotle",
+      "Buffalo"
+    ],
+    "extras": [
+      {
+        "name": "Queso extra",
+        "price": 300
+      },
+      {
+        "name": "Tocineta extra",
+        "price": 400
+      }
+    ]
+  }
+}

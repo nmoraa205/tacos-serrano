@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Admin | Taco's Serrano</title>
+<link rel="stylesheet" href="styles.css" />
+<style>
+body{background:#fff}
+.toolbar{position:sticky; top:0; z-index:9; display:flex; gap:.5rem; padding:.75rem; background:#f8f8f8; border-bottom:1px solid #eee; flex-wrap:wrap}
+.toolbar input[type=file]{display:none}
+.btn{padding:.6rem .9rem; border-radius:10px; border:1px solid #ddd; background:#fff; cursor:pointer; font-weight:700}
+.btn.primary{background:#C8102E; color:#fff; border-color:#C8102E}
+.small{font-size:.85rem; color:#555}
+.grid-admin{display:grid; gap:12px; padding:12px; grid-template-columns:repeat(auto-fill,minmax(260px,1fr))}
+.card-admin{border:1px solid #eee; border-radius:14px; overflow:hidden}
+.card-admin header{display:flex; align-items:center; justify-content:space-between; padding:.5rem .75rem; background:#fafafa; border-bottom:1px solid #eee}
+.card-admin img{width:100%; aspect-ratio:4/3; object-fit:cover; background:#f2f2f2}
+.card-admin .body{padding:.75rem; display:grid; gap:.35rem}
+input[type=text], textarea{padding:.6rem .7rem; border:1px solid #ddd; border-radius:10px; width:100%}
+.badge{background:#fff8cc; border:1px dashed #dd0; padding:.2rem .4rem; border-radius:8px; width:fit-content}
+footer.note{padding:1rem; font-size:.9rem; color:#555}
+</style>
+</head>
+<body>
+<div class="toolbar">
+  <label class="btn">📂 Cargar menú (data.json)
+    <input type="file" id="fileInput" accept="application/json">
+  </label>
+  <button id="exportBtn" class="btn primary">💾 Exportar data.json con fotos</button>
+  <a href="./index.html" class="btn">↩ Ver el Menú</a>
+  <span class="small">Sube el <strong>data.json</strong> exportado a Netlify (Deploys → Upload manually) para publicar cambios.</span>
+</div>
+
+<div id="content" class="grid-admin"></div>
+
+<footer class="note">
+  <p>🖼️ <strong>Cómo funciona:</strong> Presiona “Subir foto” en cada producto y se incrustará dentro de <code>data.json</code> como <em>data URL</em>. No necesitas subir archivos sueltos; solo reemplaza <code>data.json</code> en Netlify.</p>
+</footer>
+
+<script>
+const CRC = new Intl.NumberFormat('es-CR');
+let DATA = null;
+
+async function init(){
+  try{
+    const res = await fetch('data.json?cache=' + Date.now());
+    DATA = await res.json();
+    render();
+  }catch(e){
+    console.error(e);
+  }
+
+  document.getElementById('fileInput').addEventListener('change', handleJSON);
+  document.getElementById('exportBtn').addEventListener('click', exportJSON);
+}
+
+function handleJSON(e){
+  const file = e.target.files[0];
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = () => {
+    try{
+      DATA = JSON.parse(reader.result);
+      render();
+    }catch(err){
+      alert('Archivo JSON inválido');
+    }
+  };
+  reader.readAsText(file, 'utf-8');
+}
+
+function render(){
+  const mount = document.getElementById('content');
+  mount.innerHTML = '';
+  if(!DATA || !DATA.categories){ mount.textContent = 'No hay datos'; return; }
+
+  for(const cat of DATA.categories){
+    for(const it of cat.items){
+      const card = document.createElement('div');
+      card.className = 'card-admin';
+
+      const h = document.createElement('header');
+      const t = document.createElement('strong');
+      t.textContent = it.name;
+      const p = document.createElement('span');
+      p.textContent = (it.combo ? '(combo)' : '₡'+CRC.format(it.price||0));
+      h.append(t, p);
+
+      const img = document.createElement('img');
+      img.src = it.img || 'assets/placeholder.png';
+
+      const body = document.createElement('div');
+      body.className = 'body';
+
+      const url = document.createElement('input');
+      url.type = 'text';
+      url.placeholder = 'URL de imagen (opcional)';
+      url.value = it.img && typeof it.img === 'string' && it.img.startsWith('http') ? it.img : '';
+
+      const upLabel = document.createElement('label');
+      upLabel.className = 'btn';
+      upLabel.style.width = 'fit-content';
+      upLabel.textContent = '🖼️ Subir foto';
+      const up = document.createElement('input');
+      up.type = 'file';
+      up.accept = 'image/*';
+      up.style.display = 'none';
+      up.onchange = async () => {
+        const file = up.files[0];
+        if(!file) return;
+        const b64 = await fileToDataURL(file);
+        it.img = b64;
+        img.src = b64;
+        url.value = '';
+      };
+      upLabel.appendChild(up);
+
+      const note = document.createElement('div');
+      note.className = 'badge';
+      note.textContent = 'Se guardará dentro de data.json';
+
+      const fromUrlBtn = document.createElement('button');
+      fromUrlBtn.className = 'btn';
+      fromUrlBtn.textContent = '↗ Usar URL';
+      fromUrlBtn.onclick = () => {
+        if(url.value.trim()){
+          it.img = url.value.trim();
+          img.src = it.img;
+        } else { alert('Escribe una URL válida'); }
+      };
+
+      body.append(url, fromUrlBtn, upLabel, note);
+      card.append(h, img, body);
+      mount.appendChild(card);
+    }
+  }
+}
+
+function fileToDataURL(file){
+  return new Promise((resolve, reject)=>{
+    const reader = new FileReader();
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  });
+}
+
+function exportJSON(){
+  if(!DATA){ alert('No hay datos para exportar'); return; }
+  const blob = new Blob([JSON.stringify(DATA, null, 2)], {type:'application/json'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'data.json';
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+}
+
+init();
+</script>
+</body>
+</html>

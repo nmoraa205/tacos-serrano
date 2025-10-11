@@ -1,0 +1,343 @@
+{
+  "brand": {
+    "name": "Taco's Serrano",
+    "primary": "#FFD100",
+    "accent": "#C8102E",
+    "alt": "#FF5C00",
+    "dark": "#1C1C1C",
+    "light": "#FFFFFF",
+    "logo": "assets/logo.png"
+  },
+  "whatsapp_phone": "50624610007",
+  "currency": "₡",
+  "categories": [
+    {
+      "id": "delicias",
+      "name": "Delicias",
+      "banner": "assets/menu-delicias.jpg",
+      "items": [
+        {
+          "id": "taco-sencillo",
+          "name": "Taco Sencillo",
+          "price": 1700,
+          "img": "assets/taco-sencillo.jpg"
+        },
+        {
+          "id": "taco-papas",
+          "name": "Taco con Papas",
+          "price": 2700,
+          "img": "assets/taco-papas.png"
+        },
+        {
+          "id": "salchipapas",
+          "name": "Salchipapas",
+          "price": 2500,
+          "img": "assets/salchipapas.png"
+        },
+        {
+          "id": "nachos",
+          "name": "Nachos (carne/pollo)",
+          "price": 2850,
+          "img": "assets/nachos.png"
+        },
+        {
+          "id": "super-fries",
+          "name": "Super Fries",
+          "price": 2850,
+          "img": "assets/super-fries.png"
+        },
+        {
+          "id": "pop-fries",
+          "name": "Pop Fries",
+          "price": 2850,
+          "img": "assets/pop-fries.png"
+        }
+      ]
+    },
+    {
+      "id": "economico",
+      "name": "Económico (Promo ₡1290)",
+      "banner": null,
+      "items": [
+        {
+          "id": "quesoburguesa",
+          "name": "Quesoburguesa",
+          "price": 1290,
+          "img": "assets/quesoburguesa.jpg"
+        },
+        {
+          "id": "monchi",
+          "name": "Monchi",
+          "price": 1290,
+          "img": "assets/monchi.png"
+        },
+        {
+          "id": "chicken-jr",
+          "name": "Chicken JR",
+          "price": 1290,
+          "img": "assets/chicken-jr.png"
+        },
+        {
+          "id": "pop-chicken",
+          "name": "Pop Chicken",
+          "price": 1290,
+          "img": "assets/pop-chicken.png"
+        },
+        {
+          "id": "batatas",
+          "name": "Batatas (carne/pollo)",
+          "price": 1290,
+          "img": "assets/batatas.png"
+        }
+      ]
+    },
+    {
+      "id": "wraps",
+      "name": "Wraps",
+      "banner": null,
+      "items": [
+        {
+          "id": "wrap-evolution",
+          "name": "Wrap Evolution (Grill/Meat/Crispy)",
+          "price": 1700,
+          "img": "assets/wrap-evolution.png",
+          "options": [
+            "Chipotle",
+            "Ranch",
+            "César",
+            "Mostaza miel",
+            "Chipotle BBQ",
+            "Ranch BBQ"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "chicken-lovers",
+      "name": "Chicken Lovers",
+      "banner": null,
+      "items": [
+        {
+          "id": "alitas-6",
+          "name": "6 Alitas (BBQ o Picantes)",
+          "price": 3000,
+          "img": "assets/alitas-6.jpg",
+          "options": [
+            "BBQ",
+            "Picantes"
+          ]
+        },
+        {
+          "id": "porcion-pollo",
+          "name": "Porción de Pollo (Cuarto y Muslo)",
+          "price": 1500,
+          "img": "assets/porcion-pollo.jpg"
+        }
+      ]
+    },
+    {
+      "id": "combos-economicos",
+      "name": "Combos Económicos (₡3000)",
+      "banner": null,
+      "items": [
+        {
+          "id": "combo-quesoburguesa",
+          "name": "Combo Económico: Quesoburguesa + Papas + Bebida",
+          "price": 3000,
+          "img": "assets/combo-quesoburguesa.png",
+          "options": [
+            "Té frío",
+            "Gaseosa en lata",
+            "Agua"
+          ]
+        },
+        {
+          "id": "combo-monchi",
+          "name": "Combo Económico: Monchi + Papas + Bebida",
+          "price": 3000,
+          "img": "assets/combo-monchi.png",
+          "options": [
+            "Té frío",
+            "Gaseosa en lata",
+            "Agua"
+          ]
+        },
+        {
+          "id": "combo-chicken-jr",
+          "name": "Combo Económico: Chicken JR + Papas + Bebida",
+          "price": 3000,
+          "img": "assets/combo-chicken-jr.png",
+          "options": [
+            "Té frío",
+            "Gaseosa en lata",
+            "Agua"
+          ]
+        },
+        {
+          "id": "combo-pop-chicken",
+          "name": "Combo Económico: Pop Chicken + Papas + Bebida",
+          "price": 3000,
+          "img": "assets/combo-pop-chicken.png",
+          "options": [
+            "Té frío",
+            "Gaseosa en lata",
+            "Agua"
+          ]
+        },
+        {
+          "id": "combo-batatas",
+          "name": "Combo Económico: Batatas + Papas + Bebida",
+          "price": 3000,
+          "img": "assets/combo-batatas.png",
+          "options": [
+            "Té frío",
+            "Gaseosa en lata",
+            "Agua"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "nuevos",
+      "name": "Productos Nuevos",
+      "banner": "assets/menu-nuevos.jpg",
+      "items": [
+        {
+          "id": "orden-papas",
+          "name": "Orden de Papas",
+          "price": 300,
+          "img": "assets/orden-papas.png"
+        },
+        {
+          "id": "aros-cebolla",
+          "name": "Aros de Cebolla (con Ranch)",
+          "price": 1750,
+          "img": "assets/aros-cebolla.png"
+        },
+        {
+          "id": "ranchita-xtreme",
+          "name": "Ranchita Xtreme",
+          "price": 2500,
+          "img": "assets/ranchita-xtreme.png"
+        },
+        {
+          "id": "taquitos",
+          "name": "Taquitos",
+          "price": 2500,
+          "img": "assets/taquitos.png"
+        },
+        {
+          "id": "papas-gajo",
+          "name": "Papas en gajo (Ranch)",
+          "price": 1750,
+          "img": "assets/papas-gajo.png"
+        },
+        {
+          "id": "cheesy-pop",
+          "name": "Cheesy Pop (salsa pizza)",
+          "price": 1500,
+          "img": "assets/cheesy-pop.png"
+        },
+        {
+          "id": "nacho-burrito",
+          "name": "Nacho Burrito",
+          "price": 1500,
+          "img": "assets/nacho-burrito.jpg"
+        }
+      ]
+    },
+    {
+      "id": "hamburguesas",
+      "name": "Hamburguesas",
+      "banner": "assets/menu-burgers.jpg",
+      "items": [
+        {
+          "id": "monchi-premium",
+          "name": "Monchi Premium",
+          "price": 3250,
+          "img": "assets/monchi-premium.png"
+        },
+        {
+          "id": "volcano-burger",
+          "name": "Volcano (carne/pollo)",
+          "price": 3250,
+          "img": "assets/volcano-burger.png"
+        },
+        {
+          "id": "americana",
+          "name": "Americana",
+          "price": 3250,
+          "img": "assets/americana.png"
+        },
+        {
+          "id": "big-bacon",
+          "name": "Big Bacon",
+          "price": 3850,
+          "img": "assets/big-bacon.png"
+        },
+        {
+          "id": "big-burger",
+          "name": "Big Burger",
+          "price": 3850,
+          "img": "assets/big-burger.png"
+        },
+        {
+          "id": "country",
+          "name": "Country Burger",
+          "price": 3850,
+          "img": "assets/country.png"
+        },
+        {
+          "id": "mechuda",
+          "name": "Mechuda",
+          "price": 3950,
+          "img": "assets/mechuda.png"
+        }
+      ]
+    },
+    {
+      "id": "ensaladas",
+      "name": "Ensaladas",
+      "banner": null,
+      "items": [
+        {
+          "id": "grill-salad",
+          "name": "Ensalada Grill",
+          "price": 3400,
+          "img": "assets/grill-salad.jpg"
+        },
+        {
+          "id": "crispy-salad",
+          "name": "Ensalada Crispy",
+          "price": 3400,
+          "img": "assets/crispy-salad.png"
+        }
+      ]
+    },
+    {
+      "id": "bebidas",
+      "name": "Bebidas",
+      "banner": null,
+      "items": [
+        {
+          "id": "te-frio",
+          "name": "Té frío",
+          "price": 0,
+          "img": "assets/te-frio.png"
+        },
+        {
+          "id": "gaseosa-lata",
+          "name": "Gaseosa en lata",
+          "price": 0,
+          "img": "assets/placeholder.png"
+        },
+        {
+          "id": "agua",
+          "name": "Agua",
+          "price": 0,
+          "img": "assets/placeholder.png"
+        }
+      ]
+    }
+  ]
+}

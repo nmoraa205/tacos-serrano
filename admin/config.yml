@@ -1,0 +1,46 @@
+backend:
+  name: git-gateway
+  branch: main
+
+media_folder: "static/images/uploads"
+public_folder: "/static/images/uploads"
+
+local_backend: true
+
+collections:
+  - name: "productos"
+    label: "Productos"
+    label_singular: "Producto"
+    folder: "content/productos"
+    create: true
+    slug: "{{slug}}"
+    fields:
+      - {label: "Nombre", name: "name", widget: "string"}
+      - {label: "Precio", name: "price", widget: "number", value_type: "int", min: 0}
+      - {label: "Categoría", name: "category", widget: "select", options: ["wraps", "hamburguesas", "combos"]}
+      - {label: "Disponible", name: "available", widget: "boolean", default: true}
+      - {label: "Imagen", name: "image", widget: "image"}
+      - {label: "Descripción", name: "description", widget: "text"}
+  - name: "categorias"
+    label: "Categorías"
+    folder: "content/categorias"
+    create: true
+    fields:
+      - {label: "ID", name: "id", widget: "string"}
+      - {label: "Nombre", name: "name", widget: "string"}
+  - name: "opciones"
+    label: "Opciones (proteínas, aderezos, extras)"
+    files:
+      - label: "Opciones"
+        name: "opciones"
+        file: "content/opciones/opciones.json"
+        format: "json"
+        fields:
+          - {label: "Proteínas", name: "proteinas", widget: "list", field: {label: "Proteína", name: "item", widget: "string"}}
+          - {label: "Aderezos", name: "aderezos", widget: "list", field: {label: "Aderezo", name: "item", widget: "string"}}
+          - label: "Extras"
+            name: "extras"
+            widget: "list"
+            fields:
+              - {label: "Nombre", name: "name", widget: "string"}
+              - {label: "Precio", name: "price", widget: "number", value_type: "int", min: 0}

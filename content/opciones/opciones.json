@@ -1,0 +1,24 @@
+{
+  "proteinas": [
+    "Pollo crispy",
+    "Res",
+    "Cerdo",
+    "Mixto"
+  ],
+  "aderezos": [
+    "Mostaza miel",
+    "BBQ",
+    "Chipotle",
+    "Buffalo"
+  ],
+  "extras": [
+    {
+      "name": "Queso extra",
+      "price": 300
+    },
+    {
+      "name": "Tocineta extra",
+      "price": 400
+    }
+  ]
+}
