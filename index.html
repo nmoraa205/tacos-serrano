@@ -96,18 +96,21 @@
       <textarea id="orderNotes" placeholder="Ej: sin cebolla, extra salsa..." style="width:100%;min-height:72px;border:1px solid #ddd;border-radius:10px;padding:8px"></textarea>
     </div>
 
-   <!-- Datos del cliente (ocultos hasta que el usuario presiona “Enviar pedido”) -->
-<div class="customer" id="customerSection" style="display:none;gap:8px;margin-top:8px">
+<!-- Datos del cliente (VISIBLES como antes) -->
+<div class="customer" style="display:grid;gap:8px;margin-top:8px">
   <label>Nombre del cliente</label>
   <input id="custName" placeholder="Tu nombre" style="padding:8px;border:1px solid #ddd;border-radius:10px" />
+
   <label>Tipo de entrega</label>
   <select id="deliveryType" style="padding:8px;border:1px solid #ddd;border-radius:10px">
     <option value="Para recoger">Para recoger</option>
     <option value="A domicilio">A domicilio</option>
     <option value="Mesa">Mesa</option>
   </select>
+
   <label>Dirección / Mesa</label>
   <input id="custAddress" placeholder="Ej: 100m norte de..." style="padding:8px;border:1px solid #ddd;border-radius:10px" />
+
   <label>Forma de pago</label>
   <select id="payMethod" style="padding:8px;border:1px solid #ddd;border-radius:10px">
     <option value="Efectivo contra entrega">Efectivo contra entrega</option>
