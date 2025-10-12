@@ -1,271 +1,294 @@
-/* ==========================================================
-   Taco’s Serrano - Diseño Pro Unificado
-   Paleta, tipografía y estructura base
-   ========================================================== */
+/* ============================================================
+   Taco’s Serrano — Estilo oficial (versión limpia y optimizada)
+   ============================================================ */
 
-:root{
-  --ts-yellow:#FFD100;   /* Amarillo Taco */
-  --ts-red:#C8102E;      /* Rojo Serrano */
-  --ts-orange:#FF5C00;   /* Naranja Spice */
-  --ts-ink:#1C1C1C;      /* Negro Smoke */
-  --ts-muted:#767676;    /* Gris secundario */
-  --radius:16px;
-  --shadow:0 10px 24px rgba(0,0,0,.08);
+:root {
+  --ts-yellow: #FFD100;  /* Amarillo Taco */
+  --ts-red: #C8102E;     /* Rojo Serrano */
+  --ts-orange: #FF5C00;  /* Naranja Spice */
+  --ts-ink: #1C1C1C;     /* Negro Smoke */
+  --ts-light: #FFFFFF;
+  --radius: 16px;
+  --shadow: 0 10px 24px rgba(0, 0, 0, .08);
 }
 
-/* ==================== Estructura base ==================== */
-html,body{
-  margin:0;
-  font-family: 'Montserrat', system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+/* =================== Base =================== */
+html, body {
+  font-family: 'Montserrat', system-ui, -apple-system, sans-serif;
   color: var(--ts-ink);
-  background:#fffef8;
+  background: #fffef8;
+  margin: 0;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
 }
 
-/* ==================== Titulares ==================== */
-h1,h2,.title{
+/* Titulares */
+h1, h2, h3, .title {
   font-family: "Bebas Neue", sans-serif;
-  letter-spacing:.5px;
+  letter-spacing: .5px;
 }
-h1{ font-size: clamp(28px, 5vw, 48px); color: var(--ts-red); line-height:1; }
-h2{ font-size: clamp(22px, 3.6vw, 34px); color: var(--ts-ink); }
+h1 { font-size: clamp(28px, 5vw, 48px); color: var(--ts-red); line-height: 1; }
+h2 { font-size: clamp(22px, 3.6vw, 34px); color: var(--ts-ink); }
 
-/* ==================== Header Pro ==================== */
-.ts-header{
-  position: sticky;
-  top:0;
-  z-index:10;
+/* Contenedor base */
+.container {
+  width: min(1100px, 92vw);
+  margin: 0 auto;
+}
+
+/* =================== Header =================== */
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
   background: linear-gradient(90deg, var(--ts-yellow), #ffe667);
+  position: sticky;
+  top: 0;
+  z-index: 10;
   border-bottom: 3px solid var(--ts-red);
 }
-.ts-header .bar{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:12px;
-  padding:14px 0;
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
 }
-.ts-brand{
-  display:flex;
-  align-items:center;
-  gap:10px;
+.logo {
+  height: 48px;
+  width: 48px;
+  border-radius: 12px;
+  background: #fff;
+  object-fit: contain;
+  border: 1px solid #eee;
 }
-.ts-logo{
-  width:42px;
-  height:42px;
-  border-radius:12px;
+.brand h1 {
+  margin: 0;
+  font-size: 28px;
+  color: #5a0000;
+  letter-spacing: 1px;
+}
+.tagline {
+  color: #350000;
+  font-size: 13px;
+}
+.cart-button {
   background: var(--ts-red);
-  color:#fff;
-  display:grid;
-  place-items:center;
-  font-family:"Bebas Neue";
-  font-size:26px;
-  box-shadow: var(--shadow);
-}
-.ts-name{
-  font-family:"Bebas Neue";
-  font-size:28px;
-  color:#5a0000;
-  line-height:1;
+  color: #fff;
+  border: none;
+  border-radius: 999px;
+  padding: 10px 16px;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 4px 10px rgba(200, 16, 46, .3);
 }
 
-/* ==================== Tabs ==================== */
-.ts-tabs{
-  display:flex;
-  gap:8px;
-  flex-wrap:wrap;
+/* =================== Buscador =================== */
+.search {
+  padding: 16px;
 }
-.ts-tab{
-  padding:8px 12px;
-  border-radius:999px;
-  font-weight:600;
-  font-size:14px;
+.search input {
+  width: 100%;
+  padding: 12px 14px;
+  border: 1px solid #ddd;
+  border-radius: 12px;
+  font-size: 1rem;
+}
+
+/* =================== Tabs de categorías =================== */
+.tabs {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  padding: 8px 12px;
+}
+.tab {
+  border: 1px solid #ddd;
   background: #fff;
-  border:1.5px solid rgba(0,0,0,.06);
+  border-radius: 999px;
+  padding: 6px 12px;
+  cursor: pointer;
+  font-weight: 600;
 }
-.ts-tab--active{
+.tab.active {
   background: var(--ts-red);
-  color:#fff;
+  color: #fff;
   border-color: var(--ts-red);
 }
 
-/* ==================== Grid & Cards ==================== */
-.grid{
-  display:grid;
-  gap:18px;
-  grid-template-columns: repeat(auto-fill, minmax(220px,1fr));
-  margin:24px 0 40px;
+/* =================== Cards =================== */
+.grid {
+  display: grid;
+  gap: 18px;
+  padding: 16px;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
 }
-[class*="card"]{
-  background:#fff;
+.card {
+  background: #fff;
   border-radius: var(--radius);
   box-shadow: var(--shadow);
-  border:1px solid rgba(0,0,0,.05);
-  overflow:hidden;
+  overflow: hidden;
+  border: 1px solid rgba(0, 0, 0, .05);
   transition: transform .15s ease, box-shadow .15s ease;
 }
-[class*="card"]:hover{
+.card:hover {
   transform: translateY(-3px);
-  box-shadow: 0 14px 28px rgba(0,0,0,.12);
+  box-shadow: 0 14px 28px rgba(0, 0, 0, .12);
 }
-[class*="card"] img{
-  width:100%;
-  height:170px;
-  object-fit:cover;
-  display:block;
+.card img {
+  width: 100%;
+  height: 160px;
+  object-fit: cover;
 }
-.card-body{
-  padding:14px 14px 16px;
+.card .p16 {
+  padding: 12px 14px;
 }
-.card-title{
-  font-family:"Bebas Neue";
-  font-size:24px;
-  line-height:1;
-  margin:6px 0 8px;
-}
-.card-meta{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:8px;
-}
-.price{
-  font-weight:700;
+.price {
   color: var(--ts-red);
-  font-size:18px;
-}
-.badge{
-  font-size:12px;
-  font-weight:700;
-  color:#fff;
-  background:linear-gradient(90deg, var(--ts-orange), #ff7b2b);
-  border-radius:999px;
-  padding:6px 10px;
+  font-weight: 700;
+  font-size: 18px;
 }
 
-/* ==================== Botones ==================== */
-.btn{
-  display:inline-flex;
-  align-items:center;
-  justify-content:center;
-  gap:8px;
-  padding:10px 14px;
-  border-radius:12px;
-  font-weight:700;
-  border:0;
-  cursor:pointer;
+/* =================== Botones =================== */
+.cta, .btn, .add {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 14px;
+  border-radius: 12px;
+  font-weight: 700;
+  border: none;
+  cursor: pointer;
 }
-.btn-primary{
+.btn-primary, .add, .cta {
   background: var(--ts-red);
-  color:#fff;
+  color: #fff;
 }
-.btn-primary:hover{
+.btn-primary:hover, .add:hover, .cta:hover {
   filter: brightness(.95);
 }
-.btn-outline{
-  background:#fff;
+.ghost {
+  background: #fff;
   color: var(--ts-red);
-  border:2px solid var(--ts-red);
-}
-.btn-outline:hover{
-  background: #fff3f3;
+  border: 2px solid var(--ts-red);
 }
 
-/* ==================== Promos / Banners ==================== */
-.promo{
-  background: linear-gradient(90deg, var(--ts-orange), var(--ts-red));
-  color:#fff;
-  border-radius: var(--radius);
-  padding:14px 16px;
+/* =================== Modal (Carrito) =================== */
+.modal {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, .45);
+  z-index: 50;
+}
+.modal[aria-hidden="false"] {
+  display: grid;
+  place-items: center;
+}
+.modal-card {
+  background: #fff;
+  width: min(640px, 92vw);
+  max-height: 88vh;
+  overflow: auto;
+  padding: 16px;
+  border-radius: 16px;
   box-shadow: var(--shadow);
 }
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+.icon-btn {
+  border: none;
+  background: #f6f6f6;
+  border-radius: 8px;
+  padding: 6px 10px;
+  cursor: pointer;
+}
 
-/* ==================== Fidelidad ==================== */
-.loyalty{
+/* =================== Fidelidad =================== */
+.loyalty {
   background: radial-gradient(1200px 600px at 10% -20%, #ffefe0, transparent),
               linear-gradient(180deg, #fff, #fffaf1);
   min-height: calc(100dvh - 64px);
   padding: 28px 0 56px;
 }
-.loyalty-card{
-  width:min(520px, 94vw);
+.loyalty-card {
+  width: min(520px, 94vw);
   margin: 10px auto 18px;
   padding: 18px;
   border-radius: 20px;
   background: #1d0a0a;
-  color:#fff;
-  position:relative;
-  overflow:hidden;
-  box-shadow: 0 20px 48px rgba(200,16,46,.35);
+  color: #fff;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 20px 48px rgba(200, 16, 46, .35);
 }
-.loyalty-card::after{
-  content:"";
-  position:absolute;
-  inset:-20% -30% auto auto;
-  width:420px;
-  height:420px;
+.loyalty-card::after {
+  content: "";
+  position: absolute;
+  inset: -20% -30% auto auto;
+  width: 420px;
+  height: 420px;
   border-radius: 50%;
-  background: radial-gradient(closest-side, rgba(255,209,0,.25), rgba(255,209,0,0));
+  background: radial-gradient(closest-side, rgba(255, 209, 0, .25), rgba(255, 209, 0, 0));
   filter: blur(6px);
-  pointer-events:none;
+  pointer-events: none;
 }
-.loyalty-row{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:14px;
+.loyalty-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
 }
-.loyalty-chip{
-  width:44px;
-  height:44px;
-  border-radius:12px;
+.loyalty-chip {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
   background: var(--ts-yellow);
-  display:grid;
-  place-items:center;
-  color:#5a0000;
-  font-family:"Bebas Neue";
-  font-size:24px;
-  font-weight:700;
+  display: grid;
+  place-items: center;
+  color: #5a0000;
+  font-family: "Bebas Neue";
+  font-size: 24px;
+  font-weight: 700;
 }
-.loyalty-name{
-  font-family:"Bebas Neue";
-  font-size:26px;
-  letter-spacing:.5px;
+.loyalty-name {
+  font-family: "Bebas Neue";
+  font-size: 26px;
+  letter-spacing: .5px;
 }
-.loyalty-points{
-  font-weight:700;
-  font-size:22px;
+.loyalty-points {
+  font-weight: 700;
+  font-size: 22px;
   background: #350000;
-  padding:8px 12px;
-  border-radius:12px;
-  border:1px solid rgba(255,255,255,.1);
+  padding: 8px 12px;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, .1);
 }
-.loyalty-sub{
-  color:#ffdede;
-  font-size:13px;
-  margin-top:8px;
+.loyalty-actions {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  margin-top: 14px;
+  flex-wrap: wrap;
 }
-.loyalty-actions{
-  display:flex;
-  gap:10px;
-  justify-content:center;
-  margin-top:14px;
-  flex-wrap:wrap;
-}
-.badge-soft{
-  font-size:12px;
-  font-weight:700;
-  color:#350000;
-  background:#ffeaa3;
-  border-radius:999px;
-  padding:6px 10px;
+.badge-soft {
+  font-size: 12px;
+  font-weight: 700;
+  color: #350000;
+  background: #ffeaa3;
+  border-radius: 999px;
+  padding: 6px 10px;
 }
 
-/* ==================== Footer ==================== */
-.ts-footer{
-  margin: 36px 0 20px;
-  color: var(--ts-muted);
-  font-size:13px;
-  text-align:center;
+/* =================== Footer =================== */
+.footer, .ts-footer {
+  background: #fff;
+  border-top: 1px solid #eee;
+  text-align: center;
+  padding: 14px;
+  font-size: 13px;
+  color: #777;
 }
