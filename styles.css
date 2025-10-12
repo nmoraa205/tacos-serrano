@@ -1,82 +1,29 @@
+/* ==========================================================
+   Taco’s Serrano - Diseño Pro Unificado
+   Paleta, tipografía y estructura base
+   ========================================================== */
 
 :root{
-  --primary:#FFD100; /* Amarillo Taco */
-  --accent:#C8102E;  /* Rojo Serrano */
-  --alt:#FF5C00;     /* Naranja Spice */
-  --dark:#1C1C1C;    /* Negro Smoke */
-  --light:#FFFFFF;
-}
-*{box-sizing:border-box}
-body{
-  margin:0;
-  font-family: 'Montserrat', system-ui, -apple-system, sans-serif;
-  background:#faf7ef;
-  color:var(--dark);
-}
-.header{position:sticky; top:0; z-index:10; display:flex; align-items:center; justify-content:space-between; padding:.5rem .75rem; box-shadow:0 2px 8px rgba(0,0,0,.08)}
-.header-white{background:#fff; border-bottom:1px solid #eee}
-.brand{display:flex; align-items:center; gap:.6rem}
-.logo{width:64px; height:64px; border-radius:14px; object-fit:contain; background:#fff; border:1px solid #eee}
-.brand h1{margin:0; font-family:'Bebas Neue', sans-serif; letter-spacing:1px; color:var(--dark); font-size:1.6rem}
-.brand .tagline{display:block; font-size:.8rem; color:#333}
-.cart-button{background:var(--accent); color:#fff; padding:.5rem .75rem; border-radius:999px; font-weight:700; cursor:pointer}
-.notice{padding:.5rem 1rem; background:#fff3c0; border-bottom:1px solid #eee; text-align:center}
-.search{padding:.5rem 1rem; background:#fff; border-bottom:1px solid #eee}
-.search input{width:100%; padding:.8rem 1rem; border-radius:12px; border:1px solid #ddd; font-size:1rem}
-.tabs{display:flex; gap:.5rem; padding:.5rem 1rem; overflow:auto}
-.tabs button{border:none; background:#fff; padding:.5rem .8rem; border-radius:999px; cursor:pointer; font-weight:600; border:1px solid #eee}
-.tabs button.active{background:var(--dark); color:#fff}
-.grid{display:grid; gap:12px; padding:12px; grid-template-columns:repeat(auto-fill,minmax(160px,1fr))}
-.card{background:#fff; border-radius:16px; overflow:hidden; border:1px solid #eee; display:flex; flex-direction:column; transition:transform .1s}
-.card:hover{transform:translateY(-2px)}
-.card img{width:100%; aspect-ratio:4/3; object-fit:cover; background:#f5f5f5}
-.badges{display:flex; gap:.35rem; flex-wrap:wrap; margin:.25rem 0}
-.badge{font-size:.7rem; padding:.1rem .4rem; border-radius:999px; border:1px solid #ddd; background:#fff}
-.card .body{padding:.75rem}
-.card h3{margin:.25rem 0; font-size:1rem}
-.price{color:#0a0; font-weight:700}
-.options{display:flex; gap:.35rem; flex-wrap:wrap; margin:.25rem 0}
-.pill{border:1px solid #ddd; padding:.15rem .45rem; border-radius:999px; font-size:.75rem; background:#fff; cursor:pointer}
-.qty{display:flex; align-items:center; gap:.5rem; margin-top:.5rem}
-.qty button{border:none; background:var(--dark); color:#fff; border-radius:10px; width:28px; height:28px; cursor:pointer}
-.add{margin-top:.5rem; border:none; background:var(--accent); color:#fff; padding:.5rem; border-radius:12px; font-weight:700; cursor:pointer}
-.footer{position:sticky; bottom:0; padding:.5rem; background:#fff; border-top:1px solid #eee}
-.cta{width:100%; padding:.9rem 1rem; border:none; background:var(--accent); color:#fff; border-radius:14px; font-weight:800; font-size:1rem; cursor:pointer}
-.ghost{padding:.75rem 1rem; background:#fff; color:var(--dark); border:1px solid #ddd; border-radius:12px; font-weight:700;}
-.modal{position:fixed; inset:0; display:none; align-items:center; justify-content:center; background:rgba(0,0,0,.45); padding:1rem}
-.modal[aria-hidden="false"]{display:flex}
-.modal-card{background:#fff; width:min(720px,100%); max-height:90vh; overflow:auto; border-radius:18px; border:1px solid #eee}
-.modal-header{display:flex; align-items:center; justify-content:space-between; padding:1rem; border-bottom:1px solid #eee}
-.icon-btn{border:none; background:#fff; font-size:1.1rem; border-radius:8px; cursor:pointer}
-#cartItems{padding:1rem; display:flex; flex-direction:column; gap:.75rem}
-.cartLine{display:flex; align-items:center; justify-content:space-between; gap:.75rem; border:1px solid #eee; border-radius:12px; padding:.5rem .75rem}
-.cartLine .l{display:flex; align-items:center; gap:.75rem}
-.cartLine img{width:72px; height:54px; object-fit:cover; border-radius:8px}
-.notes, .customer{padding:0 1rem 1rem 1rem; display:grid; gap:.35rem}
-.notes textarea, .customer input, .customer select{padding:.6rem .7rem; border:1px solid #ddd; border-radius:10px}
-.total{padding:0 1rem 1rem 1rem; font-size:1.1rem}
-.actions{padding:0 1rem 1rem 1rem; display:flex; gap:.5rem; justify-content:space-between}
-@media (min-width:720px){ .grid{grid-template-columns:repeat(auto-fill,minmax(220px,1fr));} }
-/* ========== Taco’s Serrano – Mejora visual ========== */
-:root{
-  --ts-yellow:#FFD100;
-  --ts-red:#C8102E;
-  --ts-orange:#FF5C00;
-  --ts-ink:#1C1C1C;
-  --ts-muted:#767676;
+  --ts-yellow:#FFD100;   /* Amarillo Taco */
+  --ts-red:#C8102E;      /* Rojo Serrano */
+  --ts-orange:#FF5C00;   /* Naranja Spice */
+  --ts-ink:#1C1C1C;      /* Negro Smoke */
+  --ts-muted:#767676;    /* Gris secundario */
   --radius:16px;
   --shadow:0 10px 24px rgba(0,0,0,.08);
 }
 
+/* ==================== Estructura base ==================== */
 html,body{
-  font-family: Montserrat, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  margin:0;
+  font-family: 'Montserrat', system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
   color: var(--ts-ink);
   background:#fffef8;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
 }
 
-/* Titulares tipo marca */
+/* ==================== Titulares ==================== */
 h1,h2,.title{
   font-family: "Bebas Neue", sans-serif;
   letter-spacing:.5px;
@@ -84,89 +31,157 @@ h1,h2,.title{
 h1{ font-size: clamp(28px, 5vw, 48px); color: var(--ts-red); line-height:1; }
 h2{ font-size: clamp(22px, 3.6vw, 34px); color: var(--ts-ink); }
 
-/* Contenedor base */
-.container{
-  width:min(1100px, 92vw);
-  margin: 0 auto;
-}
-
-/* Header “pegajoso” con marca y acceso rápido */
+/* ==================== Header Pro ==================== */
 .ts-header{
-  position: sticky; top:0; z-index:10;
+  position: sticky;
+  top:0;
+  z-index:10;
   background: linear-gradient(90deg, var(--ts-yellow), #ffe667);
   border-bottom: 3px solid var(--ts-red);
 }
 .ts-header .bar{
-  display:flex; align-items:center; justify-content:space-between;
-  gap:12px; padding:14px 0;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  padding:14px 0;
 }
-.ts-brand{ display:flex; align-items:center; gap:10px; }
+.ts-brand{
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
 .ts-logo{
-  width:42px; height:42px; border-radius:12px;
-  background: var(--ts-red); color:#fff; display:grid; place-items:center;
-  font-family:"Bebas Neue"; font-size:26px; box-shadow: var(--shadow);
+  width:42px;
+  height:42px;
+  border-radius:12px;
+  background: var(--ts-red);
+  color:#fff;
+  display:grid;
+  place-items:center;
+  font-family:"Bebas Neue";
+  font-size:26px;
+  box-shadow: var(--shadow);
 }
-.ts-name{ font-family:"Bebas Neue"; font-size:28px; color:#5a0000; line-height:1; }
+.ts-name{
+  font-family:"Bebas Neue";
+  font-size:28px;
+  color:#5a0000;
+  line-height:1;
+}
 
-/* Tabs de navegación (si ya tenés links, se verán mejor) */
-.ts-tabs{ display:flex; gap:8px; flex-wrap:wrap; }
+/* ==================== Tabs ==================== */
+.ts-tabs{
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
+}
 .ts-tab{
-  padding:8px 12px; border-radius:999px; font-weight:600; font-size:14px;
-  background: #fff; border:1.5px solid rgba(0,0,0,.06);
+  padding:8px 12px;
+  border-radius:999px;
+  font-weight:600;
+  font-size:14px;
+  background: #fff;
+  border:1.5px solid rgba(0,0,0,.06);
 }
-.ts-tab--active{ background: var(--ts-red); color:#fff; border-color: var(--ts-red); }
+.ts-tab--active{
+  background: var(--ts-red);
+  color:#fff;
+  border-color: var(--ts-red);
+}
 
-/* Grilla de productos (aplica aunque tus cards tengan otras clases) */
+/* ==================== Grid & Cards ==================== */
 .grid{
-  display:grid; gap:18px;
+  display:grid;
+  gap:18px;
   grid-template-columns: repeat(auto-fill, minmax(220px,1fr));
   margin:24px 0 40px;
 }
-
-/* Estilo “card” genérico (detecta clases que incluyen la palabra card) */
 [class*="card"]{
-  background:#fff; border-radius: var(--radius); box-shadow: var(--shadow);
-  border:1px solid rgba(0,0,0,.05); overflow:hidden;
+  background:#fff;
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  border:1px solid rgba(0,0,0,.05);
+  overflow:hidden;
   transition: transform .15s ease, box-shadow .15s ease;
 }
-[class*="card"]:hover{ transform: translateY(-3px); box-shadow: 0 14px 28px rgba(0,0,0,.12); }
-
-/* Imágenes dentro de la card */
+[class*="card"]:hover{
+  transform: translateY(-3px);
+  box-shadow: 0 14px 28px rgba(0,0,0,.12);
+}
 [class*="card"] img{
-  width:100%; height:170px; object-fit:cover; display:block;
+  width:100%;
+  height:170px;
+  object-fit:cover;
+  display:block;
 }
-
-/* Contenido de card */
-.card-body{ padding:14px 14px 16px; }
+.card-body{
+  padding:14px 14px 16px;
+}
 .card-title{
-  font-family:"Bebas Neue"; font-size:24px; line-height:1; margin:6px 0 8px;
+  font-family:"Bebas Neue";
+  font-size:24px;
+  line-height:1;
+  margin:6px 0 8px;
 }
-.card-meta{ display:flex; align-items:center; justify-content:space-between; gap:8px; }
-.price{ font-weight:700; color: var(--ts-red); font-size:18px; }
+.card-meta{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:8px;
+}
+.price{
+  font-weight:700;
+  color: var(--ts-red);
+  font-size:18px;
+}
 .badge{
-  font-size:12px; font-weight:700; color:#fff; background:linear-gradient(90deg, var(--ts-orange), #ff7b2b);
-  border-radius:999px; padding:6px 10px;
+  font-size:12px;
+  font-weight:700;
+  color:#fff;
+  background:linear-gradient(90deg, var(--ts-orange), #ff7b2b);
+  border-radius:999px;
+  padding:6px 10px;
 }
 
-/* Botones */
-.btn{ 
-  display:inline-flex; align-items:center; justify-content:center; gap:8px;
-  padding:10px 14px; border-radius:12px; font-weight:700; border:0; cursor:pointer;
+/* ==================== Botones ==================== */
+.btn{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:8px;
+  padding:10px 14px;
+  border-radius:12px;
+  font-weight:700;
+  border:0;
+  cursor:pointer;
 }
-.btn-primary{ background: var(--ts-red); color:#fff; }
-.btn-primary:hover{ filter: brightness(.95); }
+.btn-primary{
+  background: var(--ts-red);
+  color:#fff;
+}
+.btn-primary:hover{
+  filter: brightness(.95);
+}
 .btn-outline{
-  background:#fff; color: var(--ts-red); border:2px solid var(--ts-red);
+  background:#fff;
+  color: var(--ts-red);
+  border:2px solid var(--ts-red);
 }
-.btn-outline:hover{ background: #fff3f3; }
+.btn-outline:hover{
+  background: #fff3f3;
+}
 
-/* Sección Promos (banners) */
+/* ==================== Promos / Banners ==================== */
 .promo{
   background: linear-gradient(90deg, var(--ts-orange), var(--ts-red));
-  color:#fff; border-radius: var(--radius); padding:14px 16px; box-shadow: var(--shadow);
+  color:#fff;
+  border-radius: var(--radius);
+  padding:14px 16px;
+  box-shadow: var(--shadow);
 }
 
-/* ===== Página de Fidelidad ===== */
+/* ==================== Fidelidad ==================== */
 .loyalty{
   background: radial-gradient(1200px 600px at 10% -20%, #ffefe0, transparent),
               linear-gradient(180deg, #fff, #fffaf1);
@@ -174,36 +189,83 @@ h2{ font-size: clamp(22px, 3.6vw, 34px); color: var(--ts-ink); }
   padding: 28px 0 56px;
 }
 .loyalty-card{
-  width:min(520px, 94vw); margin: 10px auto 18px; padding: 18px;
-  border-radius: 20px; background: #1d0a0a; color:#fff; position:relative; overflow:hidden;
+  width:min(520px, 94vw);
+  margin: 10px auto 18px;
+  padding: 18px;
+  border-radius: 20px;
+  background: #1d0a0a;
+  color:#fff;
+  position:relative;
+  overflow:hidden;
   box-shadow: 0 20px 48px rgba(200,16,46,.35);
 }
 .loyalty-card::after{
-  content:""; position:absolute; inset:-20% -30% auto auto;
-  width:420px; height:420px; border-radius: 50%;
+  content:"";
+  position:absolute;
+  inset:-20% -30% auto auto;
+  width:420px;
+  height:420px;
+  border-radius: 50%;
   background: radial-gradient(closest-side, rgba(255,209,0,.25), rgba(255,209,0,0));
-  filter: blur(6px); pointer-events:none;
+  filter: blur(6px);
+  pointer-events:none;
 }
-.loyalty-row{ display:flex; align-items:center; justify-content:space-between; gap:14px; }
-.loyalty-brand{ display:flex; align-items:center; gap:10px; }
+.loyalty-row{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:14px;
+}
 .loyalty-chip{
-  width:44px; height:44px; border-radius:12px; background: var(--ts-yellow); display:grid; place-items:center;
-  color:#5a0000; font-family:"Bebas Neue"; font-size:24px; font-weight:700;
+  width:44px;
+  height:44px;
+  border-radius:12px;
+  background: var(--ts-yellow);
+  display:grid;
+  place-items:center;
+  color:#5a0000;
+  font-family:"Bebas Neue";
+  font-size:24px;
+  font-weight:700;
 }
-.loyalty-name{ font-family:"Bebas Neue"; font-size:26px; letter-spacing:.5px; }
+.loyalty-name{
+  font-family:"Bebas Neue";
+  font-size:26px;
+  letter-spacing:.5px;
+}
 .loyalty-points{
-  font-weight:700; font-size:22px; background: #350000; padding:8px 12px; border-radius:12px; border:1px solid rgba(255,255,255,.1);
+  font-weight:700;
+  font-size:22px;
+  background: #350000;
+  padding:8px 12px;
+  border-radius:12px;
+  border:1px solid rgba(255,255,255,.1);
 }
-.loyalty-sub{ color:#ffdede; font-size:13px; margin-top:8px; }
-
-/* Botón canjear / sumar puntos */
-.loyalty-actions{ display:flex; gap:10px; justify-content:center; margin-top:14px; flex-wrap:wrap; }
+.loyalty-sub{
+  color:#ffdede;
+  font-size:13px;
+  margin-top:8px;
+}
+.loyalty-actions{
+  display:flex;
+  gap:10px;
+  justify-content:center;
+  margin-top:14px;
+  flex-wrap:wrap;
+}
 .badge-soft{
-  font-size:12px; font-weight:700; color:#350000; background:#ffeaa3; border-radius:999px; padding:6px 10px;
+  font-size:12px;
+  font-weight:700;
+  color:#350000;
+  background:#ffeaa3;
+  border-radius:999px;
+  padding:6px 10px;
 }
 
-/* Footer simple */
+/* ==================== Footer ==================== */
 .ts-footer{
-  margin: 36px 0 20px; color: var(--ts-muted); font-size:13px; text-align:center;
+  margin: 36px 0 20px;
+  color: var(--ts-muted);
+  font-size:13px;
+  text-align:center;
 }
-
