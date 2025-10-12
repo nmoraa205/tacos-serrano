@@ -1,90 +1,169 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Taco’s Serrano - Menú Digital</title>
-  <meta name="theme-color" content="#C8102E">
-
-  <!-- Fuentes -->
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Menú | Taco's Serrano</title>
+  <link rel="icon" href="assets/favicon.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
-
-  <!-- Estilos -->
   <link rel="stylesheet" href="styles.css" />
-  <link rel="manifest" href="manifest.webmanifest" />
+  <style>
+    :root { --primary:#FFD100; --accent:#C8102E; --dark:#1C1C1C; --light:#fff; }
+    body{font-family:Montserrat,system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,'Helvetica Neue','Noto Sans',sans-serif;margin:0;background:#fafafa;color:#222}
+    .header{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;background:#fff;position:sticky;top:0;z-index:20;border-bottom:1px solid #eee}
+    .brand{display:flex;align-items:center;gap:10px}
+    .brand .logo{height:40px;width:auto}
+    .brand h1{font-family:'Bebas Neue',sans-serif;letter-spacing:.5px;margin:0;font-size:28px}
+    .tagline{color:#666}
+    .cart-button,.cta{background:var(--primary);border:none;border-radius:10px;padding:10px 14px;font-weight:700;cursor:pointer}
+    .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:16px;padding:16px}
+    .card{background:#fff;border:1px solid #eee;border-radius:14px;overflow:hidden;display:flex;flex-direction:column}
+    .card img{width:100%;height:150px;object-fit:cover}
+    .card .p16{padding:12px 14px}
+    .price{color:#000;font-weight:700}
+    .tabs{display:flex;gap:8px;flex-wrap:wrap;padding:8px 12px}
+    .tab{border:1px solid #ddd;background:#fff;border-radius:999px;padding:6px 12px;cursor:pointer}
+    .tab.active{background:var(--dark);color:#fff;border-color:var(--dark)}
+    .search{padding:12px}
+    .search input{width:100%;padding:10px 12px;border:1px solid #ddd;border-radius:10px}
+    .footer{position:sticky;bottom:0;background:#fff;border-top:1px solid #eee;padding:12px;display:flex;justify-content:center}
+    .modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:50}
+    .modal.show{display:grid;place-items:center}
+    .modal-card{background:#fff;width:min(640px,92vw);max-height:88vh;overflow:auto;padding:16px;border-radius:16px}
+    .modal-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+    .icon-btn{background:#f3f3f3;border:none;border-radius:8px;padding:6px 10px;cursor:pointer}
+    .line{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid #f1f1f1}
+    .line .note{font-size:12px;color:#666}
+    .actions{display:flex;gap:8px;justify-content:flex-end;margin-top:8px}
+    .ghost{background:#f6f6f6;border:1px solid #ddd;border-radius:10px;padding:10px 14px;cursor:pointer}
+    .modal-footer{display:flex;gap:12px;align-items:center;justify-content:space-between;margin-top:12px}
+    .qty-row{display:flex;align-items:center;gap:8px}
+    .qty-btn{padding:8px 12px;font-size:18px;border-radius:8px;border:1px solid #ddd;background:#f9f9f9;cursor:pointer}
+    #optQty{width:64px;text-align:center;padding:8px;border:1px solid #ddd;border-radius:8px}
+    .option-group{margin-bottom:12px}
+    .option-group h4{margin:8px 0;font-size:14px;color:#444}
+    .opt-toppings{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+    .opt-chip{display:flex;align-items:center;gap:8px;padding:8px;border:1px solid #eee;border-radius:8px}
+    .opt-protein-select{width:100%;padding:8px;border:1px solid #ddd;border-radius:8px}
+  </style>
+  <link rel="manifest" href="/manifest.webmanifest">
+  <meta name="theme-color" content="#C8102E">
+  <!-- ===== Estilo Taco’s Serrano: fuentes + color del sistema ===== -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+
 </head>
-
 <body>
-
-  <!-- ===== Header Pro ===== -->
-  <header class="ts-header">
-    <div class="container bar">
-      <div class="ts-brand">
-        <div class="ts-logo">TS</div>
-        <div>
-          <div class="ts-name">Taco’s Serrano</div>
-          <small style="color:#5a0000;">Menú digital · Pedido por WhatsApp</small>
-        </div>
-      </div>
-
-      <!-- Botón carrito -->
-      <button class="btn btn-primary" id="openCartBtn" aria-label="Abrir carrito">
-        🛒 <span id="cartCount">0</span>
-      </button>
+<header class="header">
+  <div class="brand">
+    <img src="assets/logo.png" alt="Taco's Serrano" class="logo"/>
+    <div>
+      <h1 id="brand-name">Taco's Serrano</h1>
+      <small class="tagline">Menú digital — Pedido por WhatsApp</small>
     </div>
-  </header>
+  </div>
+  <button class="cart-button" id="openCartBtn" aria-label="Abrir carrito">🛒 <span id="cartCount">0</span></button>
+</header>
 
-  <!-- ===== Sección Promocional ===== -->
-  <section class="container promo" style="margin-top:20px;">
-    🌮 <strong>Promoción del Día:</strong> 2x1 en tacos al pastor · ¡Solo hoy!
+<main>
+  <section class="search">
+    <input id="searchInput" type="search" placeholder="Buscar: taco, burger, papas..." />
   </section>
 
-  <!-- ===== Buscador ===== -->
-  <section class="container" style="margin-top:20px;">
-    <input type="text" id="searchInput" placeholder="Buscar: tacos, burgers, papas..." style="width:100%;padding:12px;border-radius:12px;border:1px solid #ddd;font-size:1rem;">
-  </section>
+  <nav id="categoryTabs" class="tabs"></nav>
 
-  <!-- ===== Categorías / Tabs ===== -->
-  <nav class="container ts-tabs" style="margin-top:20px;">
-    <button class="ts-tab ts-tab--active">Tacos</button>
-    <button class="ts-tab">Burgers</button>
-    <button class="ts-tab">Papas</button>
-    <button class="ts-tab">Bebidas</button>
-  </nav>
+  <section id="products" class="grid"></section>
+</main>
 
-  <!-- ===== Grid de Productos ===== -->
-  <main class="container">
-    <section class="grid">
-      <!-- Card de ejemplo -->
-      <article class="card">
-        <img src="assets/img/burger.jpg" alt="Quesoburguesa" loading="lazy" />
-        <div class="card-body">
-          <div class="card-title">Quesoburguesa</div>
-          <div class="card-meta">
-            <span class="price">₡2 850</span>
-            <span class="badge">Popular</span>
-          </div>
-          <div class="options">
-            <button class="pill">+ Queso</button>
-            <button class="pill">+ Tocineta</button>
-          </div>
-          <button class="btn btn-primary add" data-id="quesoburguesa">Agregar</button>
-        </div>
-      </article>
+<footer class="footer">
+  <button id="openCartBtnFooter" class="cta">Ver carrito (₡<span id="cartTotal">0</span>)</button>
+</footer>
 
-      <!-- Puedes duplicar el bloque <article> para más productos -->
-    </section>
-  </main>
+<div class="modal" id="cartModal" aria-hidden="true">
+  <div class="modal-card">
+    <header class="modal-header">
+      <h2>Tu pedido</h2>
+      <button id="closeCartBtn" class="icon-btn" aria-label="Cerrar">✕</button>
+    </header>
 
-  <!-- ===== Footer ===== -->
-  <footer class="ts-footer">
-    © 2025 Taco’s Serrano · Ciudad Quesada, contiguo a la Cruz Roja · Tel. 2461-0007
-  </footer>
+    <div id="cartItems"></div>
 
-  <!-- ===== Script del carrito (si ya lo tenías, mantenlo aparte) ===== -->
-  <script src="app.js"></script>
+    <div class="notes">
+      <label>Notas del pedido</label>
+      <textarea id="orderNotes" placeholder="Ej: sin cebolla, extra salsa..." style="width:100%;min-height:72px;border:1px solid #ddd;border-radius:10px;padding:8px"></textarea>
+    </div>
+
+    <div class="customer" style="display:grid;gap:8px;margin-top:8px">
+      <label>Nombre del cliente</label>
+      <input id="custName" placeholder="Tu nombre" style="padding:8px;border:1px solid #ddd;border-radius:10px" />
+      <label>Tipo de entrega</label>
+      <select id="deliveryType" style="padding:8px;border:1px solid #ddd;border-radius:10px">
+        <option value="Para recoger">Para recoger</option>
+        <option value="A domicilio">A domicilio</option>
+        <option value="Mesa">Mesa</option>
+      </select>
+      <label>Dirección / Mesa</label>
+      <input id="custAddress" placeholder="Ej: 100m norte de..." style="padding:8px;border:1px solid #ddd;border-radius:10px" />
+      <label>Forma de pago</label>
+      <select id="payMethod" style="padding:8px;border:1px solid #ddd;border-radius:10px">
+        <option value="Efectivo contra entrega">Efectivo contra entrega</option>
+        <option value="SINPE Móvil">SINPE Móvil</option>
+      </select>
+      <small>Si elegís SINPE Móvil, pagá al <strong>8313-7606</strong> a nombre de <strong>Nelson Mora</strong>.</small>
+    </div>
+
+    <div class="total" style="margin-top:8px">
+      <strong>Total:</strong> <span>₡</span><span id="cartTotalModal">0</span>
+    </div>
+
+    <div class="actions">
+      <button class="ghost" id="clearCartBtn">Vaciar</button>
+      <button class="cta" id="sendWhatsAppBtn">Confirmar y enviar a WhatsApp</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal" id="itemOptionsModal" aria-hidden="true">
+  <div class="modal-card">
+    <header class="modal-header">
+      <h3 id="optTitle">Elige opciones</h3>
+      <button class="icon-btn" id="optCloseBtn" aria-label="Cerrar">✕</button>
+    </header>
+    <div id="optBody"></div>
+    <footer class="modal-footer">
+      <div class="qty-row">
+        <button class="qty-btn" id="optQtyMinus">−</button>
+        <input id="optQty" type="number" min="1" value="1" />
+        <button class="qty-btn" id="optQtyPlus">+</button>
+      </div>
+      <button class="cta" id="optAddBtn">Agregar al carrito</button>
+    </footer>
+  </div>
+</div>
+
+<script src="app.js"></script>
+
+<!-- BOTÓN FLOTANTE → FIDELIDAD -->
+<a href="/fidelidad/" 
+   style="position:fixed;right:18px;bottom:18px;background:#C8102E;color:#fff;
+          padding:14px 18px;border-radius:9999px;font-weight:700;
+          font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+          box-shadow:0 6px 20px rgba(0,0,0,0.25);text-decoration:none;z-index:9999;">
+  🎁 Tarjetas de Fidelidad
+</a>
+<!-- /FIN BOTÓN FLOTANTE -->
+
+
+<script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', function () {
+      navigator.serviceWorker.register('/service-worker.js').catch(console.error);
+    });
+  }
+</script>
 
 </body>
 </html>
