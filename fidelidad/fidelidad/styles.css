@@ -1,0 +1,141 @@
+/* =========================================================
+   Taco’s Serrano · Fidelidad – Skin Pro
+   Colores de marca y tarjeta con sombra, progreso, botones.
+   ========================================================= */
+
+:root{
+  --ts-yellow:#FFD100;
+  --ts-red:#C8102E;
+  --ts-ink:#1C1C1C;
+  --ts-muted:#6f6f6f;
+  --card-bg:#ffffff;
+  --page-bg: radial-gradient(1200px 600px at 10% -20%, #fff6d1, transparent),
+             linear-gradient(180deg, #fff, #fffaf1);
+  --radius:18px;
+  --shadow:0 10px 28px rgba(0,0,0,.08);
+  --b1:1px solid rgba(0,0,0,.06);
+}
+
+*{box-sizing:border-box}
+html,body{
+  margin:0;
+  font-family: Montserrat, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  color:var(--ts-ink);
+  background: var(--page-bg);
+  -webkit-font-smoothing:antialiased;
+  text-rendering:optimizeLegibility;
+}
+
+.page{
+  width:min(960px, 92vw);
+  margin: 20px auto 48px;
+}
+
+/* ====== Tarjetas genéricas (aplican a centro y detalle) ====== */
+.card{
+  background:var(--card-bg);
+  border-radius:var(--radius);
+  border:var(--b1);
+  box-shadow:var(--shadow);
+  padding:16px 18px;
+  margin:14px 0;
+  transition:transform .18s ease, box-shadow .24s ease;
+}
+.card:hover{ transform:translateY(-2px); box-shadow:0 14px 34px rgba(0,0,0,.12) }
+
+.card-header{
+  display:flex; align-items:center; justify-content:space-between; gap:12px;
+  margin-bottom:10px;
+}
+.card-title{
+  display:flex; align-items:center; gap:10px;
+  margin:0; font-weight:800; font-size:20px;
+}
+.card-badge{
+  width:36px; height:36px; border-radius:10px;
+  display:grid; place-items:center; font-weight:800;
+  color:#5a0000; background:var(--ts-yellow);
+  box-shadow: inset 0 -2px 0 rgba(0,0,0,.15);
+  font-family:"Bebas Neue", system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  font-size:20px;
+}
+.card-meta{ color:var(--ts-muted); font-size:13px }
+
+/* Lado izquierdo de color para distinguir programas */
+.card.economico{ border-left:6px solid var(--ts-yellow) }
+.card.combos   { border-left:6px solid #00AEEF }
+.card.deluxe   { border-left:6px solid #2BB673 }
+
+/* ====== Progreso / sellos ====== */
+.progress{
+  background:#eee; height:10px; border-radius:9999px; overflow:hidden; margin:12px 0;
+}
+.progress > .fill{
+  height:100%; width:0%;
+  background:linear-gradient(90deg, var(--ts-yellow), var(--ts-red));
+  transition:width .35s ease;
+}
+
+/* Círculos de sello */
+.stamps{ display:flex; gap:6px; flex-wrap:wrap; margin:10px 0 }
+.stamp{
+  width:42px; height:42px; border-radius:50%;
+  display:grid; place-items:center; font-weight:800;
+  background:#ffeaa3; color:#5a0000; border:1px solid rgba(0,0,0,.06);
+}
+.stamp.done{ background:var(--ts-red); color:#fff }
+
+/* ====== Bloques suaves ====== */
+.soft{
+  background:#fff7cc; border:1px dashed rgba(0,0,0,.1);
+  padding:10px 12px; border-radius:12px; color:#493900; font-size:13px;
+}
+
+/* ====== Botones ====== */
+.btn{
+  display:inline-flex; align-items:center; justify-content:center; gap:8px;
+  padding:10px 14px; border-radius:12px; border:0; cursor:pointer;
+  font-weight:700; transition:filter .2s ease, transform .15s ease;
+}
+.btn:active{ transform:translateY(1px) }
+.btn-red{ background:var(--ts-red); color:#fff }
+.btn-red:hover{ filter:brightness(.95) }
+.btn-yellow{ background:var(--ts-yellow); color:#000 }
+.btn-yellow:hover{ filter:brightness(.95) }
+.btn-ghost{ background:#fff; color:var(--ts-ink); border:1px solid rgba(0,0,0,.08) }
+.btn-ghost:hover{ filter:brightness(.97) }
+
+/* ====== Listado del Centro de Fidelidad ====== */
+.list{ display:grid; gap:12px; }
+.list .item{
+  display:flex; align-items:center; justify-content:space-between; gap:14px;
+  padding:14px 16px; border-radius:14px; background:#fff; border:var(--b1);
+  box-shadow:var(--shadow);
+}
+.item .left{ display:flex; align-items:center; gap:12px }
+.item .icon{
+  width:40px; height:40px; border-radius:12px; display:grid; place-items:center;
+  font-weight:800; color:#5a0000; background:var(--ts-yellow);
+  box-shadow: inset 0 -2px 0 rgba(0,0,0,.15);
+}
+.item .title{ margin:0; font-weight:800 }
+.item .sub{ margin:0; color:var(--ts-muted); font-size:12px }
+
+/* Input teléfono + acciones arriba */
+.toolbar{
+  display:flex; gap:10px; flex-wrap:wrap; margin:12px 0 18px;
+}
+.input{
+  flex:1 1 260px; padding:12px 14px; border-radius:12px; border:var(--b1);
+  outline:none; font-size:14px;
+}
+
+/* ====== Historial ====== */
+.history{ font-size:13px; color:#555 }
+.history time{ display:block; opacity:.8 }
+
+/* Utilidades */
+.center{ text-align:center }
+.mt8{ margin-top:8px } .mt12{ margin-top:12px } .mt16{ margin-top:16px }
+.grid2{ display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px }
+@media (max-width:560px){ .grid2{ grid-template-columns:1fr } }
