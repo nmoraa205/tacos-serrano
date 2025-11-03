@@ -1,132 +1,210 @@
-const CURRENCY="₡";
-const WHATSAPP_PHONE="";
-const DEFAULT_OPTIONS={protein:["Carne","Pollo","Sin proteína"],toppings:[{id:"aderezo",label:"Aderezo",default:!0},{id:"queso",label:"Queso",default:!0},{id:"salsas",label:"Salsas",default:!0}]};
-let DATA=null;let cart=JSON.parse(localStorage.getItem("ts_cart")||"[]");
-const qs=(s,el=document)=>el.querySelector(s);
-const productsEl=qs("#products"),tabsEl=qs("#categoryTabs"),searchInput=qs("#searchInput"),cartCountEl=qs("#cartCount"),cartTotalEl=qs("#cartTotal"),cartModal=qs("#cartModal"),cartItemsEl=qs("#cartItems"),cartTotalModalEl=qs("#cartTotalModal"),orderNotesEl=qs("#orderNotes"),custNameEl=qs("#custName"),deliveryTypeEl=qs("#deliveryType"),custAddressEl=qs("#custAddress"),payMethodEl=qs("#payMethod");
-const itemOptionsModal=qs("#itemOptionsModal"),optTitle=qs("#optTitle"),optBody=qs("#optBody"),optCloseBtn=qs("#optCloseBtn"),optAddBtn=qs("#optAddBtn"),optQtyInput=qs("#optQty"),optQtyMinus=qs("#optQtyMinus"),optQtyPlus=qs("#optQtyPlus");
-let _currentItemForOptions=null;
-function money(n){return new Intl.NumberFormat('es-CR').format(n)}
-async function loadData(){
-  const res=await fetch("data.json?_="+Date.now());
-  if(!res.ok) throw new Error("No se pudo cargar data.json");
-  const data=await res.json(); DATA=data;
-  if(data.brand?.name) qs("#brand-name").textContent=data.brand.name;
-  if(data.whatsapp_phone) window.__WAPP=String(data.whatsapp_phone); else if(WHATSAPP_PHONE) window.__WAPP=WHATSAPP_PHONE; else window.__WAPP="50624610007";
-  renderTabs(); renderProducts(data.categories?.[0]?.id||null); updateCartBadge();
+const currency = new Intl.NumberFormat('es-CR', {
+  style: 'currency',
+  currency: 'CRC',
+  maximumFractionDigits: 0
+});
+
+const form = document.querySelector('#calcForm');
+const inputs = {
+  ingredients: document.querySelector('#foodCost'),
+  portions: document.querySelector('#portions'),
+  wastage: document.querySelector('#wastage'),
+  markup: document.querySelector('#markup'),
+  platform: document.querySelector('#platform'),
+  overhead: document.querySelector('#overhead'),
+  orders: document.querySelector('#orders')
+};
+
+const ui = {
+  priceResult: document.querySelector('#priceResult'),
+  portionCost: document.querySelector('#portionCost'),
+  marginResult: document.querySelector('#marginResult'),
+  breakevenResult: document.querySelector('#breakevenResult'),
+  heroPrice: document.querySelector('#heroPrice'),
+  heroFood: document.querySelector('#heroFoodCost'),
+  heroMargin: document.querySelector('#heroMargin'),
+  heroBreakEven: document.querySelector('#heroBreakEven')
+};
+
+const navToggle = document.querySelector('#navToggle');
+const siteNav = document.querySelector('#siteNav');
+const faqButtons = document.querySelectorAll('.faq__question');
+const downloadBtn = document.querySelector('#downloadReport');
+const shareBtn = document.querySelector('#shareResult');
+const yearEl = document.querySelector('#currentYear');
+
+function toNumber(input, fallback = 0) {
+  const value = parseFloat(String(input?.value ?? '').replace(/,/g, ''));
+  return Number.isFinite(value) ? value : fallback;
 }
-function renderTabs(){
-  tabsEl.innerHTML=""; (DATA.categories||[]).forEach((cat,idx)=>{
-    const b=document.createElement("button"); b.className="tab"+(idx===0?" active":""); b.textContent=cat.name; b.dataset.cat=cat.id;
-    b.addEventListener("click",()=>{ tabsEl.querySelectorAll(".tab").forEach(x=>x.classList.remove("active")); b.classList.add("active"); renderProducts(cat.id); });
-    tabsEl.appendChild(b);
+
+function formatCurrency(value) {
+  if (!Number.isFinite(value)) return '—';
+  return currency.format(Math.round(value));
+}
+
+function formatPercent(value) {
+  if (!Number.isFinite(value)) return '—';
+  return `${Math.round(value)}%`;
+}
+
+function calculate() {
+  const ingredients = Math.max(0, toNumber(inputs.ingredients));
+  const portions = Math.max(1, toNumber(inputs.portions, 1));
+  const wastageRate = Math.max(0, toNumber(inputs.wastage));
+  const markupRate = Math.max(0, toNumber(inputs.markup));
+  const platformRate = Math.max(0, toNumber(inputs.platform));
+  const overhead = Math.max(0, toNumber(inputs.overhead));
+  const orders = Math.max(1, toNumber(inputs.orders, 1));
+
+  const wastageMultiplier = 1 + (wastageRate / 100);
+  const platformMultiplier = platformRate >= 100 ? 1 : 1 - (platformRate / 100);
+  const markupMultiplier = 1 + (markupRate / 100);
+
+  const ingredientCost = (ingredients / portions) * wastageMultiplier;
+  const overheadPerPortion = overhead / orders;
+
+  const baseCostBeforeCommission = ingredientCost + overheadPerPortion;
+  const costIncludingCommission = platformMultiplier > 0
+    ? baseCostBeforeCommission / platformMultiplier
+    : baseCostBeforeCommission * 2;
+
+  const recommendedPrice = costIncludingCommission * markupMultiplier;
+
+  const platformCost = recommendedPrice * (platformRate / 100);
+  const totalCostPerUnit = ingredientCost + overheadPerPortion + platformCost;
+  const grossMargin = recommendedPrice - totalCostPerUnit;
+  const grossMarginPercent = recommendedPrice > 0
+    ? (grossMargin / recommendedPrice) * 100
+    : 0;
+
+  const breakEven = grossMargin > 0 && overhead > 0
+    ? Math.ceil(overhead / grossMargin)
+    : null;
+
+  ui.priceResult.textContent = formatCurrency(recommendedPrice);
+  ui.portionCost.textContent = formatCurrency(totalCostPerUnit);
+  const marginText = `${formatCurrency(grossMargin)} (${formatPercent(grossMarginPercent)})`;
+  ui.marginResult.textContent = marginText;
+  ui.breakevenResult.textContent = breakEven ? `${breakEven} platos` : '—';
+
+  ui.heroPrice.textContent = formatCurrency(recommendedPrice);
+  const foodPercent = recommendedPrice > 0 ? (ingredientCost / recommendedPrice) : 0;
+  ui.heroFood.textContent = formatPercent(foodPercent * 100);
+  ui.heroMargin.textContent = formatPercent(grossMarginPercent);
+  ui.heroBreakEven.textContent = breakEven ? `${breakEven} platos` : '—';
+
+  return {
+    recommendedPrice,
+    totalCostPerUnit,
+    grossMargin,
+    grossMarginPercent,
+    breakEven
+  };
+}
+
+if (form) {
+  form.addEventListener('submit', (event) => {
+    event.preventDefault();
+    calculate();
   });
-}
-function normText(s){return (s||"").toLowerCase()}
-function renderProducts(catId){
-  productsEl.innerHTML=""; const term=normText(searchInput.value); let items=[];
-  (DATA.categories||[]).forEach(c=>{ if(!catId||c.id===catId){ (c.items||[]).forEach(it=>{ if(!it.options) it.options=JSON.parse(JSON.stringify(DEFAULT_OPTIONS)); items.push({...it,_cat:c}); }); } });
-  if(term){ items=items.filter(i=> normText(i.name).includes(term)); }
-  items.forEach(item=>{
-    const card=document.createElement("article"); card.className="card";
-    card.innerHTML=`
-      <img src="${item.img||'assets/placeholder.jpg'}" alt="${item.name}">
-      <div class="p16">
-        <div style="display:flex;justify-content:space-between;gap:8px;align-items:center">
-          <div>
-            <div style="font-weight:700">${item.name}</div>
-            <div class="price">${CURRENCY}${money(item.price)}</div>
-          </div>
-          <button class="cta add-btn">Agregar</button>
-        </div>
-      </div>`;
-    card.querySelector(".add-btn").addEventListener("click",()=>{ if(item.options) openItemOptions(item); else addToCart({...item,quantity:1,note:""}); });
-    productsEl.appendChild(card);
-  });
-}
-searchInput.addEventListener("input",()=>{ const active=tabsEl.querySelector(".tab.active"); renderProducts(active?.dataset.cat||null); });
-function updateCartBadge(){
-  const totalQty=cart.reduce((a,b)=>a+(b.quantity||1),0);
-  const totalSum=cart.reduce((a,b)=>a+(b.price*(b.quantity||1)),0);
-  cartCountEl.textContent=totalQty; cartTotalEl.textContent=money(totalSum);
-}
-function saveCart(){ localStorage.setItem("ts_cart", JSON.stringify(cart)); }
-function renderCart(){
-  cartItemsEl.innerHTML="";
-  if(cart.length===0){ cartItemsEl.innerHTML=`<p>Tu carrito está vacío.</p>`; }
-  else {
-    cart.forEach((item,idx)=>{
-      const line=document.createElement("div"); line.className="line";
-      line.innerHTML=`
-        <div>
-          <div><strong>${item.name}</strong> x${item.quantity||1} — ${CURRENCY}${money(item.price*(item.quantity||1))}</div>
-          ${item.note?`<div class="note">(${item.note})</div>`:""}
-        </div>
-        <div style="display:flex;gap:6px">
-          <button class="icon-btn" data-act="minus">−</button>
-          <button class="icon-btn" data-act="plus">+</button>
-          <button class="icon-btn" data-act="del">🗑️</button>
-        </div>`;
-      line.querySelector('[data-act="minus"]').addEventListener("click",()=>{ item.quantity=Math.max(1,(item.quantity||1)-1); saveCart(); renderCart(); updateCartBadge(); });
-      line.querySelector('[data-act="plus"]').addEventListener("click",()=>{ item.quantity=(item.quantity||1)+1; saveCart(); renderCart(); updateCartBadge(); });
-      line.querySelector('[data-act="del"]').addEventListener("click",()=>{ cart.splice(idx,1); saveCart(); renderCart(); updateCartBadge(); });
-      cartItemsEl.appendChild(line);
+
+  Object.values(inputs).forEach((input) => {
+    input?.addEventListener('input', () => {
+      const results = calculate();
+      if (results) {
+        ui.priceResult.classList.add('is-updated');
+        setTimeout(() => ui.priceResult.classList.remove('is-updated'), 320);
+      }
     });
-  }
-  const total=cart.reduce((a,b)=>a+(b.price*(b.quantity||1)),0);
-  cartTotalModalEl.textContent=money(total);
+  });
+
+  calculate();
 }
-function addToCart(item){
-  const key=`${item.id}::${item.note||""}`;
-  const found=cart.find(x=> `${x.id}::${x.note||""}`===key);
-  if(found){ found.quantity=(found.quantity||1)+(item.quantity||1); }
-  else { cart.push({id:item.id,name:item.name,price:item.price,note:item.note||"",quantity:item.quantity||1}); }
-  saveCart(); updateCartBadge();
+
+if (navToggle && siteNav) {
+  navToggle.addEventListener('click', () => {
+    const expanded = siteNav.classList.toggle('open');
+    navToggle.setAttribute('aria-expanded', expanded ? 'true' : 'false');
+  });
+
+  siteNav.querySelectorAll('a').forEach((link) => {
+    link.addEventListener('click', () => {
+      siteNav.classList.remove('open');
+      navToggle.setAttribute('aria-expanded', 'false');
+    });
+  });
 }
-function openCartModal(){ renderCart(); cartModal.classList.add("show"); cartModal.setAttribute("aria-hidden","false"); }
-function closeCartModal(){ cartModal.classList.remove("show"); cartModal.setAttribute("aria-hidden","true"); }
-qs("#openCartBtn").addEventListener("click", openCartModal);
-qs("#openCartBtnFooter").addEventListener("click", openCartModal);
-qs("#closeCartBtn").addEventListener("click", closeCartModal);
-cartModal.addEventListener("click",(e)=>{ if(e.target===cartModal) closeCartModal(); });
-qs("#clearCartBtn").addEventListener("click",()=>{ cart=[]; saveCart(); renderCart(); updateCartBadge(); });
-qs("#sendWhatsAppBtn").addEventListener("click",()=>{
-  if(cart.length===0) return;
-  const lines=cart.map(it=>`- ${it.name} x${it.quantity}${it.note?` (${it.note})`:''} = ${CURRENCY}${money(it.price*it.quantity)}`);
-  const total=cart.reduce((a,b)=>a+b.price*b.quantity,0);
-  const info=[`Nombre: ${custNameEl.value||'-'}`,`Entrega: ${deliveryTypeEl.value}`,`Dirección/Mesa: ${custAddressEl.value||'-'}`,`Pago: ${payMethodEl.value}`].join("\n");
-  const text=`*Pedido Taco's Serrano*\n\n${lines.join("\n")}\n\n*Total:* ${CURRENCY}${money(total)}\n\n${info}\n\n${orderNotesEl.value?`Notas: ${orderNotesEl.value}\n`:''}`;
-  const url=`https://wa.me/${encodeURIComponent(window.__WAPP||"50624610007")}?text=${encodeURIComponent(text)}`;
-  window.open(url,"_blank");
+
+faqButtons.forEach((button) => {
+  button.addEventListener('click', () => {
+    const item = button.closest('.faq__item');
+    if (!item) return;
+    item.classList.toggle('active');
+  });
 });
-function openItemOptions(item){
-  _currentItemForOptions=item; optTitle.textContent=item.name; optQtyInput.value=1;
-  const opts={...DEFAULT_OPTIONS, ...(item.options||{})};
-  let html="";
-  html+=`<div class="option-group"><h4>Proteína</h4><select id="optProtein" class="opt-protein-select">${opts.protein.map(p=>`<option value="${p}">${p}</option>`).join('')}</select></div>`;
-  html+=`<div class="option-group"><h4>Preferencias</h4><div class="opt-toppings">${opts.toppings.map(t=>`
-      <label class="opt-chip">
-        <input type="checkbox" class="opt-top" value="${t.id}" ${t.default?'checked':''}>
-        <span>${t.label}</span>
-      </label>`).join('')}</div></div>`;
-  optBody.innerHTML=html;
-  itemOptionsModal.classList.add("show"); itemOptionsModal.setAttribute("aria-hidden","false");
+
+if (downloadBtn) {
+  downloadBtn.addEventListener('click', () => {
+    const { recommendedPrice, totalCostPerUnit, grossMargin, grossMarginPercent, breakEven } = calculate();
+    const lines = [
+      'Resumen de simulación CostoChef',
+      `Precio sugerido: ${formatCurrency(recommendedPrice)}`,
+      `Costo por porción (ingredientes + gastos): ${formatCurrency(totalCostPerUnit)}`,
+      `Margen bruto estimado: ${formatCurrency(grossMargin)} (${formatPercent(grossMarginPercent)})`,
+      `Punto de equilibrio: ${breakEven ? `${breakEven} platos` : 'No aplica'}`,
+      '',
+      'Generado con la calculadora instantánea de CostoChef.'
+    ];
+
+    const blob = new Blob([lines.join('\n')], { type: 'text/plain;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = 'costochef-resumen.txt';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+  });
 }
-function closeItemOptions(){ itemOptionsModal.classList.remove("show"); itemOptionsModal.setAttribute("aria-hidden","true"); _currentItemForOptions=null; }
-qs("#optCloseBtn").addEventListener("click", closeItemOptions);
-itemOptionsModal.addEventListener("click",(e)=>{ if(e.target===itemOptionsModal) closeItemOptions(); });
-qs("#optQtyMinus").addEventListener("click",()=>{ const n=Math.max(1,parseInt(optQtyInput.value||"1",10)-1); optQtyInput.value=n; });
-qs("#optQtyPlus").addEventListener("click",()=>{ const n=Math.max(1,parseInt(optQtyInput.value||"1",10)+1); optQtyInput.value=n; });
-qs("#optAddBtn").addEventListener("click",()=>{
-  if(!_currentItemForOptions) return;
-  const qty=Math.max(1,parseInt(optQtyInput.value||"1",10));
-  const proteinSel=qs("#optProtein"); const protein=proteinSel?proteinSel.value:null;
-  const tops=Array.from(optBody.querySelectorAll(".opt-top"));
-  const disabled=tops.filter(ch=>!ch.checked).map(ch=>ch.nextElementSibling?.textContent?.trim()).filter(Boolean);
-  const parts=[]; if(protein) parts.push(protein);
-  if(disabled.length===1){ parts.push(`sin ${disabled[0].toLowerCase()}`); }
-  else if(disabled.length>1){ const last=disabled.pop(); parts.push(`sin ${disabled.map(s=>s.toLowerCase()).join(', ')} y ${last.toLowerCase()}`); }
-  const note=parts.join(", ");
-  addToCart({..._currentItemForOptions, quantity:qty, note}); closeItemOptions(); openCartModal();
-});
-loadData().catch(err=>{ productsEl.innerHTML=`<div style="padding:16px;color:#b00">No se pudo cargar el menú (data.json). ${err?.message||''}</div>`; });
+
+if (shareBtn) {
+  shareBtn.addEventListener('click', async () => {
+    const { recommendedPrice, grossMarginPercent } = calculate();
+    const message = `Precio sugerido: ${formatCurrency(recommendedPrice)}\nMargen bruto: ${formatPercent(grossMarginPercent)}\nCalculado con CostoChef.`;
+
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: 'Resultados CostoChef',
+          text: message
+        });
+      } catch (err) {
+        if (err?.name !== 'AbortError') {
+          console.error('No se pudo compartir', err);
+        }
+      }
+    } else if (navigator.clipboard) {
+      try {
+        await navigator.clipboard.writeText(message);
+        shareBtn.textContent = 'Copiado ✅';
+        setTimeout(() => (shareBtn.textContent = 'Compartir'), 1800);
+      } catch (err) {
+        console.error('No se pudo copiar', err);
+      }
+    } else {
+      alert(message);
+    }
+  });
+}
+
+if (yearEl) {
+  yearEl.textContent = new Date().getFullYear();
+}
+
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/service-worker.js').catch(console.error);
+  });
+}

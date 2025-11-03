@@ -3,172 +3,388 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Menú | Taco's Serrano</title>
-  <link rel="icon" href="assets/favicon.png">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+  <title>CostoChef | Calculadora inteligente de costos para restaurantes</title>
+  <meta name="description" content="Optimiza recetas, calcula precios rentables y controla tus costos en tiempo real con CostoChef, la plataforma integral para restaurantes latinoamericanos." />
+  <link rel="icon" href="assets/costochef-icon.svg" type="image/svg+xml" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="styles.css" />
-  <style>
-    :root { --primary:#FFD100; --accent:#C8102E; --dark:#1C1C1C; --light:#fff; }
-    body{font-family:Montserrat,system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,'Helvetica Neue','Noto Sans',sans-serif;margin:0;background:#fafafa;color:#222}
-    .header{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;background:#fff;position:sticky;top:0;z-index:20;border-bottom:1px solid #eee}
-    .brand{display:flex;align-items:center;gap:10px}
-    .brand .logo{height:40px;width:auto}
-    .brand h1{font-family:'Bebas Neue',sans-serif;letter-spacing:.5px;margin:0;font-size:28px}
-    .tagline{color:#666}
-    .cart-button,.cta{background:var(--primary);border:none;border-radius:10px;padding:10px 14px;font-weight:700;cursor:pointer}
-    .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:16px;padding:16px}
-    .card{background:#fff;border:1px solid #eee;border-radius:14px;overflow:hidden;display:flex;flex-direction:column}
-    .card img{width:100%;height:150px;object-fit:cover}
-    .card .p16{padding:12px 14px}
-    .price{color:#000;font-weight:700}
-    .tabs{display:flex;gap:8px;flex-wrap:wrap;padding:8px 12px}
-    .tab{border:1px solid #ddd;background:#fff;border-radius:999px;padding:6px 12px;cursor:pointer}
-    .tab.active{background:var(--dark);color:#fff;border-color:var(--dark)}
-    .search{padding:12px}
-    .search input{width:100%;padding:10px 12px;border:1px solid #ddd;border-radius:10px}
-    .footer{position:sticky;bottom:0;background:#fff;border-top:1px solid #eee;padding:12px;display:flex;justify-content:center}
-    .modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:50}
-    .modal.show{display:grid;place-items:center}
-    .modal-card{background:#fff;width:min(640px,92vw);max-height:88vh;overflow:auto;padding:16px;border-radius:16px}
-    .modal-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
-    .icon-btn{background:#f3f3f3;border:none;border-radius:8px;padding:6px 10px;cursor:pointer}
-    .line{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid #f1f1f1}
-    .line .note{font-size:12px;color:#666}
-    .actions{display:flex;gap:8px;justify-content:flex-end;margin-top:8px}
-    .ghost{background:#f6f6f6;border:1px solid #ddd;border-radius:10px;padding:10px 14px;cursor:pointer}
-    .modal-footer{display:flex;gap:12px;align-items:center;justify-content:space-between;margin-top:12px}
-    .qty-row{display:flex;align-items:center;gap:8px}
-    .qty-btn{padding:8px 12px;font-size:18px;border-radius:8px;border:1px solid #ddd;background:#f9f9f9;cursor:pointer}
-    #optQty{width:64px;text-align:center;padding:8px;border:1px solid #ddd;border-radius:8px}
-    .option-group{margin-bottom:12px}
-    .option-group h4{margin:8px 0;font-size:14px;color:#444}
-    .opt-toppings{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
-    .opt-chip{display:flex;align-items:center;gap:8px;padding:8px;border:1px solid #eee;border-radius:8px}
-    .opt-protein-select{width:100%;padding:8px;border:1px solid #ddd;border-radius:8px}
-  </style>
-  <link rel="manifest" href="/manifest.webmanifest">
-  <meta name="theme-color" content="#C8102E">
-  <!-- ===== Estilo Taco’s Serrano: fuentes + color del sistema ===== -->
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
-
+  <link rel="manifest" href="/manifest.webmanifest" />
+  <meta name="theme-color" content="#0B1120" />
+  <meta property="og:title" content="CostoChef | Calculadora de costos para restaurantes" />
+  <meta property="og:description" content="Define el precio correcto de cada plato y controla tus márgenes con reportes en tiempo real." />
+  <meta property="og:image" content="https://costochef.netlify.app/og-image.png" />
 </head>
 <body>
-<header class="header">
-  <div class="brand">
-    <img src="assets/logo.png" alt="Taco's Serrano" class="logo"/>
-    <div>
-      <h1 id="brand-name">Taco's Serrano</h1>
-      <small class="tagline">Menú digital — Pedido por WhatsApp</small>
+  <header class="site-header">
+    <div class="site-header__inner container">
+      <a class="brand" href="#inicio">
+        <img src="assets/costochef-icon.svg" alt="CostoChef" class="brand__mark" />
+        <span class="brand__name">CostoChef</span>
+      </a>
+      <button class="nav-toggle" id="navToggle" aria-label="Abrir menú" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+      <nav class="site-nav" id="siteNav">
+        <a href="#calculadora">Calculadora</a>
+        <a href="#caracteristicas">Características</a>
+        <a href="#clientes">Clientes</a>
+        <a href="#precios">Precios</a>
+        <a href="#faq">FAQ</a>
+        <a class="link-menu" href="menu.html">Ver menú demo</a>
+        <a class="btn btn--ghost" href="#contacto">Solicitar demo</a>
+      </nav>
     </div>
-  </div>
-  <button class="cart-button" id="openCartBtn" aria-label="Abrir carrito">🛒 <span id="cartCount">0</span></button>
-</header>
+  </header>
 
-<main>
-  <section class="search">
-    <input id="searchInput" type="search" placeholder="Buscar: taco, burger, papas..." />
-  </section>
-
-  <nav id="categoryTabs" class="tabs"></nav>
-
-  <section id="products" class="grid"></section>
-</main>
-
-<footer class="footer">
-  <button id="openCartBtnFooter" class="cta">Ver carrito (₡<span id="cartTotal">0</span>)</button>
-</footer>
-
-<div class="modal" id="cartModal" aria-hidden="true">
-  <div class="modal-card">
-    <header class="modal-header">
-      <h2>Tu pedido</h2>
-      <button id="closeCartBtn" class="icon-btn" aria-label="Cerrar">✕</button>
-    </header>
-
-    <div id="cartItems"></div>
-
-    <div class="notes">
-      <label>Notas del pedido</label>
-      <textarea id="orderNotes" placeholder="Ej: sin cebolla, extra salsa..." style="width:100%;min-height:72px;border:1px solid #ddd;border-radius:10px;padding:8px"></textarea>
-    </div>
-
-<!-- Datos del cliente (VISIBLES como antes) -->
-<div class="customer" style="display:grid;gap:8px;margin-top:8px">
-  <label>Nombre del cliente</label>
-  <input id="custName" placeholder="Tu nombre" style="padding:8px;border:1px solid #ddd;border-radius:10px" />
-
-  <label>Tipo de entrega</label>
-  <select id="deliveryType" style="padding:8px;border:1px solid #ddd;border-radius:10px">
-    <option value="Para recoger">Para recoger</option>
-    <option value="A domicilio">A domicilio</option>
-    <option value="Mesa">Mesa</option>
-  </select>
-
-  <label>Dirección / Mesa</label>
-  <input id="custAddress" placeholder="Ej: 100m norte de..." style="padding:8px;border:1px solid #ddd;border-radius:10px" />
-
-  <label>Forma de pago</label>
-  <select id="payMethod" style="padding:8px;border:1px solid #ddd;border-radius:10px">
-    <option value="Efectivo contra entrega">Efectivo contra entrega</option>
-    <option value="SINPE Móvil">SINPE Móvil</option>
-  </select>
-  <small>Si elegís SINPE Móvil, pagá al <strong>8313-7606</strong> a nombre de <strong>Nelson Mora</strong>.</small>
-</div>
-
-
-    <div class="total" style="margin-top:8px">
-      <strong>Total:</strong> <span>₡</span><span id="cartTotalModal">0</span>
-    </div>
-
-    <div class="actions">
-      <button class="ghost" id="clearCartBtn">Vaciar</button>
-      <button class="cta" id="sendWhatsAppBtn">Confirmar y enviar a WhatsApp</button>
-    </div>
-  </div>
-</div>
-
-<div class="modal" id="itemOptionsModal" aria-hidden="true">
-  <div class="modal-card">
-    <header class="modal-header">
-      <h3 id="optTitle">Elige opciones</h3>
-      <button class="icon-btn" id="optCloseBtn" aria-label="Cerrar">✕</button>
-    </header>
-    <div id="optBody"></div>
-    <footer class="modal-footer">
-      <div class="qty-row">
-        <button class="qty-btn" id="optQtyMinus">−</button>
-        <input id="optQty" type="number" min="1" value="1" />
-        <button class="qty-btn" id="optQtyPlus">+</button>
+  <main id="inicio">
+    <section class="hero">
+      <div class="hero__bg"></div>
+      <div class="container hero__layout">
+        <div class="hero__content">
+          <span class="badge">Nuevo 2025</span>
+          <h1>Controlá tus costos y márgenes con precisión de chef ejecutivo</h1>
+          <p>Desde una cocina de food truck hasta un grupo gastronómico: CostoChef centraliza tus recetas, costos, inventario y ventas para que tomés decisiones rentables en minutos.</p>
+          <div class="hero__actions">
+            <a class="btn" href="#calculadora">Probar calculadora</a>
+            <a class="btn btn--ghost" href="#contacto">Agendar consultoría</a>
+          </div>
+          <dl class="hero__stats">
+            <div>
+              <dt>120+</dt>
+              <dd>restaurantes en Centroamérica</dd>
+            </div>
+            <div>
+              <dt>18%</dt>
+              <dd>más margen promedio en 90 días</dd>
+            </div>
+            <div>
+              <dt>&lt;10 min</dt>
+              <dd>para costear un plato completo</dd>
+            </div>
+          </dl>
+        </div>
+        <div class="hero__visual">
+          <img src="assets/costochef-hero.svg" alt="Panel de control CostoChef" />
+          <div class="hero__card" aria-live="polite">
+            <div class="hero__card-header">
+              <span>Resultado estimado</span>
+              <strong id="heroPrice">₡3 750</strong>
+            </div>
+            <p class="hero__card-desc">Precio sugerido según tus ingredientes, mermas y gastos operativos.</p>
+            <ul class="hero__card-list">
+              <li><span>Food cost:</span> <strong id="heroFoodCost">32%</strong></li>
+              <li><span>Margen:</span> <strong id="heroMargin">35%</strong></li>
+              <li><span>Punto de equilibrio:</span> <strong id="heroBreakEven">78 platos</strong></li>
+            </ul>
+          </div>
+        </div>
       </div>
-      <button class="cta" id="optAddBtn">Agregar al carrito</button>
-    </footer>
-  </div>
-</div>
+    </section>
 
-<script src="app.js"></script>
+    <section class="calculator" id="calculadora">
+      <div class="container calculator__layout">
+        <div class="calculator__intro">
+          <h2>Calculadora instantánea</h2>
+          <p>Ingresá tus costos y obtén un precio sugerido al instante. Ajustamos mermas, cargos de plataformas y gastos fijos para darte un margen realista.</p>
+          <ul class="calculator__bullets">
+            <li>Simulá diferentes tamaños de porción y markup.</li>
+            <li>Proyectá ventas mínimas para cubrir gastos.</li>
+            <li>Exportá resultados a Google Sheets.</li>
+          </ul>
+        </div>
+        <form class="calculator__card" id="calcForm">
+          <div class="field">
+            <label for="foodCost">Costo total de ingredientes (₡)</label>
+            <input type="number" id="foodCost" min="0" step="10" value="9500" required />
+          </div>
+          <div class="field">
+            <label for="portions">Porciones por receta</label>
+            <input type="number" id="portions" min="1" step="1" value="12" required />
+          </div>
+          <div class="field">
+            <label for="wastage">Mermas (%)</label>
+            <input type="number" id="wastage" min="0" max="100" step="1" value="8" />
+          </div>
+          <div class="field">
+            <label for="markup">Markup deseado (%)</label>
+            <input type="number" id="markup" min="0" max="500" step="1" value="65" />
+          </div>
+          <div class="field">
+            <label for="platform">Comisión delivery / TPV (%)</label>
+            <input type="number" id="platform" min="0" max="100" step="1" value="12" />
+          </div>
+          <div class="field">
+            <label for="overhead">Gastos fijos mensuales (₡)</label>
+            <input type="number" id="overhead" min="0" step="1000" value="450000" />
+          </div>
+          <div class="field">
+            <label for="orders">Pedidos mensuales estimados</label>
+            <input type="number" id="orders" min="1" step="5" value="780" />
+          </div>
+          <button type="submit" class="btn">Calcular precio ideal</button>
+        </form>
+        <aside class="calculator__results" aria-live="polite">
+          <h3>Resumen</h3>
+          <p class="calculator__price">Precio sugerido: <strong id="priceResult">₡3 750</strong></p>
+          <div class="calculator__grid">
+            <div>
+              <span class="label">Costo por porción</span>
+              <strong id="portionCost">₡2 250</strong>
+            </div>
+            <div>
+              <span class="label">Margen bruto</span>
+              <strong id="marginResult">₡1 500 (40%)</strong>
+            </div>
+            <div>
+              <span class="label">Punto de equilibrio</span>
+              <strong id="breakevenResult">74 platos</strong>
+            </div>
+          </div>
+          <p class="calculator__note">¿Querés llevar estos números a tu equipo? Descargá el reporte en PDF o integralo a tu POS.</p>
+          <div class="calculator__actions">
+            <button type="button" class="btn btn--ghost" id="downloadReport">Descargar resumen</button>
+            <button type="button" class="btn btn--ghost" id="shareResult">Compartir</button>
+          </div>
+        </aside>
+      </div>
+    </section>
 
-<!-- BOTÓN FLOTANTE → FIDELIDAD -->
-<a href="/fidelidad/" 
-   style="position:fixed;right:18px;bottom:18px;background:#C8102E;color:#fff;
-          padding:14px 18px;border-radius:9999px;font-weight:700;
-          font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
-          box-shadow:0 6px 20px rgba(0,0,0,0.25);text-decoration:none;z-index:9999;">
-  🎁 Tarjetas de Fidelidad
-</a>
-<!-- /FIN BOTÓN FLOTANTE -->
+    <section class="section" id="caracteristicas">
+      <div class="container">
+        <div class="section__header">
+          <span class="eyebrow">Suite todo en uno</span>
+          <h2>Información accionable para tu cocina, compras y finanzas</h2>
+          <p>Conectá tus proveedores, inventario, ventas en sala y plataformas delivery para tener visibilidad total del negocio.</p>
+        </div>
+        <div class="features">
+          <article class="feature">
+            <h3>Recetas vivas</h3>
+            <p>Actualizá costos en segundos y visualizá el impacto en tus márgenes. Control de versiones y alertas cuando un ingrediente supera el presupuesto.</p>
+          </article>
+          <article class="feature">
+            <h3>Inventario inteligente</h3>
+            <p>Consumimos inventario automáticamente por receta. Detectamos variaciones y sugerimos compras óptimas por proveedor.</p>
+          </article>
+          <article class="feature">
+            <h3>Reportes ejecutivos</h3>
+            <p>Dashboards diarios con ventas, utilidad y pérdidas por mermas. Exportación a Excel, Google Data Studio o API abierta.</p>
+          </article>
+          <article class="feature">
+            <h3>Alertas operativas</h3>
+            <p>Recibí notificaciones cuando un plato deje de ser rentable, cuando un costo se dispare o si tu punto de equilibrio cambia.</p>
+          </article>
+        </div>
+      </div>
+    </section>
 
+    <section class="section section--dark" id="como-funciona">
+      <div class="container workflow">
+        <div class="section__header section__header--light">
+          <span class="eyebrow">Implementación guiada</span>
+          <h2>Arrancá en tres semanas con acompañamiento experto</h2>
+          <p>Un equipo culinario-financiero te acompaña desde la carga de recetas hasta la estrategia de precios.</p>
+        </div>
+        <ol class="workflow__steps">
+          <li>
+            <h3>1. Auditoría de costos</h3>
+            <p>Cargamos tus recetas actuales, analizamos compras y definimos objetivos de margen por categoría.</p>
+          </li>
+          <li>
+            <h3>2. Configuración del sistema</h3>
+            <p>Integramos tu POS, inventario y delivery. Ajustamos unidades, equivalencias y fichas técnicas.</p>
+          </li>
+          <li>
+            <h3>3. Entrenamiento y seguimiento</h3>
+            <p>Capacitación a tu staff y reuniones mensuales para seguir indicadores y oportunidades.</p>
+          </li>
+        </ol>
+      </div>
+    </section>
 
-<script>
-  if ('serviceWorker' in navigator) {
-    window.addEventListener('load', function () {
-      navigator.serviceWorker.register('/service-worker.js').catch(console.error);
-    });
-  }
-</script>
+    <section class="section" id="clientes">
+      <div class="container testimonials">
+        <div class="section__header">
+          <span class="eyebrow">Historias reales</span>
+          <h2>Restaurantes que recuperaron control y rentabilidad</h2>
+        </div>
+        <div class="testimonials__list">
+          <figure class="testimonial">
+            <blockquote>
+              “Con CostoChef reducimos 22% en compras sin sacrificar calidad. El equipo entiende la operación y hablan nuestro idioma.”
+            </blockquote>
+            <figcaption>
+              <strong>El Taller de la Pizza</strong>
+              <span>San José, Costa Rica</span>
+            </figcaption>
+          </figure>
+          <figure class="testimonial">
+            <blockquote>
+              “Ahora sé qué platos dejar en el menú y cuáles potenciar. Los reportes diarios nos ayudaron a abrir una segunda sucursal.”
+            </blockquote>
+            <figcaption>
+              <strong>Café Botanika</strong>
+              <span>Panamá</span>
+            </figcaption>
+          </figure>
+          <figure class="testimonial">
+            <blockquote>
+              “Integramos Rappi y Uber Eats con el POS y al fin vemos la utilidad real después de comisiones y mermas.”
+            </blockquote>
+            <figcaption>
+              <strong>La Taquería Norteña</strong>
+              <span>Guatemala</span>
+            </figcaption>
+          </figure>
+        </div>
+      </div>
+    </section>
 
+    <section class="section section--gradient" id="precios">
+      <div class="container pricing">
+        <div class="section__header section__header--light">
+          <span class="eyebrow">Planes flexibles</span>
+          <h2>Pagá solo por lo que usás</h2>
+          <p>Incluye soporte premium, actualizaciones mensuales y consultoría culinaria-financiera.</p>
+        </div>
+        <div class="pricing__cards">
+          <article class="price-card">
+            <h3>Starter</h3>
+            <p class="price-card__price">₡89 000 <span>/ mes</span></p>
+            <ul>
+              <li>Hasta 3 sucursales</li>
+              <li>Costeo ilimitado de recetas</li>
+              <li>Integración con 2 plataformas delivery</li>
+              <li>Reportes en tiempo real</li>
+            </ul>
+            <a href="#contacto" class="btn">Solicitar demo</a>
+          </article>
+          <article class="price-card price-card--focus">
+            <h3>Growth</h3>
+            <p class="price-card__price">₡159 000 <span>/ mes</span></p>
+            <ul>
+              <li>Hasta 8 sucursales</li>
+              <li>Inventario avanzado y compras automáticas</li>
+              <li>API y conectores personalizados</li>
+              <li>Analista dedicado</li>
+            </ul>
+            <a href="#contacto" class="btn">Hablar con ventas</a>
+          </article>
+          <article class="price-card">
+            <h3>Enterprise</h3>
+            <p class="price-card__price">Hablemos</p>
+            <ul>
+              <li>+10 sucursales en múltiples países</li>
+              <li>KPIs financieros personalizados</li>
+              <li>SLA 24/7 y soporte en sitio</li>
+              <li>Consultoría mensual de costos</li>
+            </ul>
+            <a href="mailto:hola@costochef.com" class="btn btn--ghost">Agendar reunión</a>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="integraciones">
+      <div class="container integrations">
+        <div class="section__header">
+          <span class="eyebrow">Integraciones nativas</span>
+          <h2>Conecta tus plataformas favoritas</h2>
+          <p>Sincronizá ventas, inventario y contabilidad con las herramientas que ya usás.</p>
+        </div>
+        <div class="integrations__grid">
+          <div class="integration">SoftRestaurant</div>
+          <div class="integration">Square</div>
+          <div class="integration">Revo XEF</div>
+          <div class="integration">Toast</div>
+          <div class="integration">Uber Eats</div>
+          <div class="integration">Rappi</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section section--alt" id="faq">
+      <div class="container faq">
+        <div class="section__header">
+          <span class="eyebrow">Preguntas frecuentes</span>
+          <h2>Todo lo que querías saber antes de implementar</h2>
+        </div>
+        <div class="faq__list">
+          <article class="faq__item">
+            <button class="faq__question" type="button">¿Cuánto tarda la implementación inicial?</button>
+            <div class="faq__answer">
+              <p>Dependiendo de la cantidad de recetas y sucursales, podemos dejarte operando en 2 a 4 semanas. Te asignamos un especialista que carga tus datos y configura integraciones.</p>
+            </div>
+          </article>
+          <article class="faq__item">
+            <button class="faq__question" type="button">¿Necesito cambiar mi POS actual?</button>
+            <div class="faq__answer">
+              <p>No es necesario. Tenemos conectores con los POS más usados en la región y podemos construir integraciones personalizadas mediante nuestra API.</p>
+            </div>
+          </article>
+          <article class="faq__item">
+            <button class="faq__question" type="button">¿Ofrecen soporte en sitio?</button>
+            <div class="faq__answer">
+              <p>Para planes Growth y Enterprise ofrecemos visitas trimestrales y soporte 24/7. Los planes Starter incluyen soporte remoto ilimitado vía chat y correo.</p>
+            </div>
+          </article>
+          <article class="faq__item">
+            <button class="faq__question" type="button">¿Puedo exportar mis datos?</button>
+            <div class="faq__answer">
+              <p>Claro. Podés exportar tus recetas, inventarios y reportes financieros en CSV, Excel o conectarte vía API para enviar la información a tu ERP.</p>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section section--cta" id="contacto">
+      <div class="container cta">
+        <div>
+          <h2>Agenda una sesión gratuita con nuestro equipo culinario-financiero</h2>
+          <p>Descubrí oportunidades de ahorro, definí tus precios estrella y llevá tu rentabilidad al siguiente nivel.</p>
+        </div>
+        <form class="cta__form">
+          <div class="field">
+            <label for="ctaName">Nombre</label>
+            <input type="text" id="ctaName" placeholder="Tu nombre" required />
+          </div>
+          <div class="field">
+            <label for="ctaEmail">Correo empresarial</label>
+            <input type="email" id="ctaEmail" placeholder="tu@restaurante.com" required />
+          </div>
+          <div class="field">
+            <label for="ctaSize">Número de sucursales</label>
+            <select id="ctaSize">
+              <option value="1-2">1-2</option>
+              <option value="3-5">3-5</option>
+              <option value="6-9">6-9</option>
+              <option value="10+">10 o más</option>
+            </select>
+          </div>
+          <button type="submit" class="btn">Quiero mi consultoría</button>
+        </form>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container site-footer__layout">
+      <div>
+        <strong>CostoChef</strong>
+        <p>La plataforma latinoamericana para costeo, inventario y rentabilidad gastronómica.</p>
+      </div>
+      <div class="site-footer__links">
+        <a href="#caracteristicas">Características</a>
+        <a href="#precios">Precios</a>
+        <a href="#faq">FAQ</a>
+        <a href="mailto:hola@costochef.com">hola@costochef.com</a>
+      </div>
+      <p class="site-footer__copy">© <span id="currentYear"></span> CostoChef. Todos los derechos reservados.</p>
+    </div>
+  </footer>
+
+  <script src="app.js" type="module"></script>
 </body>
 </html>
