@@ -1,174 +1,892 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="es">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Menú | Taco's Serrano</title>
-  <link rel="icon" href="assets/favicon.png">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css" />
+  <title>CostoChef v2.1 — Costeador & Pricing (Full)</title>
+  <meta name="description" content="Costea recetas, calcula precios y gestiona licencias con CostoChef v2.1. Control total de ingredientes, recetas y márgenes." />
+  <link rel="icon" href="assets/costochef-icon.svg" type="image/svg+xml" />
+  <link rel="manifest" href="/manifest.webmanifest" />
+  <meta name="theme-color" content="#8B5CF6" />
   <style>
-    :root { --primary:#FFD100; --accent:#C8102E; --dark:#1C1C1C; --light:#fff; }
-    body{font-family:Montserrat,system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,'Helvetica Neue','Noto Sans',sans-serif;margin:0;background:#fafafa;color:#222}
-    .header{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;background:#fff;position:sticky;top:0;z-index:20;border-bottom:1px solid #eee}
-    .brand{display:flex;align-items:center;gap:10px}
-    .brand .logo{height:40px;width:auto}
-    .brand h1{font-family:'Bebas Neue',sans-serif;letter-spacing:.5px;margin:0;font-size:28px}
-    .tagline{color:#666}
-    .cart-button,.cta{background:var(--primary);border:none;border-radius:10px;padding:10px 14px;font-weight:700;cursor:pointer}
-    .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:16px;padding:16px}
-    .card{background:#fff;border:1px solid #eee;border-radius:14px;overflow:hidden;display:flex;flex-direction:column}
-    .card img{width:100%;height:150px;object-fit:cover}
-    .card .p16{padding:12px 14px}
-    .price{color:#000;font-weight:700}
-    .tabs{display:flex;gap:8px;flex-wrap:wrap;padding:8px 12px}
-    .tab{border:1px solid #ddd;background:#fff;border-radius:999px;padding:6px 12px;cursor:pointer}
-    .tab.active{background:var(--dark);color:#fff;border-color:var(--dark)}
-    .search{padding:12px}
-    .search input{width:100%;padding:10px 12px;border:1px solid #ddd;border-radius:10px}
-    .footer{position:sticky;bottom:0;background:#fff;border-top:1px solid #eee;padding:12px;display:flex;justify-content:center}
-    .modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:50}
-    .modal.show{display:grid;place-items:center}
-    .modal-card{background:#fff;width:min(640px,92vw);max-height:88vh;overflow:auto;padding:16px;border-radius:16px}
-    .modal-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
-    .icon-btn{background:#f3f3f3;border:none;border-radius:8px;padding:6px 10px;cursor:pointer}
-    .line{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid #f1f1f1}
-    .line .note{font-size:12px;color:#666}
-    .actions{display:flex;gap:8px;justify-content:flex-end;margin-top:8px}
-    .ghost{background:#f6f6f6;border:1px solid #ddd;border-radius:10px;padding:10px 14px;cursor:pointer}
-    .modal-footer{display:flex;gap:12px;align-items:center;justify-content:space-between;margin-top:12px}
-    .qty-row{display:flex;align-items:center;gap:8px}
-    .qty-btn{padding:8px 12px;font-size:18px;border-radius:8px;border:1px solid #ddd;background:#f9f9f9;cursor:pointer}
-    #optQty{width:64px;text-align:center;padding:8px;border:1px solid #ddd;border-radius:8px}
-    .option-group{margin-bottom:12px}
-    .option-group h4{margin:8px 0;font-size:14px;color:#444}
-    .opt-toppings{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
-    .opt-chip{display:flex;align-items:center;gap:8px;padding:8px;border:1px solid #eee;border-radius:8px}
-    .opt-protein-select{width:100%;padding:8px;border:1px solid #ddd;border-radius:8px}
+    :root{--pri:#8B5CF6;--bg:#f7f7f8;--fg:#1c1c1c;--muted:#6b7280;--ok:#10B981;--warn:#F59E0B;--bad:#EF4444}
+    *{box-sizing:border-box}
+    body{margin:0;background:var(--bg);color:var(--fg);font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial}
+    .wrap{max-width:1100px;margin:0 auto;padding:14px}
+    .bar{display:flex;justify-content:space-between;align-items:center;gap:8px;background:#fff;border-bottom:1px solid #eee;padding:10px 14px;position:sticky;top:0;z-index:10}
+    .btn{padding:8px 12px;border-radius:10px;border:1px solid #e5e7eb;background:#fff;cursor:pointer;font-size:14px}
+    .btn.pri{background:var(--pri);color:#fff;border:0}
+    .tabs{display:flex;gap:8px;margin:12px 0;flex-wrap:wrap}
+    .tab{padding:8px 12px;border-radius:12px;border:1px solid #e5e7eb;background:#fff;cursor:pointer}
+    .tab.active{background:var(--pri);color:#fff;border-color:var(--pri)}
+    .card{background:#fff;border:1px solid #e5e7eb;border-radius:14px;padding:14px}
+    table{width:100%;border-collapse:collapse}
+    th,td{border-top:1px solid #eee;padding:8px;text-align:left;font-size:13px;vertical-align:top}
+    th{background:#fafafa}
+    .muted{color:#6b7280;font-size:12px}
+    .cm{display:inline-block;font-size:12px;margin-top:4px}
+    .cm.ok{color:var(--ok)} .cm.warn{color:var(--warn)} .cm.bad{color:var(--bad)}
+    input[type="number"], input[type="text"], input[type="color"], select{width:110px;padding:6px 8px;border-radius:8px;border:1px solid #d1d5db;font-size:13px}
+    input[type="text"], input[type="color"], select{width:100%}
+    .badge{display:inline-block;background:#EEF2FF;color:#3730A3;border:1px solid #C7D2FE;padding:2px 8px;border-radius:999px;font-size:12px}
+    .watermark{position:fixed;right:10px;bottom:10px;background:#fff8;border:1px dashed #aaa;padding:6px 10px;border-radius:10px;font-size:12px;backdrop-filter:blur(2px)}
+    .pill{display:inline-block;border:1px solid #e5e7eb;border-radius:999px;padding:2px 8px;font-size:12px;margin-left:6px}
+    .row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+    .row input[type="checkbox"]{width:auto;margin-right:4px}
+    .row label{display:flex;align-items:center;gap:4px}
+    .modal{position:fixed;inset:0;background:rgba(0,0,0,.45);display:none;align-items:center;justify-content:center;padding:16px}
+    .modal .box{max-width:520px;width:100%;background:#fff;border-radius:16px;border:1px solid #e5e7eb;padding:16px}
+    .modal .box h3{margin:0 0 8px 0}
+    .modal .box .grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+    .hint{font-size:12px;color:#6b7280}
+    textarea{width:100%;padding:8px;border-radius:10px;border:1px solid #d1d5db;font-family:inherit;font-size:13px}
+    @media (max-width:720px){
+      .bar{flex-direction:column;align-items:flex-start}
+      .card{padding:12px}
+      th,td{font-size:12px}
+      .modal .box .grid{grid-template-columns:1fr}
+    }
   </style>
-  <link rel="manifest" href="/manifest.webmanifest">
-  <meta name="theme-color" content="#C8102E">
-  <!-- ===== Estilo Taco’s Serrano: fuentes + color del sistema ===== -->
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
-
 </head>
 <body>
-<header class="header">
-  <div class="brand">
-    <img src="assets/logo.png" alt="Taco's Serrano" class="logo"/>
-    <div>
-      <h1 id="brand-name">Taco's Serrano</h1>
-      <small class="tagline">Menú digital — Pedido por WhatsApp</small>
-    </div>
-  </div>
-  <button class="cart-button" id="openCartBtn" aria-label="Abrir carrito">🛒 <span id="cartCount">0</span></button>
-</header>
-
-<main>
-  <section class="search">
-    <input id="searchInput" type="search" placeholder="Buscar: taco, burger, papas..." />
-  </section>
-
-  <nav id="categoryTabs" class="tabs"></nav>
-
-  <section id="products" class="grid"></section>
-</main>
-
-<footer class="footer">
-  <button id="openCartBtnFooter" class="cta">Ver carrito (₡<span id="cartTotal">0</span>)</button>
-</footer>
-
-<div class="modal" id="cartModal" aria-hidden="true">
-  <div class="modal-card">
-    <header class="modal-header">
-      <h2>Tu pedido</h2>
-      <button id="closeCartBtn" class="icon-btn" aria-label="Cerrar">✕</button>
-    </header>
-
-    <div id="cartItems"></div>
-
-    <div class="notes">
-      <label>Notas del pedido</label>
-      <textarea id="orderNotes" placeholder="Ej: sin cebolla, extra salsa..." style="width:100%;min-height:72px;border:1px solid #ddd;border-radius:10px;padding:8px"></textarea>
-    </div>
-
-<!-- Datos del cliente (VISIBLES como antes) -->
-<div class="customer" style="display:grid;gap:8px;margin-top:8px">
-  <label>Nombre del cliente</label>
-  <input id="custName" placeholder="Tu nombre" style="padding:8px;border:1px solid #ddd;border-radius:10px" />
-
-  <label>Tipo de entrega</label>
-  <select id="deliveryType" style="padding:8px;border:1px solid #ddd;border-radius:10px">
-    <option value="Para recoger">Para recoger</option>
-    <option value="A domicilio">A domicilio</option>
-    <option value="Mesa">Mesa</option>
-  </select>
-
-  <label>Dirección / Mesa</label>
-  <input id="custAddress" placeholder="Ej: 100m norte de..." style="padding:8px;border:1px solid #ddd;border-radius:10px" />
-
-  <label>Forma de pago</label>
-  <select id="payMethod" style="padding:8px;border:1px solid #ddd;border-radius:10px">
-    <option value="Efectivo contra entrega">Efectivo contra entrega</option>
-    <option value="SINPE Móvil">SINPE Móvil</option>
-  </select>
-  <small>Si elegís SINPE Móvil, pagá al <strong>8313-7606</strong> a nombre de <strong>Nelson Mora</strong>.</small>
-</div>
-
-
-    <div class="total" style="margin-top:8px">
-      <strong>Total:</strong> <span>₡</span><span id="cartTotalModal">0</span>
-    </div>
-
-    <div class="actions">
-      <button class="ghost" id="clearCartBtn">Vaciar</button>
-      <button class="cta" id="sendWhatsAppBtn">Confirmar y enviar a WhatsApp</button>
-    </div>
-  </div>
-</div>
-
-<div class="modal" id="itemOptionsModal" aria-hidden="true">
-  <div class="modal-card">
-    <header class="modal-header">
-      <h3 id="optTitle">Elige opciones</h3>
-      <button class="icon-btn" id="optCloseBtn" aria-label="Cerrar">✕</button>
-    </header>
-    <div id="optBody"></div>
-    <footer class="modal-footer">
-      <div class="qty-row">
-        <button class="qty-btn" id="optQtyMinus">−</button>
-        <input id="optQty" type="number" min="1" value="1" />
-        <button class="qty-btn" id="optQtyPlus">+</button>
+  <div class="bar">
+    <div style="display:flex;gap:8px;align-items:center">
+      <div style="width:28px;height:28px;border-radius:8px;background:var(--pri)"></div>
+      <div>
+        <div class="muted">CostoChef v2.1 <span id="demoBadge" class="badge" style="display:none">DEMO</span></div>
+        <div id="brandName" style="font-weight:600">Cliente</div>
       </div>
-      <button class="cta" id="optAddBtn">Agregar al carrito</button>
-    </footer>
+    </div>
+    <div class="row">
+      <button class="btn" id="btnLicense">Activar licencia</button>
+      <button class="btn" id="btnExportJSON">Exportar JSON</button>
+      <label class="btn" style="cursor:pointer">Importar JSON<input type="file" id="fileJSON" accept="application/json" style="display:none"></label>
+      <button class="btn" id="btnReset">Restablecer</button>
+    </div>
   </div>
-</div>
 
-<script src="app.js"></script>
+  <div class="wrap">
+    <div class="tabs">
+      <button class="tab active" data-tab="precios">Precios</button>
+      <button class="tab" data-tab="ingredientes">Insumos</button>
+      <button class="tab" data-tab="recetas">Recetas</button>
+      <button class="tab" data-tab="canales">Canales & Márgenes</button>
+      <button class="tab" data-tab="ajustes">Ajustes</button>
+    </div>
 
-<!-- BOTÓN FLOTANTE → FIDELIDAD -->
-<a href="/fidelidad/" 
-   style="position:fixed;right:18px;bottom:18px;background:#C8102E;color:#fff;
-          padding:14px 18px;border-radius:9999px;font-weight:700;
-          font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
-          box-shadow:0 6px 20px rgba(0,0,0,0.25);text-decoration:none;z-index:9999;">
-  🎁 Tarjetas de Fidelidad
-</a>
-<!-- /FIN BOTÓN FLOTANTE -->
+    <section class="card" id="tab-precios">
+      <div class="row" style="justify-content:space-between">
+        <div style="font-weight:600">Precios sugeridos <span id="capNote" class="pill" style="display:none"></span></div>
+        <div class="row">
+          <label class="muted"><input type="checkbox" id="chkIVA"> Incluir impuesto (<span id="ivaPctLabel">0</span>%)</label>
+          <label class="muted"><input type="checkbox" id="chkShowCompare"> Comparar con precio actual</label>
+          <button class="btn" id="btnCSV">Exportar CSV</button>
+          <button class="btn" id="btnPDF">Imprimir / PDF Pro</button>
+        </div>
+      </div>
+      <div id="pricesTable" style="margin-top:8px"></div>
+      <p class="muted"><span>Fórmula: precio = costo / (1 − margen)</span>. <span id="ivaNote"></span></p>
+    </section>
 
+    <section class="card" id="tab-ingredientes" style="display:none">
+      <div class="row" style="justify-content:space-between">
+        <div style="font-weight:600">Insumos</div>
+        <button class="btn pri" id="btnAddIng">+ Agregar insumo</button>
+      </div>
+      <div id="ingTable" style="margin-top:8px"></div>
+    </section>
 
-<script>
+    <section class="card" id="tab-recetas" style="display:none">
+      <div class="row" style="justify-content:space-between">
+        <div style="font-weight:600">Recetas</div>
+        <button class="btn pri" id="btnAddRec">+ Nueva receta</button>
+      </div>
+      <div id="recList" style="margin-top:8px"></div>
+    </section>
+
+    <section class="card" id="tab-canales" style="display:none">
+      <div class="row" style="justify-content:space-between">
+        <div style="font-weight:600">Canales & márgenes</div>
+        <button class="btn pri" id="btnAddCh">+ Canal</button>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:8px">
+        <div>
+          <div class="muted">Moneda</div>
+          <input id="inpCurrency" list="currencies" placeholder="CRC / USD / EUR">
+          <datalist id="currencies">
+            <option>CRC</option><option>USD</option><option>EUR</option><option>MXN</option><option>COP</option><option>ARS</option><option>PEN</option><option>CLP</option><option>GTQ</option><option>HNL</option><option>NIO</option><option>DOP</option><option>PAB</option><option>BOB</option><option>BRL</option><option>UYU</option><option>VES</option><option>CAD</option><option>GBP</option><option>JPY</option><option>CHF</option><option>AUD</option><option>NZD</option>
+          </datalist>
+          <div class="muted">Cambia formato. No convierte montos.</div>
+        </div>
+        <div><div class="muted">Impuesto % (IVA)</div><input id="inpTax" type="number" min="0"></div>
+      </div>
+      <div id="chTable" style="margin-top:10px"></div>
+    </section>
+
+    <section class="card" id="tab-ajustes" style="display:none">
+      <div style="font-weight:600">Ajustes</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-top:8px">
+        <div><div class="muted">Nombre comercial (marca)</div><input id="inpBrand"></div>
+        <div><div class="muted">Color primario</div><input id="inpColor" type="color"></div>
+        <div><div class="muted">Nombre del cliente</div><input id="inpClient"></div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:8px">
+        <div><div class="muted">Logo (URL)</div><input id="inpLogoUrl" placeholder="https://...png"></div>
+        <div><div class="muted">Idioma</div><select id="inpLang"><option value="es">Español</option><option value="en">English</option></select></div>
+      </div>
+    </section>
+  </div>
+
+  <div id="wm" class="watermark" style="display:none">DEMO — activa tu licencia</div>
+
+  <div class="modal" id="licenseModal" role="dialog" aria-modal="true" aria-labelledby="licenseTitle">
+    <div class="box">
+      <h3 id="licenseTitle">Activar licencia</h3>
+      <div class="grid">
+        <div><div class="muted">Nombre del cliente</div><input id="licName" placeholder="Ej. Taquería El Centro"></div>
+        <div><div class="muted">Correo del cliente</div><input id="licEmail" placeholder="ejemplo@correo.com"></div>
+      </div>
+      <div style="margin-top:8px"><div class="muted">Código de licencia</div><input id="licCode" placeholder="CC-XXXXX-XXXXX" style="width:100%"></div>
+      <div class="row" style="margin-top:12px;justify-content:space-between">
+        <div class="hint" id="licHint">Si necesitas generar un código, abre esta misma URL con <b>?admin=1</b>.</div>
+        <div class="row">
+          <button class="btn" id="btnLicCancel">Cancelar</button>
+          <button class="btn pri" id="btnLicActivate">Activar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+  (function(){
+    const LS = 'costochef.v21.full';
+    const DEMO_LIMITS = { ingredients: 15, recipes: 8 };
+    const SECRET = 'PYX-CC-2025-SELL';
+
+    const url = new URL(window.location.href);
+    const ADMIN = url.searchParams.get('admin') === '1';
+
+    let state = load() || {
+      name: 'Cliente',
+      brand: { name: 'CostoChef', primary: '#8B5CF6' },
+      currency: 'CRC',
+      lang: 'es',
+      taxPct: 0,
+      logoUrl: '',
+      channels: [
+        { id: uid('ch'), name: 'Mostrador', marginPct: 50 },
+        { id: uid('ch'), name: 'Delivery', marginPct: 60 }
+      ],
+      ingredients: [],
+      recipes: [],
+      salePrice: {},
+      license: { activated: false, name: '', email: '', code: '' }
+    };
+    save();
+
+    function save(){
+      try {
+        localStorage.setItem(LS, JSON.stringify(state));
+      } catch (e) {
+        console.warn('No se pudo guardar el estado', e);
+      }
+    }
+    function load(){
+      try {
+        const stored = localStorage.getItem(LS);
+        return stored ? JSON.parse(stored) : null;
+      } catch (e) {
+        console.warn('No se pudo leer el estado', e);
+        return null;
+      }
+    }
+
+    function uid(prefix){
+      return (prefix || 'id') + '_' + Math.random().toString(36).slice(2, 8);
+    }
+    function money(n){
+      if (!Number.isFinite(n)) return '—';
+      try {
+        const locale = state.lang === 'en' ? 'en-US' : 'es-CR';
+        return new Intl.NumberFormat(locale, { style: 'currency', currency: state.currency || 'CRC' }).format(n);
+      } catch (e) {
+        return (n.toFixed ? n.toFixed(2) : String(n)) + ' ' + (state.currency || 'CRC');
+      }
+    }
+
+    const MASS = ['kg', 'g'];
+    const VOL = ['l', 'ml'];
+    const COUNT = ['unidad', 'porción'];
+    function unitKind(u){
+      if (MASS.includes(u)) return 'mass';
+      if (VOL.includes(u)) return 'volume';
+      if (COUNT.includes(u)) return 'count';
+      return 'other';
+    }
+    function convert(q, fromU, toU){
+      if (fromU === toU) return q;
+      const fromKind = unitKind(fromU);
+      const toKind = unitKind(toU);
+      if (fromKind !== toKind) return NaN;
+      if (fromKind === 'mass') {
+        if (fromU === 'g' && toU === 'kg') return q / 1000;
+        if (fromU === 'kg' && toU === 'g') return q * 1000;
+      }
+      if (fromKind === 'volume') {
+        if (fromU === 'ml' && toU === 'l') return q / 1000;
+        if (fromU === 'l' && toU === 'ml') return q * 1000;
+      }
+      if (fromKind === 'count') {
+        return q;
+      }
+      return NaN;
+    }
+
+    function computeItemCost(item, recipe){
+      if (!item) return { perBatch: NaN, perPortion: NaN };
+      const ingredient = (state.ingredients || []).find((ing) => ing.id === item.ingredientId);
+      if (!ingredient) return { perBatch: NaN, perPortion: NaN };
+      const yieldFactor = ((item.yieldPct != null ? item.yieldPct : 100) / 100) || 1;
+      const rawQty = (item.qty || 0) / yieldFactor;
+      const qtyBuy = convert(rawQty, item.unit, ingredient.purchaseUnit);
+      if (!Number.isFinite(qtyBuy)) return { perBatch: NaN, perPortion: NaN };
+      const perBatch = qtyBuy * (ingredient.costPerPurchaseUnit || 0);
+      const portions = (recipe && Number.isFinite(recipe.portionsPerBatch) && recipe.portionsPerBatch > 0)
+        ? recipe.portionsPerBatch
+        : 1;
+      const perPortion = Number.isFinite(perBatch) ? perBatch / portions : NaN;
+      return { perBatch, perPortion };
+    }
+
+    function computeRecipeCost(recipe){
+      let total = 0;
+      (recipe.items || []).forEach((item) => {
+        const cost = computeItemCost(item, recipe).perPortion;
+        if (Number.isFinite(cost)) total += cost;
+      });
+      return { cost: total };
+    }
+
+    function priceFromMargin(cost, marginPct, includeTax){
+      if (!Number.isFinite(cost) || cost <= 0) return NaN;
+      const margin = (marginPct || 0) / 100;
+      if (margin >= 1) return NaN;
+      let price = cost / (1 - margin);
+      if (includeTax) price *= 1 + (state.taxPct || 0) / 100;
+      return price;
+    }
+
+    function marginFromPrice(cost, price, includeTax){
+      if (!Number.isFinite(cost) || !Number.isFinite(price) || price <= 0) return NaN;
+      const netPrice = includeTax ? price / (1 + (state.taxPct || 0) / 100) : price;
+      return (1 - (cost / netPrice)) * 100;
+    }
+
+    function esc(str){
+      const s = String(str);
+      return s.replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('>', '&gt;');
+    }
+    function escAttr(str){
+      return String(str).replaceAll('"', '&quot;');
+    }
+
+    function syncHeader(){
+      document.getElementById('brandName').textContent = state.name || 'Cliente';
+      const color = (state.brand && state.brand.primary) || '#8B5CF6';
+      document.documentElement.style.setProperty('--pri', color);
+      document.getElementById('demoBadge').style.display = state.license.activated ? 'none' : 'inline-block';
+      document.getElementById('wm').style.display = state.license.activated ? 'none' : 'block';
+      const cap = document.getElementById('capNote');
+      cap.style.display = state.license.activated ? 'none' : 'inline-block';
+      if (!state.license.activated) {
+        cap.textContent = `Demo: ${DEMO_LIMITS.recipes} recetas / ${DEMO_LIMITS.ingredients} insumos`;
+      }
+    }
+    syncHeader();
+
+    const tabs = document.querySelectorAll('.tab');
+    const tabIds = ['precios', 'ingredientes', 'recetas', 'canales', 'ajustes'];
+    tabs.forEach((tab) => {
+      tab.addEventListener('click', () => {
+        tabs.forEach((t) => t.classList.remove('active'));
+        tab.classList.add('active');
+        tabIds.forEach((id) => {
+          const section = document.getElementById(`tab-${id}`);
+          if (section) section.style.display = tab.dataset.tab === id ? 'block' : 'none';
+        });
+        if (tab.dataset.tab === 'precios') renderPrices();
+        if (tab.dataset.tab === 'ingredientes') renderIngs();
+        if (tab.dataset.tab === 'recetas') renderRecs();
+        if (tab.dataset.tab === 'canales') renderCh();
+        if (tab.dataset.tab === 'ajustes') renderAjustes();
+      });
+    });
+
+    document.getElementById('btnExportJSON').onclick = () => {
+      const blob = new Blob([JSON.stringify(state, null, 2)], { type: 'application/json' });
+      const link = document.createElement('a');
+      link.href = URL.createObjectURL(blob);
+      link.download = 'costochef_datos.json';
+      link.click();
+      setTimeout(() => URL.revokeObjectURL(link.href), 500);
+    };
+
+    document.getElementById('fileJSON').onchange = (event) => {
+      const file = event.target.files?.[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = () => {
+        try {
+          const data = JSON.parse(reader.result || '{}');
+          if (!data) return;
+          state = data;
+          save();
+          window.location.reload();
+        } catch (err) {
+          alert('JSON inválido');
+        }
+      };
+      reader.readAsText(file);
+    };
+
+    document.getElementById('btnReset').onclick = () => {
+      if (confirm('Esto borra los datos locales.')) {
+        localStorage.removeItem(LS);
+        window.location.reload();
+      }
+    };
+
+    document.getElementById('btnLicense').onclick = openLicense;
+    function openLicense(){
+      const modal = document.getElementById('licenseModal');
+      modal.style.display = 'flex';
+      document.getElementById('licName').value = state.license.name || state.name || '';
+      document.getElementById('licEmail').value = state.license.email || '';
+      document.getElementById('licCode').value = state.license.code || '';
+    }
+    document.getElementById('btnLicCancel').onclick = () => {
+      document.getElementById('licenseModal').style.display = 'none';
+    };
+
+    document.getElementById('btnLicActivate').onclick = async () => {
+      const name = (document.getElementById('licName').value || '').trim();
+      const email = (document.getElementById('licEmail').value || '').trim().toLowerCase();
+      const code = (document.getElementById('licCode').value || '').trim().toUpperCase();
+      const expected = await genCode(name, email);
+      if (code === expected) {
+        state.license = { activated: true, name, email, code };
+        if (state.name === 'Cliente' && name) state.name = name;
+        save();
+        syncHeader();
+        renderPrices();
+        document.getElementById('licenseModal').style.display = 'none';
+        alert('¡Licencia activada!');
+      } else {
+        alert('Código inválido. Verifica nombre/correo y el código.');
+      }
+    };
+
+    if (ADMIN) {
+      const hint = document.getElementById('licHint');
+      hint.innerHTML = 'Modo admin activo. Ingresa nombre+correo y deja el código vacío, luego presiona Activar para ver el código esperado.';
+      document.getElementById('btnLicActivate').onclick = async () => {
+        const name = (document.getElementById('licName').value || '').trim();
+        const email = (document.getElementById('licEmail').value || '').trim().toLowerCase();
+        const expected = await genCode(name, email);
+        document.getElementById('licCode').value = expected;
+        if (navigator.clipboard) {
+          try { await navigator.clipboard.writeText(expected); } catch (e) {}
+        }
+        alert('Código generado y copiado: ' + expected);
+      };
+    }
+
+    async function genCode(name, email){
+      const data = `${name}|${email}|${SECRET}`;
+      const enc = new TextEncoder().encode(data);
+      const hash = await crypto.subtle.digest('SHA-256', enc);
+      const bytes = Array.from(new Uint8Array(hash).slice(0, 10));
+      const alphabet = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+      let buffer = 0;
+      let bits = 0;
+      let out = '';
+      for (const byte of bytes) {
+        buffer = (buffer << 8) | byte;
+        bits += 8;
+        while (bits >= 5) {
+          bits -= 5;
+          const index = (buffer >> bits) & 31;
+          out += alphabet[index];
+          if (out.length === 5) out += '-';
+        }
+      }
+      out = out.replace(/-$/, '');
+      const parts = out.replace(/-/g, '').slice(0, 10);
+      return `CC-${parts.slice(0, 5)}-${parts.slice(5, 10)}`;
+    }
+
+    document.getElementById('btnCSV').onclick = () => {
+      if (!state.license.activated) {
+        alert('Demo: exportar CSV está bloqueado. Activa tu licencia.');
+        return;
+      }
+      const includeTax = document.getElementById('chkIVA').checked;
+      const rows = buildPriceRows(includeTax);
+      const showCmp = document.getElementById('chkShowCompare').checked;
+      let headers = ['Receta', 'Costo_porcion'];
+      if (showCmp) {
+        headers.push('Precio_actual', 'Margen_actual_%');
+      }
+      headers = headers.concat((state.channels || []).map((c) => `${c.name}_${c.marginPct}${includeTax ? '_conIVA' : ''}`));
+      const lines = [headers.join(',')];
+      rows.forEach((row) => {
+        const quotedName = '"' + String(row.name).split('"').join('""') + '"';
+        const cells = [quotedName, Number.isFinite(row.cost) ? row.cost.toFixed(2) : ''];
+        if (showCmp) {
+          const sp = state.salePrice && state.salePrice[row.id];
+          const margin = (sp !== '' && sp != null && Number.isFinite(parseFloat(sp)))
+            ? marginFromPrice(row.cost, parseFloat(sp), includeTax)
+            : NaN;
+          cells.push((sp === '' || sp == null) ? '' : String(sp));
+          cells.push(Number.isFinite(margin) ? margin.toFixed(2) : '');
+        }
+        (state.channels || []).forEach((channel) => {
+          const p = priceFromMargin(row.cost, channel.marginPct, includeTax);
+          cells.push(Number.isFinite(p) ? p.toFixed(2) : '');
+        });
+        lines.push(cells.join(','));
+      });
+      const blob = new Blob([lines.join('\n')], { type: 'text/csv;charset=utf-8;' });
+      const link = document.createElement('a');
+      link.href = URL.createObjectURL(blob);
+      link.download = `${(state.name || 'cliente').split(/\s+/).join('_')}_precios.csv`;
+      link.click();
+      setTimeout(() => URL.revokeObjectURL(link.href), 500);
+    };
+
+    document.getElementById('btnPDF').onclick = () => {
+      if (!state.license.activated) {
+        alert('Demo: PDF Pro está bloqueado. Activa tu licencia.');
+        return;
+      }
+      openReportWindow();
+    };
+
+    function openReportWindow(){
+      const includeTax = document.getElementById('chkIVA').checked;
+      const showCmp = document.getElementById('chkShowCompare').checked;
+      const rows = buildPriceRows(includeTax);
+      const channels = state.channels || [];
+      const now = new Date().toLocaleString(state.lang === 'en' ? 'en-US' : 'es-CR');
+
+      const popup = window.open('', '_blank');
+      if (!popup) {
+        alert('Bloqueado por el navegador. Permite ventanas emergentes.');
+        return;
+      }
+      const logo = state.logoUrl ? `<img src="${state.logoUrl}" alt="Logo" style="height:64px;object-fit:contain">` : '';
+      let thead = '<th>Receta</th><th>Costo/porción</th>';
+      if (showCmp) {
+        thead += '<th>Precio actual</th><th>Margen actual</th>';
+      }
+      channels.forEach((ch) => {
+        thead += `<th>${esc(ch.name)} (${ch.marginPct}%)</th>`;
+      });
+
+      let tbody = '';
+      rows.forEach((row) => {
+        let tr = `<td>${esc(row.name)}</td><td>${money(row.cost)}</td>`;
+        if (showCmp) {
+          const sp = state.salePrice && state.salePrice[row.id];
+          const margin = (sp !== '' && sp != null && Number.isFinite(parseFloat(sp)))
+            ? marginFromPrice(row.cost, parseFloat(sp), includeTax)
+            : NaN;
+          tr += `<td>${(sp === '' || sp == null) ? '—' : money(parseFloat(sp))}</td>`;
+          tr += `<td>${Number.isFinite(margin) ? margin.toFixed(1) + '%' : '—'}</td>`;
+        }
+        channels.forEach((ch) => {
+          const suggested = priceFromMargin(row.cost, ch.marginPct, includeTax);
+          tr += `<td>${Number.isFinite(suggested) ? money(suggested) : '—'}</td>`;
+        });
+        tbody += `<tr>${tr}</tr>`;
+      });
+
+      const html = `<!doctype html><html><head><meta charset="utf-8"><title>Reporte de Precios — ${esc(state.name || '')}</title>` +
+      `<style>body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial;color:#111;margin:24px}` +
+      `h1{margin:0 0 4px 0}.muted{color:#6b7280}table{width:100%;border-collapse:collapse;margin-top:12px}` +
+      `th,td{border:1px solid #e5e7eb;padding:6px 8px;text-align:left;font-size:12px}th{background:#f9fafb}` +
+      `.header{display:flex;justify-content:space-between;align-items:center}` +
+      `.brand{display:flex;gap:10px;align-items:center}</style></head><body>` +
+      `<div class="header"><div class="brand">${logo}<div><h1>${esc(state.brand?.name || 'CostoChef')}</h1>` +
+      `<div class="muted">${esc(state.name || 'Cliente')}</div></div></div><div class="muted">${now}</div></div>` +
+      `<h3>Reporte de precios ${includeTax ? '(con IVA)' : '(sin IVA)'}</h3>` +
+      `<table><thead><tr>${thead}</tr></thead><tbody>${tbody}</tbody></table>` +
+      `<p class="muted">Generado con CostoChef v2.1 — Plato y Pixel</p>` +
+      `<script>setTimeout(()=>window.print(),300);<\/script></body></html>`;
+
+      popup.document.open();
+      popup.document.write(html);
+      popup.document.close();
+    }
+
+    function buildPriceRows(){
+      return (state.recipes || []).map((r) => ({ id: r.id, name: r.name, cost: computeRecipeCost(r).cost }));
+    }
+
+    document.getElementById('chkShowCompare').onchange = renderPrices;
+    document.getElementById('chkIVA').onchange = renderPrices;
+
+    function bestTargetMargin(){
+      const arr = (state.channels || []).map((c) => parseFloat(c.marginPct || 0) || 0);
+      if (!arr.length) return 0;
+      arr.sort((a, b) => b - a);
+      return arr[0];
+    }
+
+    function renderPrices(){
+      const includeTax = document.getElementById('chkIVA').checked;
+      document.getElementById('ivaPctLabel').textContent = state.taxPct || 0;
+      document.getElementById('ivaNote').textContent = includeTax ? 'Incluye impuesto.' : 'Impuesto no incluido.';
+      const rows = buildPriceRows(includeTax);
+      const showCmp = document.getElementById('chkShowCompare').checked;
+      let heads = ['Receta', 'Costo/porción'];
+      if (showCmp) {
+        heads.push('Precio actual', 'Margen actual');
+      }
+      heads = heads.concat((state.channels || []).map((c) => `${c.name} (${c.marginPct}%)`));
+      let html = '<table><thead><tr>' + heads.map((h) => `<th>${h}</th>`).join('') + '</tr></thead><tbody>';
+      rows.forEach((row) => {
+        html += `<tr><td>${esc(row.name)}</td><td>${money(row.cost)}</td>`;
+        if (showCmp) {
+          const sp = state.salePrice && state.salePrice[row.id];
+          const spValue = (sp === '' || sp == null) ? '' : sp;
+          html += `<td><input type="number" step="0.01" data-sale="p" data-rec="${row.id}" value="${spValue}"></td>`;
+          const current = (sp !== '' && sp != null && Number.isFinite(parseFloat(sp)))
+            ? marginFromPrice(row.cost, parseFloat(sp), includeTax)
+            : NaN;
+          const target = bestTargetMargin();
+          let cls = 'cm ';
+          if (Number.isFinite(current)) {
+            if (current >= target) cls += 'ok';
+            else if (current >= target - 5) cls += 'warn';
+            else cls += 'bad';
+            html += `<td><span class="${cls}">${current.toFixed(1)}%</span></td>`;
+          } else {
+            html += '<td><span class="muted">—</span></td>';
+          }
+        }
+        (state.channels || []).forEach((channel) => {
+          const suggested = priceFromMargin(row.cost, channel.marginPct, includeTax);
+          html += `<td>${Number.isFinite(suggested) ? money(suggested) : '<span class="muted">—</span>'}</td>`;
+        });
+        html += '</tr>';
+      });
+      html += '</tbody></table>';
+      document.getElementById('pricesTable').innerHTML = html;
+      document.querySelectorAll('input[data-sale="p"]').forEach((input) => {
+        input.addEventListener('input', (event) => {
+          const rec = event.target.getAttribute('data-rec');
+          const value = event.target.value === '' ? '' : parseFloat(event.target.value || '0');
+          state.salePrice = state.salePrice || {};
+          state.salePrice[rec] = value;
+          save();
+          renderPrices();
+        });
+      });
+    }
+
+    document.getElementById('btnAddIng').onclick = () => {
+      if (!state.license.activated && (state.ingredients?.length || 0) >= DEMO_LIMITS.ingredients) {
+        alert('Demo: límite de insumos alcanzado. Activa tu licencia.');
+        return;
+      }
+      (state.ingredients || (state.ingredients = [])).push({ id: uid('ing'), name: '', purchaseUnit: 'kg', costPerPurchaseUnit: 0 });
+      save();
+      renderIngs();
+      renderRecs();
+    };
+
+    function renderIngs(){
+      const el = document.getElementById('ingTable');
+      let html = '<table><thead><tr><th>Nombre</th><th>Unidad compra</th><th>Costo por unidad</th><th></th></tr></thead><tbody>';
+      (state.ingredients || []).forEach((ing) => {
+        html += `<tr>
+          <td><input data-ing="name" data-id="${ing.id}" value="${escAttr(ing.name || '')}"></td>
+          <td><select data-ing="unit" data-id="${ing.id}">${['kg','g','l','ml','unidad','porción'].map((u) => `<option ${ing.purchaseUnit === u ? 'selected' : ''}>${u}</option>`).join('')}</select></td>
+          <td><input type="number" min="0" step="0.01" data-ing="cost" data-id="${ing.id}" value="${ing.costPerPurchaseUnit || 0}"></td>
+          <td><button class="btn" data-ing="del" data-id="${ing.id}">Eliminar</button></td>
+        </tr>`;
+      });
+      html += '<tr><td colspan="4"><button class="btn pri" id="btnAddIngInline">+ Agregar insumo</button></td></tr>';
+      html += '</tbody></table>';
+      el.innerHTML = html;
+      el.querySelectorAll('input,select,button').forEach((ctrl) => {
+        const kind = ctrl.getAttribute('data-ing');
+        if (!kind) return;
+        if (kind === 'del') {
+          ctrl.addEventListener('click', onIngDelete);
+        } else {
+          ctrl.addEventListener('input', onIngChange);
+        }
+      });
+      const inlineBtn = document.getElementById('btnAddIngInline');
+      if (inlineBtn) inlineBtn.onclick = document.getElementById('btnAddIng').onclick;
+    }
+
+    function onIngChange(event){
+      const id = event.target.getAttribute('data-id');
+      const kind = event.target.getAttribute('data-ing');
+      const ing = (state.ingredients || []).find((item) => item.id === id);
+      if (!ing) return;
+      if (kind === 'name') ing.name = event.target.value;
+      if (kind === 'unit') ing.purchaseUnit = event.target.value;
+      if (kind === 'cost') ing.costPerPurchaseUnit = parseFloat(event.target.value || '0');
+      save();
+      renderPrices();
+      renderRecs();
+    }
+
+    function onIngDelete(event){
+      const id = event.target.getAttribute('data-id');
+      if (!confirm('Eliminar insumo?')) return;
+      state.ingredients = (state.ingredients || []).filter((item) => item.id !== id);
+      (state.recipes || []).forEach((recipe) => {
+        recipe.items = (recipe.items || []).filter((it) => it.ingredientId !== id);
+      });
+      save();
+      renderIngs();
+      renderRecs();
+      renderPrices();
+    }
+
+    document.getElementById('btnAddRec').onclick = () => {
+      if (!state.license.activated && (state.recipes?.length || 0) >= DEMO_LIMITS.recipes) {
+        alert('Demo: límite de recetas alcanzado. Activa tu licencia.');
+        return;
+      }
+      (state.recipes || (state.recipes = [])).push({ id: uid('rec'), name: 'Receta', portionsPerBatch: 1, items: [] });
+      save();
+      renderRecs();
+    };
+
+    document.getElementById('recList').addEventListener('input', (event) => {
+      if (event.target && event.target.getAttribute('data-it')) onItemChange(event);
+    });
+
+    function renderRecs(){
+      const el = document.getElementById('recList');
+      let html = '';
+      (state.recipes || []).forEach((recipe) => {
+        const calc = computeRecipeCost(recipe);
+        html += `<div class="card" style="margin-bottom:10px">
+          <div class="row" style="justify-content:space-between">
+            <div class="row">
+              <input data-rec="name" data-id="${recipe.id}" value="${escAttr(recipe.name)}" style="width:220px">
+              <div class="row"><span class="muted">Porciones/batch</span> <input type="number" min="1" data-rec="ppb" data-id="${recipe.id}" value="${recipe.portionsPerBatch}" style="width:110px"></div>
+            </div>
+            <div class="row"><span class="badge">Costo/porción: ${money(calc.cost)}</span><button class="btn" data-rec="del" data-id="${recipe.id}">Eliminar</button></div>
+          </div>
+          <div style="overflow:auto;margin-top:8px"><table><thead><tr><th>Ingrediente</th><th>Cant.</th><th>Unidad</th><th>Rend. %</th><th>Costo</th><th></th></tr></thead><tbody>`;
+        (recipe.items || []).forEach((item, idx) => {
+          const costs = computeItemCost(item, recipe);
+          let costCell = '<span class="muted">—</span>';
+          if (Number.isFinite(costs.perBatch)) {
+            costCell = `<div>${money(costs.perBatch)}</div>`;
+            if (Number.isFinite(costs.perPortion)) {
+              costCell += `<div class="muted">${money(costs.perPortion)} / porción</div>`;
+            }
+          }
+          html += `<tr>
+            <td><select data-it="ing" data-id="${recipe.id}" data-idx="${idx}"><option value="">— seleccionar —</option>${(state.ingredients || []).map((ing) => `<option value="${ing.id}" ${ing.id === item.ingredientId ? 'selected' : ''}>${esc(ing.name || 'Insumo')}</option>`).join('')}</select></td>
+            <td><input type="number" min="0" step="0.01" data-it="qty" data-id="${recipe.id}" data-idx="${idx}" value="${item.qty || ''}"></td>
+            <td><select data-it="unit" data-id="${recipe.id}" data-idx="${idx}">${['kg','g','l','ml','unidad','porción'].map((u) => `<option ${u === item.unit ? 'selected' : ''}>${u}</option>`).join('')}</select></td>
+            <td><input type="number" min="1" max="100" step="1" data-it="yield" data-id="${recipe.id}" data-idx="${idx}" value="${item.yieldPct != null ? item.yieldPct : 100}"></td>
+            <td>${costCell}</td>
+            <td><button class="btn" data-it="del" data-id="${recipe.id}" data-idx="${idx}">Quitar</button></td>
+          </tr>`;
+        });
+        html += `<tr><td colspan="6"><button class="btn" data-rec="addItem" data-id="${recipe.id}">+ Agregar ingrediente</button></td></tr></tbody></table></div></div>`;
+      });
+      el.innerHTML = html || '<p class="muted">No hay recetas todavía.</p>';
+      el.querySelectorAll('[data-rec="name"]').forEach((input) => {
+        input.addEventListener('input', (event) => {
+          const id = event.target.dataset.id;
+          const recipe = (state.recipes || []).find((r) => r.id === id);
+          if (recipe) {
+            recipe.name = event.target.value;
+            save();
+            renderPrices();
+          }
+        });
+      });
+      el.querySelectorAll('[data-rec="ppb"]').forEach((input) => {
+        input.addEventListener('input', (event) => {
+          const id = event.target.dataset.id;
+          const recipe = (state.recipes || []).find((r) => r.id === id);
+          if (recipe) {
+            recipe.portionsPerBatch = parseFloat(event.target.value || '1');
+            save();
+            renderRecs();
+            renderPrices();
+          }
+        });
+      });
+      el.querySelectorAll('[data-rec="del"]').forEach((btn) => {
+        btn.addEventListener('click', (event) => {
+          const id = event.target.dataset.id;
+          if (!confirm('Eliminar receta?')) return;
+          state.recipes = (state.recipes || []).filter((r) => r.id !== id);
+          save();
+          renderRecs();
+          renderPrices();
+        });
+      });
+      el.querySelectorAll('[data-rec="addItem"]').forEach((btn) => {
+        btn.addEventListener('click', (event) => {
+          const id = event.target.dataset.id;
+          const recipe = (state.recipes || []).find((r) => r.id === id);
+          if (!recipe) return;
+          (recipe.items || (recipe.items = [])).push({ ingredientId: (state.ingredients[0] && state.ingredients[0].id) || '', qty: 1, unit: 'unidad', yieldPct: 100 });
+          save();
+          renderRecs();
+          renderPrices();
+        });
+      });
+      el.querySelectorAll('[data-it="del"]').forEach((btn) => {
+        btn.addEventListener('click', (event) => {
+          const id = event.target.getAttribute('data-id');
+          const idx = parseInt(event.target.getAttribute('data-idx'), 10);
+          const recipe = (state.recipes || []).find((r) => r.id === id);
+          if (!recipe) return;
+          recipe.items.splice(idx, 1);
+          save();
+          renderRecs();
+          renderPrices();
+        });
+      });
+    }
+
+    function onItemChange(event){
+      const id = event.target.getAttribute('data-id');
+      const idx = parseInt(event.target.getAttribute('data-idx'), 10);
+      const key = event.target.getAttribute('data-it');
+      const recipe = (state.recipes || []).find((r) => r.id === id);
+      if (!recipe) return;
+      const item = recipe.items?.[idx];
+      if (!item) return;
+      if (key === 'ing') item.ingredientId = event.target.value;
+      if (key === 'qty') item.qty = parseFloat(event.target.value || '0');
+      if (key === 'unit') item.unit = event.target.value;
+      if (key === 'yield') item.yieldPct = parseFloat(event.target.value || '100');
+      save();
+      renderRecs();
+      renderPrices();
+    }
+
+    document.getElementById('btnAddCh').addEventListener('click', () => {
+      (state.channels || (state.channels = [])).push({ id: uid('ch'), name: 'Canal', marginPct: 60 });
+      save();
+      renderCh();
+      renderPrices();
+    });
+
+    function renderCh(){
+      document.getElementById('inpCurrency').value = state.currency || '';
+      document.getElementById('inpTax').value = state.taxPct || 0;
+      const el = document.getElementById('chTable');
+      let html = '<table><thead><tr><th>Canales</th><th>Margen %</th><th></th></tr></thead><tbody>';
+      (state.channels || []).forEach((channel) => {
+        html += `<tr>
+          <td><input data-ch="name" data-id="${channel.id}" value="${escAttr(channel.name)}"></td>
+          <td><input type="number" min="0" max="95" step="1" data-ch="margin" data-id="${channel.id}" value="${channel.marginPct}"></td>
+          <td><button class="btn" data-ch="del" data-id="${channel.id}">Eliminar</button></td>
+        </tr>`;
+      });
+      html += '</tbody></table>';
+      el.innerHTML = html;
+      el.querySelectorAll('[data-ch]').forEach((ctrl) => ctrl.addEventListener('input', onChChange));
+      el.querySelectorAll('button[data-ch="del"]').forEach((btn) => btn.addEventListener('click', onChDelete));
+      document.getElementById('inpCurrency').oninput = (event) => {
+        state.currency = event.target.value;
+        save();
+        renderPrices();
+        renderRecs();
+      };
+      document.getElementById('inpTax').oninput = (event) => {
+        state.taxPct = parseFloat(event.target.value || '0');
+        save();
+        renderPrices();
+      };
+    }
+
+    function onChChange(event){
+      const id = event.target.getAttribute('data-id');
+      const key = event.target.getAttribute('data-ch');
+      const channel = (state.channels || []).find((c) => c.id === id);
+      if (!channel) return;
+      if (key === 'name') channel.name = event.target.value;
+      if (key === 'margin') channel.marginPct = parseFloat(event.target.value || '0');
+      save();
+      renderPrices();
+      renderCh();
+    }
+
+    function onChDelete(event){
+      const id = event.target.getAttribute('data-id');
+      state.channels = (state.channels || []).filter((c) => c.id !== id);
+      save();
+      renderCh();
+      renderPrices();
+    }
+
+    function renderAjustes(){
+      document.getElementById('inpBrand').value = (state.brand && state.brand.name) || '';
+      document.getElementById('inpColor').value = (state.brand && state.brand.primary) || '#8B5CF6';
+      document.getElementById('inpClient').value = state.name || '';
+      document.getElementById('inpLogoUrl').value = state.logoUrl || '';
+      document.getElementById('inpLang').value = state.lang || 'es';
+      document.getElementById('inpBrand').oninput = (event) => {
+        state.brand = state.brand || {};
+        state.brand.name = event.target.value;
+        save();
+      };
+      document.getElementById('inpColor').oninput = (event) => {
+        state.brand = state.brand || {};
+        state.brand.primary = event.target.value;
+        save();
+        document.documentElement.style.setProperty('--pri', state.brand.primary);
+      };
+      document.getElementById('inpClient').oninput = (event) => {
+        state.name = event.target.value;
+        save();
+        document.getElementById('brandName').textContent = state.name;
+      };
+      document.getElementById('inpLogoUrl').oninput = (event) => {
+        state.logoUrl = event.target.value;
+        save();
+      };
+      document.getElementById('inpLang').oninput = (event) => {
+        state.lang = event.target.value;
+        save();
+        renderPrices();
+      };
+    }
+
+    renderPrices();
+    renderIngs();
+    renderRecs();
+    renderCh();
+    renderAjustes();
+  })();
+  </script>
+  <script>
   if ('serviceWorker' in navigator) {
-    window.addEventListener('load', function () {
-      navigator.serviceWorker.register('/service-worker.js').catch(console.error);
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('/service-worker.js').catch((err) => {
+        console.warn('SW registration failed', err);
+      });
     });
   }
-</script>
-
+  </script>
 </body>
 </html>

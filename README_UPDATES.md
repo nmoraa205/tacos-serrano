@@ -9,13 +9,22 @@ Este paquete agrega:
 - Estructura de contenido en `content/` y datos iniciales en `data/menu.json`
 
 ## Pasos para Netlify
-1. Sube este proyecto a un repo (GitHub).
+1. Sube este proyecto a un repo (GitHub) **o** genera un ZIP listo para subir (ver siguiente sección).
 2. En **Netlify**:
-   - Conecta el repo y despliega.
+   - Conecta el repo y despliega **o** arrastra el ZIP generado a Deploys → Upload.
    - Activa **Identity** y **Git Gateway** (Settings → Identity).
    - En **Identity → Services** habilita Git Gateway.
    - Crea un usuario administrador (tu correo) y verifica la invitación.
 3. Entra a `https://TU_DOMINIO/admin` e inicia sesión para editar.
+
+## Cómo generar un ZIP listo para Netlify
+1. Asegúrate de tener `zip` instalado (está disponible por defecto en macOS, Linux y WSL).
+2. En la raíz del proyecto ejecuta:
+   ```bash
+   ./package-site.sh
+   ```
+   También puedes pasar un nombre personalizado: `./package-site.sh mi-sitio.zip`.
+3. Sube el archivo generado a Netlify (Deploys → Upload). El ZIP incluye HTML, assets, CMS y configuración PWA.
 
 ## Cómo usar el CMS
 - Colección **Productos**: nombre, precio, categoría, disponibilidad, imagen y descripción.

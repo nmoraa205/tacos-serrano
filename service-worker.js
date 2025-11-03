@@ -1,7 +1,16 @@
-const CACHE_NAME = 'ts-pwa-v1';
+const CACHE_NAME = 'costochef-pwa-v1';
 const STATIC_ASSETS = [
   '/',
-  '/manifest.webmanifest'
+  '/index.html',
+  '/styles.css',
+  '/app.js',
+  '/menu.html',
+  '/menu.css',
+  '/menu.js',
+  '/manifest.webmanifest',
+  '/assets/costochef-icon.svg',
+  '/assets/costochef-hero.svg',
+  '/assets/logo.png'
 ];
 
 // Install: cache minimal shell
@@ -27,7 +36,7 @@ self.addEventListener('activate', (event) => {
 // - Cache-first for everything else (rápido y offline)
 self.addEventListener('fetch', (event) => {
   const url = new URL(event.request.url);
-  if (url.pathname.startsWith('/data/')) {
+  if (url.pathname.startsWith('/data/') || url.pathname === '/data.json') {
     event.respondWith(
       fetch(event.request)
         .then((resp) => {
