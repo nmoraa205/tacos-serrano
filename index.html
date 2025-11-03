@@ -242,22 +242,29 @@
       return NaN;
     }
 
+    function computeItemCost(item, recipe){
+      if (!item) return { perBatch: NaN, perPortion: NaN };
+      const ingredient = (state.ingredients || []).find((ing) => ing.id === item.ingredientId);
+      if (!ingredient) return { perBatch: NaN, perPortion: NaN };
+      const yieldFactor = ((item.yieldPct != null ? item.yieldPct : 100) / 100) || 1;
+      const rawQty = (item.qty || 0) / yieldFactor;
+      const qtyBuy = convert(rawQty, item.unit, ingredient.purchaseUnit);
+      if (!Number.isFinite(qtyBuy)) return { perBatch: NaN, perPortion: NaN };
+      const perBatch = qtyBuy * (ingredient.costPerPurchaseUnit || 0);
+      const portions = (recipe && Number.isFinite(recipe.portionsPerBatch) && recipe.portionsPerBatch > 0)
+        ? recipe.portionsPerBatch
+        : 1;
+      const perPortion = Number.isFinite(perBatch) ? perBatch / portions : NaN;
+      return { perBatch, perPortion };
+    }
+
     function computeRecipeCost(recipe){
-      const map = {};
-      (state.ingredients || []).forEach((ing) => {
-        map[ing.id] = ing;
-      });
       let total = 0;
       (recipe.items || []).forEach((item) => {
-        const ing = map[item.ingredientId];
-        if (!ing) return;
-        const yieldFactor = ((item.yieldPct != null ? item.yieldPct : 100) / 100) || 1;
-        const rawQty = (item.qty || 0) / yieldFactor;
-        const qtyBuy = convert(rawQty, item.unit, ing.purchaseUnit);
-        const cost = qtyBuy * (ing.costPerPurchaseUnit || 0);
+        const cost = computeItemCost(item, recipe).perPortion;
         if (Number.isFinite(cost)) total += cost;
       });
-      return { cost: total / (recipe.portionsPerBatch || 1) };
+      return { cost: total };
     }
 
     function priceFromMargin(cost, marginPct, includeTax){
@@ -596,6 +603,7 @@
       (state.ingredients || (state.ingredients = [])).push({ id: uid('ing'), name: '', purchaseUnit: 'kg', costPerPurchaseUnit: 0 });
       save();
       renderIngs();
+      renderRecs();
     };
 
     function renderIngs(){
@@ -635,6 +643,7 @@
       if (kind === 'cost') ing.costPerPurchaseUnit = parseFloat(event.target.value || '0');
       save();
       renderPrices();
+      renderRecs();
     }
 
     function onIngDelete(event){
@@ -677,17 +686,26 @@
             </div>
             <div class="row"><span class="badge">Costo/porción: ${money(calc.cost)}</span><button class="btn" data-rec="del" data-id="${recipe.id}">Eliminar</button></div>
           </div>
-          <div style="overflow:auto;margin-top:8px"><table><thead><tr><th>Ingrediente</th><th>Cant.</th><th>Unidad</th><th>Rend. %</th><th></th></tr></thead><tbody>`;
+          <div style="overflow:auto;margin-top:8px"><table><thead><tr><th>Ingrediente</th><th>Cant.</th><th>Unidad</th><th>Rend. %</th><th>Costo</th><th></th></tr></thead><tbody>`;
         (recipe.items || []).forEach((item, idx) => {
+          const costs = computeItemCost(item, recipe);
+          let costCell = '<span class="muted">—</span>';
+          if (Number.isFinite(costs.perBatch)) {
+            costCell = `<div>${money(costs.perBatch)}</div>`;
+            if (Number.isFinite(costs.perPortion)) {
+              costCell += `<div class="muted">${money(costs.perPortion)} / porción</div>`;
+            }
+          }
           html += `<tr>
             <td><select data-it="ing" data-id="${recipe.id}" data-idx="${idx}"><option value="">— seleccionar —</option>${(state.ingredients || []).map((ing) => `<option value="${ing.id}" ${ing.id === item.ingredientId ? 'selected' : ''}>${esc(ing.name || 'Insumo')}</option>`).join('')}</select></td>
             <td><input type="number" min="0" step="0.01" data-it="qty" data-id="${recipe.id}" data-idx="${idx}" value="${item.qty || ''}"></td>
             <td><select data-it="unit" data-id="${recipe.id}" data-idx="${idx}">${['kg','g','l','ml','unidad','porción'].map((u) => `<option ${u === item.unit ? 'selected' : ''}>${u}</option>`).join('')}</select></td>
             <td><input type="number" min="1" max="100" step="1" data-it="yield" data-id="${recipe.id}" data-idx="${idx}" value="${item.yieldPct != null ? item.yieldPct : 100}"></td>
+            <td>${costCell}</td>
             <td><button class="btn" data-it="del" data-id="${recipe.id}" data-idx="${idx}">Quitar</button></td>
           </tr>`;
         });
-        html += `<tr><td colspan="5"><button class="btn" data-rec="addItem" data-id="${recipe.id}">+ Agregar ingrediente</button></td></tr></tbody></table></div></div>`;
+        html += `<tr><td colspan="6"><button class="btn" data-rec="addItem" data-id="${recipe.id}">+ Agregar ingrediente</button></td></tr></tbody></table></div></div>`;
       });
       el.innerHTML = html || '<p class="muted">No hay recetas todavía.</p>';
       el.querySelectorAll('[data-rec="name"]').forEach((input) => {
