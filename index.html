@@ -1,390 +1,874 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="es">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>CostoChef | Calculadora inteligente de costos para restaurantes</title>
-  <meta name="description" content="Optimiza recetas, calcula precios rentables y controla tus costos en tiempo real con CostoChef, la plataforma integral para restaurantes latinoamericanos." />
+  <title>CostoChef v2.1 — Costeador & Pricing (Full)</title>
+  <meta name="description" content="Costea recetas, calcula precios y gestiona licencias con CostoChef v2.1. Control total de ingredientes, recetas y márgenes." />
   <link rel="icon" href="assets/costochef-icon.svg" type="image/svg+xml" />
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="styles.css" />
   <link rel="manifest" href="/manifest.webmanifest" />
-  <meta name="theme-color" content="#0B1120" />
-  <meta property="og:title" content="CostoChef | Calculadora de costos para restaurantes" />
-  <meta property="og:description" content="Define el precio correcto de cada plato y controla tus márgenes con reportes en tiempo real." />
-  <meta property="og:image" content="https://costochef.netlify.app/og-image.png" />
+  <meta name="theme-color" content="#8B5CF6" />
+  <style>
+    :root{--pri:#8B5CF6;--bg:#f7f7f8;--fg:#1c1c1c;--muted:#6b7280;--ok:#10B981;--warn:#F59E0B;--bad:#EF4444}
+    *{box-sizing:border-box}
+    body{margin:0;background:var(--bg);color:var(--fg);font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial}
+    .wrap{max-width:1100px;margin:0 auto;padding:14px}
+    .bar{display:flex;justify-content:space-between;align-items:center;gap:8px;background:#fff;border-bottom:1px solid #eee;padding:10px 14px;position:sticky;top:0;z-index:10}
+    .btn{padding:8px 12px;border-radius:10px;border:1px solid #e5e7eb;background:#fff;cursor:pointer;font-size:14px}
+    .btn.pri{background:var(--pri);color:#fff;border:0}
+    .tabs{display:flex;gap:8px;margin:12px 0;flex-wrap:wrap}
+    .tab{padding:8px 12px;border-radius:12px;border:1px solid #e5e7eb;background:#fff;cursor:pointer}
+    .tab.active{background:var(--pri);color:#fff;border-color:var(--pri)}
+    .card{background:#fff;border:1px solid #e5e7eb;border-radius:14px;padding:14px}
+    table{width:100%;border-collapse:collapse}
+    th,td{border-top:1px solid #eee;padding:8px;text-align:left;font-size:13px;vertical-align:top}
+    th{background:#fafafa}
+    .muted{color:#6b7280;font-size:12px}
+    .cm{display:inline-block;font-size:12px;margin-top:4px}
+    .cm.ok{color:var(--ok)} .cm.warn{color:var(--warn)} .cm.bad{color:var(--bad)}
+    input[type="number"], input[type="text"], input[type="color"], select{width:110px;padding:6px 8px;border-radius:8px;border:1px solid #d1d5db;font-size:13px}
+    input[type="text"], input[type="color"], select{width:100%}
+    .badge{display:inline-block;background:#EEF2FF;color:#3730A3;border:1px solid #C7D2FE;padding:2px 8px;border-radius:999px;font-size:12px}
+    .watermark{position:fixed;right:10px;bottom:10px;background:#fff8;border:1px dashed #aaa;padding:6px 10px;border-radius:10px;font-size:12px;backdrop-filter:blur(2px)}
+    .pill{display:inline-block;border:1px solid #e5e7eb;border-radius:999px;padding:2px 8px;font-size:12px;margin-left:6px}
+    .row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+    .row input[type="checkbox"]{width:auto;margin-right:4px}
+    .row label{display:flex;align-items:center;gap:4px}
+    .modal{position:fixed;inset:0;background:rgba(0,0,0,.45);display:none;align-items:center;justify-content:center;padding:16px}
+    .modal .box{max-width:520px;width:100%;background:#fff;border-radius:16px;border:1px solid #e5e7eb;padding:16px}
+    .modal .box h3{margin:0 0 8px 0}
+    .modal .box .grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+    .hint{font-size:12px;color:#6b7280}
+    textarea{width:100%;padding:8px;border-radius:10px;border:1px solid #d1d5db;font-family:inherit;font-size:13px}
+    @media (max-width:720px){
+      .bar{flex-direction:column;align-items:flex-start}
+      .card{padding:12px}
+      th,td{font-size:12px}
+      .modal .box .grid{grid-template-columns:1fr}
+    }
+  </style>
 </head>
 <body>
-  <header class="site-header">
-    <div class="site-header__inner container">
-      <a class="brand" href="#inicio">
-        <img src="assets/costochef-icon.svg" alt="CostoChef" class="brand__mark" />
-        <span class="brand__name">CostoChef</span>
-      </a>
-      <button class="nav-toggle" id="navToggle" aria-label="Abrir menú" aria-expanded="false">
-        <span></span><span></span><span></span>
-      </button>
-      <nav class="site-nav" id="siteNav">
-        <a href="#calculadora">Calculadora</a>
-        <a href="#caracteristicas">Características</a>
-        <a href="#clientes">Clientes</a>
-        <a href="#precios">Precios</a>
-        <a href="#faq">FAQ</a>
-        <a class="link-menu" href="menu.html">Ver menú demo</a>
-        <a class="btn btn--ghost" href="#contacto">Solicitar demo</a>
-      </nav>
-    </div>
-  </header>
-
-  <main id="inicio">
-    <section class="hero">
-      <div class="hero__bg"></div>
-      <div class="container hero__layout">
-        <div class="hero__content">
-          <span class="badge">Nuevo 2025</span>
-          <h1>Controlá tus costos y márgenes con precisión de chef ejecutivo</h1>
-          <p>Desde una cocina de food truck hasta un grupo gastronómico: CostoChef centraliza tus recetas, costos, inventario y ventas para que tomés decisiones rentables en minutos.</p>
-          <div class="hero__actions">
-            <a class="btn" href="#calculadora">Probar calculadora</a>
-            <a class="btn btn--ghost" href="#contacto">Agendar consultoría</a>
-          </div>
-          <dl class="hero__stats">
-            <div>
-              <dt>120+</dt>
-              <dd>restaurantes en Centroamérica</dd>
-            </div>
-            <div>
-              <dt>18%</dt>
-              <dd>más margen promedio en 90 días</dd>
-            </div>
-            <div>
-              <dt>&lt;10 min</dt>
-              <dd>para costear un plato completo</dd>
-            </div>
-          </dl>
-        </div>
-        <div class="hero__visual">
-          <img src="assets/costochef-hero.svg" alt="Panel de control CostoChef" />
-          <div class="hero__card" aria-live="polite">
-            <div class="hero__card-header">
-              <span>Resultado estimado</span>
-              <strong id="heroPrice">₡3 750</strong>
-            </div>
-            <p class="hero__card-desc">Precio sugerido según tus ingredientes, mermas y gastos operativos.</p>
-            <ul class="hero__card-list">
-              <li><span>Food cost:</span> <strong id="heroFoodCost">32%</strong></li>
-              <li><span>Margen:</span> <strong id="heroMargin">35%</strong></li>
-              <li><span>Punto de equilibrio:</span> <strong id="heroBreakEven">78 platos</strong></li>
-            </ul>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <section class="calculator" id="calculadora">
-      <div class="container calculator__layout">
-        <div class="calculator__intro">
-          <h2>Calculadora instantánea</h2>
-          <p>Ingresá tus costos y obtén un precio sugerido al instante. Ajustamos mermas, cargos de plataformas y gastos fijos para darte un margen realista.</p>
-          <ul class="calculator__bullets">
-            <li>Simulá diferentes tamaños de porción y markup.</li>
-            <li>Proyectá ventas mínimas para cubrir gastos.</li>
-            <li>Exportá resultados a Google Sheets.</li>
-          </ul>
-        </div>
-        <form class="calculator__card" id="calcForm">
-          <div class="field">
-            <label for="foodCost">Costo total de ingredientes (₡)</label>
-            <input type="number" id="foodCost" min="0" step="10" value="9500" required />
-          </div>
-          <div class="field">
-            <label for="portions">Porciones por receta</label>
-            <input type="number" id="portions" min="1" step="1" value="12" required />
-          </div>
-          <div class="field">
-            <label for="wastage">Mermas (%)</label>
-            <input type="number" id="wastage" min="0" max="100" step="1" value="8" />
-          </div>
-          <div class="field">
-            <label for="markup">Markup deseado (%)</label>
-            <input type="number" id="markup" min="0" max="500" step="1" value="65" />
-          </div>
-          <div class="field">
-            <label for="platform">Comisión delivery / TPV (%)</label>
-            <input type="number" id="platform" min="0" max="100" step="1" value="12" />
-          </div>
-          <div class="field">
-            <label for="overhead">Gastos fijos mensuales (₡)</label>
-            <input type="number" id="overhead" min="0" step="1000" value="450000" />
-          </div>
-          <div class="field">
-            <label for="orders">Pedidos mensuales estimados</label>
-            <input type="number" id="orders" min="1" step="5" value="780" />
-          </div>
-          <button type="submit" class="btn">Calcular precio ideal</button>
-        </form>
-        <aside class="calculator__results" aria-live="polite">
-          <h3>Resumen</h3>
-          <p class="calculator__price">Precio sugerido: <strong id="priceResult">₡3 750</strong></p>
-          <div class="calculator__grid">
-            <div>
-              <span class="label">Costo por porción</span>
-              <strong id="portionCost">₡2 250</strong>
-            </div>
-            <div>
-              <span class="label">Margen bruto</span>
-              <strong id="marginResult">₡1 500 (40%)</strong>
-            </div>
-            <div>
-              <span class="label">Punto de equilibrio</span>
-              <strong id="breakevenResult">74 platos</strong>
-            </div>
-          </div>
-          <p class="calculator__note">¿Querés llevar estos números a tu equipo? Descargá el reporte en PDF o integralo a tu POS.</p>
-          <div class="calculator__actions">
-            <button type="button" class="btn btn--ghost" id="downloadReport">Descargar resumen</button>
-            <button type="button" class="btn btn--ghost" id="shareResult">Compartir</button>
-          </div>
-        </aside>
-      </div>
-    </section>
-
-    <section class="section" id="caracteristicas">
-      <div class="container">
-        <div class="section__header">
-          <span class="eyebrow">Suite todo en uno</span>
-          <h2>Información accionable para tu cocina, compras y finanzas</h2>
-          <p>Conectá tus proveedores, inventario, ventas en sala y plataformas delivery para tener visibilidad total del negocio.</p>
-        </div>
-        <div class="features">
-          <article class="feature">
-            <h3>Recetas vivas</h3>
-            <p>Actualizá costos en segundos y visualizá el impacto en tus márgenes. Control de versiones y alertas cuando un ingrediente supera el presupuesto.</p>
-          </article>
-          <article class="feature">
-            <h3>Inventario inteligente</h3>
-            <p>Consumimos inventario automáticamente por receta. Detectamos variaciones y sugerimos compras óptimas por proveedor.</p>
-          </article>
-          <article class="feature">
-            <h3>Reportes ejecutivos</h3>
-            <p>Dashboards diarios con ventas, utilidad y pérdidas por mermas. Exportación a Excel, Google Data Studio o API abierta.</p>
-          </article>
-          <article class="feature">
-            <h3>Alertas operativas</h3>
-            <p>Recibí notificaciones cuando un plato deje de ser rentable, cuando un costo se dispare o si tu punto de equilibrio cambia.</p>
-          </article>
-        </div>
-      </div>
-    </section>
-
-    <section class="section section--dark" id="como-funciona">
-      <div class="container workflow">
-        <div class="section__header section__header--light">
-          <span class="eyebrow">Implementación guiada</span>
-          <h2>Arrancá en tres semanas con acompañamiento experto</h2>
-          <p>Un equipo culinario-financiero te acompaña desde la carga de recetas hasta la estrategia de precios.</p>
-        </div>
-        <ol class="workflow__steps">
-          <li>
-            <h3>1. Auditoría de costos</h3>
-            <p>Cargamos tus recetas actuales, analizamos compras y definimos objetivos de margen por categoría.</p>
-          </li>
-          <li>
-            <h3>2. Configuración del sistema</h3>
-            <p>Integramos tu POS, inventario y delivery. Ajustamos unidades, equivalencias y fichas técnicas.</p>
-          </li>
-          <li>
-            <h3>3. Entrenamiento y seguimiento</h3>
-            <p>Capacitación a tu staff y reuniones mensuales para seguir indicadores y oportunidades.</p>
-          </li>
-        </ol>
-      </div>
-    </section>
-
-    <section class="section" id="clientes">
-      <div class="container testimonials">
-        <div class="section__header">
-          <span class="eyebrow">Historias reales</span>
-          <h2>Restaurantes que recuperaron control y rentabilidad</h2>
-        </div>
-        <div class="testimonials__list">
-          <figure class="testimonial">
-            <blockquote>
-              “Con CostoChef reducimos 22% en compras sin sacrificar calidad. El equipo entiende la operación y hablan nuestro idioma.”
-            </blockquote>
-            <figcaption>
-              <strong>El Taller de la Pizza</strong>
-              <span>San José, Costa Rica</span>
-            </figcaption>
-          </figure>
-          <figure class="testimonial">
-            <blockquote>
-              “Ahora sé qué platos dejar en el menú y cuáles potenciar. Los reportes diarios nos ayudaron a abrir una segunda sucursal.”
-            </blockquote>
-            <figcaption>
-              <strong>Café Botanika</strong>
-              <span>Panamá</span>
-            </figcaption>
-          </figure>
-          <figure class="testimonial">
-            <blockquote>
-              “Integramos Rappi y Uber Eats con el POS y al fin vemos la utilidad real después de comisiones y mermas.”
-            </blockquote>
-            <figcaption>
-              <strong>La Taquería Norteña</strong>
-              <span>Guatemala</span>
-            </figcaption>
-          </figure>
-        </div>
-      </div>
-    </section>
-
-    <section class="section section--gradient" id="precios">
-      <div class="container pricing">
-        <div class="section__header section__header--light">
-          <span class="eyebrow">Planes flexibles</span>
-          <h2>Pagá solo por lo que usás</h2>
-          <p>Incluye soporte premium, actualizaciones mensuales y consultoría culinaria-financiera.</p>
-        </div>
-        <div class="pricing__cards">
-          <article class="price-card">
-            <h3>Starter</h3>
-            <p class="price-card__price">₡89 000 <span>/ mes</span></p>
-            <ul>
-              <li>Hasta 3 sucursales</li>
-              <li>Costeo ilimitado de recetas</li>
-              <li>Integración con 2 plataformas delivery</li>
-              <li>Reportes en tiempo real</li>
-            </ul>
-            <a href="#contacto" class="btn">Solicitar demo</a>
-          </article>
-          <article class="price-card price-card--focus">
-            <h3>Growth</h3>
-            <p class="price-card__price">₡159 000 <span>/ mes</span></p>
-            <ul>
-              <li>Hasta 8 sucursales</li>
-              <li>Inventario avanzado y compras automáticas</li>
-              <li>API y conectores personalizados</li>
-              <li>Analista dedicado</li>
-            </ul>
-            <a href="#contacto" class="btn">Hablar con ventas</a>
-          </article>
-          <article class="price-card">
-            <h3>Enterprise</h3>
-            <p class="price-card__price">Hablemos</p>
-            <ul>
-              <li>+10 sucursales en múltiples países</li>
-              <li>KPIs financieros personalizados</li>
-              <li>SLA 24/7 y soporte en sitio</li>
-              <li>Consultoría mensual de costos</li>
-            </ul>
-            <a href="mailto:hola@costochef.com" class="btn btn--ghost">Agendar reunión</a>
-          </article>
-        </div>
-      </div>
-    </section>
-
-    <section class="section" id="integraciones">
-      <div class="container integrations">
-        <div class="section__header">
-          <span class="eyebrow">Integraciones nativas</span>
-          <h2>Conecta tus plataformas favoritas</h2>
-          <p>Sincronizá ventas, inventario y contabilidad con las herramientas que ya usás.</p>
-        </div>
-        <div class="integrations__grid">
-          <div class="integration">SoftRestaurant</div>
-          <div class="integration">Square</div>
-          <div class="integration">Revo XEF</div>
-          <div class="integration">Toast</div>
-          <div class="integration">Uber Eats</div>
-          <div class="integration">Rappi</div>
-        </div>
-      </div>
-    </section>
-
-    <section class="section section--alt" id="faq">
-      <div class="container faq">
-        <div class="section__header">
-          <span class="eyebrow">Preguntas frecuentes</span>
-          <h2>Todo lo que querías saber antes de implementar</h2>
-        </div>
-        <div class="faq__list">
-          <article class="faq__item">
-            <button class="faq__question" type="button">¿Cuánto tarda la implementación inicial?</button>
-            <div class="faq__answer">
-              <p>Dependiendo de la cantidad de recetas y sucursales, podemos dejarte operando en 2 a 4 semanas. Te asignamos un especialista que carga tus datos y configura integraciones.</p>
-            </div>
-          </article>
-          <article class="faq__item">
-            <button class="faq__question" type="button">¿Necesito cambiar mi POS actual?</button>
-            <div class="faq__answer">
-              <p>No es necesario. Tenemos conectores con los POS más usados en la región y podemos construir integraciones personalizadas mediante nuestra API.</p>
-            </div>
-          </article>
-          <article class="faq__item">
-            <button class="faq__question" type="button">¿Ofrecen soporte en sitio?</button>
-            <div class="faq__answer">
-              <p>Para planes Growth y Enterprise ofrecemos visitas trimestrales y soporte 24/7. Los planes Starter incluyen soporte remoto ilimitado vía chat y correo.</p>
-            </div>
-          </article>
-          <article class="faq__item">
-            <button class="faq__question" type="button">¿Puedo exportar mis datos?</button>
-            <div class="faq__answer">
-              <p>Claro. Podés exportar tus recetas, inventarios y reportes financieros en CSV, Excel o conectarte vía API para enviar la información a tu ERP.</p>
-            </div>
-          </article>
-        </div>
-      </div>
-    </section>
-
-    <section class="section section--cta" id="contacto">
-      <div class="container cta">
-        <div>
-          <h2>Agenda una sesión gratuita con nuestro equipo culinario-financiero</h2>
-          <p>Descubrí oportunidades de ahorro, definí tus precios estrella y llevá tu rentabilidad al siguiente nivel.</p>
-        </div>
-        <form class="cta__form">
-          <div class="field">
-            <label for="ctaName">Nombre</label>
-            <input type="text" id="ctaName" placeholder="Tu nombre" required />
-          </div>
-          <div class="field">
-            <label for="ctaEmail">Correo empresarial</label>
-            <input type="email" id="ctaEmail" placeholder="tu@restaurante.com" required />
-          </div>
-          <div class="field">
-            <label for="ctaSize">Número de sucursales</label>
-            <select id="ctaSize">
-              <option value="1-2">1-2</option>
-              <option value="3-5">3-5</option>
-              <option value="6-9">6-9</option>
-              <option value="10+">10 o más</option>
-            </select>
-          </div>
-          <button type="submit" class="btn">Quiero mi consultoría</button>
-        </form>
-      </div>
-    </section>
-  </main>
-
-  <footer class="site-footer">
-    <div class="container site-footer__layout">
+  <div class="bar">
+    <div style="display:flex;gap:8px;align-items:center">
+      <div style="width:28px;height:28px;border-radius:8px;background:var(--pri)"></div>
       <div>
-        <strong>CostoChef</strong>
-        <p>La plataforma latinoamericana para costeo, inventario y rentabilidad gastronómica.</p>
+        <div class="muted">CostoChef v2.1 <span id="demoBadge" class="badge" style="display:none">DEMO</span></div>
+        <div id="brandName" style="font-weight:600">Cliente</div>
       </div>
-      <div class="site-footer__links">
-        <a href="#caracteristicas">Características</a>
-        <a href="#precios">Precios</a>
-        <a href="#faq">FAQ</a>
-        <a href="mailto:hola@costochef.com">hola@costochef.com</a>
-      </div>
-      <p class="site-footer__copy">© <span id="currentYear"></span> CostoChef. Todos los derechos reservados.</p>
     </div>
-  </footer>
+    <div class="row">
+      <button class="btn" id="btnLicense">Activar licencia</button>
+      <button class="btn" id="btnExportJSON">Exportar JSON</button>
+      <label class="btn" style="cursor:pointer">Importar JSON<input type="file" id="fileJSON" accept="application/json" style="display:none"></label>
+      <button class="btn" id="btnReset">Restablecer</button>
+    </div>
+  </div>
 
-  <script src="app.js" type="module"></script>
+  <div class="wrap">
+    <div class="tabs">
+      <button class="tab active" data-tab="precios">Precios</button>
+      <button class="tab" data-tab="ingredientes">Insumos</button>
+      <button class="tab" data-tab="recetas">Recetas</button>
+      <button class="tab" data-tab="canales">Canales & Márgenes</button>
+      <button class="tab" data-tab="ajustes">Ajustes</button>
+    </div>
+
+    <section class="card" id="tab-precios">
+      <div class="row" style="justify-content:space-between">
+        <div style="font-weight:600">Precios sugeridos <span id="capNote" class="pill" style="display:none"></span></div>
+        <div class="row">
+          <label class="muted"><input type="checkbox" id="chkIVA"> Incluir impuesto (<span id="ivaPctLabel">0</span>%)</label>
+          <label class="muted"><input type="checkbox" id="chkShowCompare"> Comparar con precio actual</label>
+          <button class="btn" id="btnCSV">Exportar CSV</button>
+          <button class="btn" id="btnPDF">Imprimir / PDF Pro</button>
+        </div>
+      </div>
+      <div id="pricesTable" style="margin-top:8px"></div>
+      <p class="muted"><span>Fórmula: precio = costo / (1 − margen)</span>. <span id="ivaNote"></span></p>
+    </section>
+
+    <section class="card" id="tab-ingredientes" style="display:none">
+      <div class="row" style="justify-content:space-between">
+        <div style="font-weight:600">Insumos</div>
+        <button class="btn pri" id="btnAddIng">+ Agregar insumo</button>
+      </div>
+      <div id="ingTable" style="margin-top:8px"></div>
+    </section>
+
+    <section class="card" id="tab-recetas" style="display:none">
+      <div class="row" style="justify-content:space-between">
+        <div style="font-weight:600">Recetas</div>
+        <button class="btn pri" id="btnAddRec">+ Nueva receta</button>
+      </div>
+      <div id="recList" style="margin-top:8px"></div>
+    </section>
+
+    <section class="card" id="tab-canales" style="display:none">
+      <div class="row" style="justify-content:space-between">
+        <div style="font-weight:600">Canales & márgenes</div>
+        <button class="btn pri" id="btnAddCh">+ Canal</button>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:8px">
+        <div>
+          <div class="muted">Moneda</div>
+          <input id="inpCurrency" list="currencies" placeholder="CRC / USD / EUR">
+          <datalist id="currencies">
+            <option>CRC</option><option>USD</option><option>EUR</option><option>MXN</option><option>COP</option><option>ARS</option><option>PEN</option><option>CLP</option><option>GTQ</option><option>HNL</option><option>NIO</option><option>DOP</option><option>PAB</option><option>BOB</option><option>BRL</option><option>UYU</option><option>VES</option><option>CAD</option><option>GBP</option><option>JPY</option><option>CHF</option><option>AUD</option><option>NZD</option>
+          </datalist>
+          <div class="muted">Cambia formato. No convierte montos.</div>
+        </div>
+        <div><div class="muted">Impuesto % (IVA)</div><input id="inpTax" type="number" min="0"></div>
+      </div>
+      <div id="chTable" style="margin-top:10px"></div>
+    </section>
+
+    <section class="card" id="tab-ajustes" style="display:none">
+      <div style="font-weight:600">Ajustes</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-top:8px">
+        <div><div class="muted">Nombre comercial (marca)</div><input id="inpBrand"></div>
+        <div><div class="muted">Color primario</div><input id="inpColor" type="color"></div>
+        <div><div class="muted">Nombre del cliente</div><input id="inpClient"></div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:8px">
+        <div><div class="muted">Logo (URL)</div><input id="inpLogoUrl" placeholder="https://...png"></div>
+        <div><div class="muted">Idioma</div><select id="inpLang"><option value="es">Español</option><option value="en">English</option></select></div>
+      </div>
+    </section>
+  </div>
+
+  <div id="wm" class="watermark" style="display:none">DEMO — activa tu licencia</div>
+
+  <div class="modal" id="licenseModal" role="dialog" aria-modal="true" aria-labelledby="licenseTitle">
+    <div class="box">
+      <h3 id="licenseTitle">Activar licencia</h3>
+      <div class="grid">
+        <div><div class="muted">Nombre del cliente</div><input id="licName" placeholder="Ej. Taquería El Centro"></div>
+        <div><div class="muted">Correo del cliente</div><input id="licEmail" placeholder="ejemplo@correo.com"></div>
+      </div>
+      <div style="margin-top:8px"><div class="muted">Código de licencia</div><input id="licCode" placeholder="CC-XXXXX-XXXXX" style="width:100%"></div>
+      <div class="row" style="margin-top:12px;justify-content:space-between">
+        <div class="hint" id="licHint">Si necesitas generar un código, abre esta misma URL con <b>?admin=1</b>.</div>
+        <div class="row">
+          <button class="btn" id="btnLicCancel">Cancelar</button>
+          <button class="btn pri" id="btnLicActivate">Activar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+  (function(){
+    const LS = 'costochef.v21.full';
+    const DEMO_LIMITS = { ingredients: 15, recipes: 8 };
+    const SECRET = 'PYX-CC-2025-SELL';
+
+    const url = new URL(window.location.href);
+    const ADMIN = url.searchParams.get('admin') === '1';
+
+    let state = load() || {
+      name: 'Cliente',
+      brand: { name: 'CostoChef', primary: '#8B5CF6' },
+      currency: 'CRC',
+      lang: 'es',
+      taxPct: 0,
+      logoUrl: '',
+      channels: [
+        { id: uid('ch'), name: 'Mostrador', marginPct: 50 },
+        { id: uid('ch'), name: 'Delivery', marginPct: 60 }
+      ],
+      ingredients: [],
+      recipes: [],
+      salePrice: {},
+      license: { activated: false, name: '', email: '', code: '' }
+    };
+    save();
+
+    function save(){
+      try {
+        localStorage.setItem(LS, JSON.stringify(state));
+      } catch (e) {
+        console.warn('No se pudo guardar el estado', e);
+      }
+    }
+    function load(){
+      try {
+        const stored = localStorage.getItem(LS);
+        return stored ? JSON.parse(stored) : null;
+      } catch (e) {
+        console.warn('No se pudo leer el estado', e);
+        return null;
+      }
+    }
+
+    function uid(prefix){
+      return (prefix || 'id') + '_' + Math.random().toString(36).slice(2, 8);
+    }
+    function money(n){
+      if (!Number.isFinite(n)) return '—';
+      try {
+        const locale = state.lang === 'en' ? 'en-US' : 'es-CR';
+        return new Intl.NumberFormat(locale, { style: 'currency', currency: state.currency || 'CRC' }).format(n);
+      } catch (e) {
+        return (n.toFixed ? n.toFixed(2) : String(n)) + ' ' + (state.currency || 'CRC');
+      }
+    }
+
+    const MASS = ['kg', 'g'];
+    const VOL = ['l', 'ml'];
+    const COUNT = ['unidad', 'porción'];
+    function unitKind(u){
+      if (MASS.includes(u)) return 'mass';
+      if (VOL.includes(u)) return 'volume';
+      if (COUNT.includes(u)) return 'count';
+      return 'other';
+    }
+    function convert(q, fromU, toU){
+      if (fromU === toU) return q;
+      const fromKind = unitKind(fromU);
+      const toKind = unitKind(toU);
+      if (fromKind !== toKind) return NaN;
+      if (fromKind === 'mass') {
+        if (fromU === 'g' && toU === 'kg') return q / 1000;
+        if (fromU === 'kg' && toU === 'g') return q * 1000;
+      }
+      if (fromKind === 'volume') {
+        if (fromU === 'ml' && toU === 'l') return q / 1000;
+        if (fromU === 'l' && toU === 'ml') return q * 1000;
+      }
+      if (fromKind === 'count') {
+        return q;
+      }
+      return NaN;
+    }
+
+    function computeRecipeCost(recipe){
+      const map = {};
+      (state.ingredients || []).forEach((ing) => {
+        map[ing.id] = ing;
+      });
+      let total = 0;
+      (recipe.items || []).forEach((item) => {
+        const ing = map[item.ingredientId];
+        if (!ing) return;
+        const yieldFactor = ((item.yieldPct != null ? item.yieldPct : 100) / 100) || 1;
+        const rawQty = (item.qty || 0) / yieldFactor;
+        const qtyBuy = convert(rawQty, item.unit, ing.purchaseUnit);
+        const cost = qtyBuy * (ing.costPerPurchaseUnit || 0);
+        if (Number.isFinite(cost)) total += cost;
+      });
+      return { cost: total / (recipe.portionsPerBatch || 1) };
+    }
+
+    function priceFromMargin(cost, marginPct, includeTax){
+      if (!Number.isFinite(cost) || cost <= 0) return NaN;
+      const margin = (marginPct || 0) / 100;
+      if (margin >= 1) return NaN;
+      let price = cost / (1 - margin);
+      if (includeTax) price *= 1 + (state.taxPct || 0) / 100;
+      return price;
+    }
+
+    function marginFromPrice(cost, price, includeTax){
+      if (!Number.isFinite(cost) || !Number.isFinite(price) || price <= 0) return NaN;
+      const netPrice = includeTax ? price / (1 + (state.taxPct || 0) / 100) : price;
+      return (1 - (cost / netPrice)) * 100;
+    }
+
+    function esc(str){
+      const s = String(str);
+      return s.replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('>', '&gt;');
+    }
+    function escAttr(str){
+      return String(str).replaceAll('"', '&quot;');
+    }
+
+    function syncHeader(){
+      document.getElementById('brandName').textContent = state.name || 'Cliente';
+      const color = (state.brand && state.brand.primary) || '#8B5CF6';
+      document.documentElement.style.setProperty('--pri', color);
+      document.getElementById('demoBadge').style.display = state.license.activated ? 'none' : 'inline-block';
+      document.getElementById('wm').style.display = state.license.activated ? 'none' : 'block';
+      const cap = document.getElementById('capNote');
+      cap.style.display = state.license.activated ? 'none' : 'inline-block';
+      if (!state.license.activated) {
+        cap.textContent = `Demo: ${DEMO_LIMITS.recipes} recetas / ${DEMO_LIMITS.ingredients} insumos`;
+      }
+    }
+    syncHeader();
+
+    const tabs = document.querySelectorAll('.tab');
+    const tabIds = ['precios', 'ingredientes', 'recetas', 'canales', 'ajustes'];
+    tabs.forEach((tab) => {
+      tab.addEventListener('click', () => {
+        tabs.forEach((t) => t.classList.remove('active'));
+        tab.classList.add('active');
+        tabIds.forEach((id) => {
+          const section = document.getElementById(`tab-${id}`);
+          if (section) section.style.display = tab.dataset.tab === id ? 'block' : 'none';
+        });
+        if (tab.dataset.tab === 'precios') renderPrices();
+        if (tab.dataset.tab === 'ingredientes') renderIngs();
+        if (tab.dataset.tab === 'recetas') renderRecs();
+        if (tab.dataset.tab === 'canales') renderCh();
+        if (tab.dataset.tab === 'ajustes') renderAjustes();
+      });
+    });
+
+    document.getElementById('btnExportJSON').onclick = () => {
+      const blob = new Blob([JSON.stringify(state, null, 2)], { type: 'application/json' });
+      const link = document.createElement('a');
+      link.href = URL.createObjectURL(blob);
+      link.download = 'costochef_datos.json';
+      link.click();
+      setTimeout(() => URL.revokeObjectURL(link.href), 500);
+    };
+
+    document.getElementById('fileJSON').onchange = (event) => {
+      const file = event.target.files?.[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = () => {
+        try {
+          const data = JSON.parse(reader.result || '{}');
+          if (!data) return;
+          state = data;
+          save();
+          window.location.reload();
+        } catch (err) {
+          alert('JSON inválido');
+        }
+      };
+      reader.readAsText(file);
+    };
+
+    document.getElementById('btnReset').onclick = () => {
+      if (confirm('Esto borra los datos locales.')) {
+        localStorage.removeItem(LS);
+        window.location.reload();
+      }
+    };
+
+    document.getElementById('btnLicense').onclick = openLicense;
+    function openLicense(){
+      const modal = document.getElementById('licenseModal');
+      modal.style.display = 'flex';
+      document.getElementById('licName').value = state.license.name || state.name || '';
+      document.getElementById('licEmail').value = state.license.email || '';
+      document.getElementById('licCode').value = state.license.code || '';
+    }
+    document.getElementById('btnLicCancel').onclick = () => {
+      document.getElementById('licenseModal').style.display = 'none';
+    };
+
+    document.getElementById('btnLicActivate').onclick = async () => {
+      const name = (document.getElementById('licName').value || '').trim();
+      const email = (document.getElementById('licEmail').value || '').trim().toLowerCase();
+      const code = (document.getElementById('licCode').value || '').trim().toUpperCase();
+      const expected = await genCode(name, email);
+      if (code === expected) {
+        state.license = { activated: true, name, email, code };
+        if (state.name === 'Cliente' && name) state.name = name;
+        save();
+        syncHeader();
+        renderPrices();
+        document.getElementById('licenseModal').style.display = 'none';
+        alert('¡Licencia activada!');
+      } else {
+        alert('Código inválido. Verifica nombre/correo y el código.');
+      }
+    };
+
+    if (ADMIN) {
+      const hint = document.getElementById('licHint');
+      hint.innerHTML = 'Modo admin activo. Ingresa nombre+correo y deja el código vacío, luego presiona Activar para ver el código esperado.';
+      document.getElementById('btnLicActivate').onclick = async () => {
+        const name = (document.getElementById('licName').value || '').trim();
+        const email = (document.getElementById('licEmail').value || '').trim().toLowerCase();
+        const expected = await genCode(name, email);
+        document.getElementById('licCode').value = expected;
+        if (navigator.clipboard) {
+          try { await navigator.clipboard.writeText(expected); } catch (e) {}
+        }
+        alert('Código generado y copiado: ' + expected);
+      };
+    }
+
+    async function genCode(name, email){
+      const data = `${name}|${email}|${SECRET}`;
+      const enc = new TextEncoder().encode(data);
+      const hash = await crypto.subtle.digest('SHA-256', enc);
+      const bytes = Array.from(new Uint8Array(hash).slice(0, 10));
+      const alphabet = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+      let buffer = 0;
+      let bits = 0;
+      let out = '';
+      for (const byte of bytes) {
+        buffer = (buffer << 8) | byte;
+        bits += 8;
+        while (bits >= 5) {
+          bits -= 5;
+          const index = (buffer >> bits) & 31;
+          out += alphabet[index];
+          if (out.length === 5) out += '-';
+        }
+      }
+      out = out.replace(/-$/, '');
+      const parts = out.replace(/-/g, '').slice(0, 10);
+      return `CC-${parts.slice(0, 5)}-${parts.slice(5, 10)}`;
+    }
+
+    document.getElementById('btnCSV').onclick = () => {
+      if (!state.license.activated) {
+        alert('Demo: exportar CSV está bloqueado. Activa tu licencia.');
+        return;
+      }
+      const includeTax = document.getElementById('chkIVA').checked;
+      const rows = buildPriceRows(includeTax);
+      const showCmp = document.getElementById('chkShowCompare').checked;
+      let headers = ['Receta', 'Costo_porcion'];
+      if (showCmp) {
+        headers.push('Precio_actual', 'Margen_actual_%');
+      }
+      headers = headers.concat((state.channels || []).map((c) => `${c.name}_${c.marginPct}${includeTax ? '_conIVA' : ''}`));
+      const lines = [headers.join(',')];
+      rows.forEach((row) => {
+        const quotedName = '"' + String(row.name).split('"').join('""') + '"';
+        const cells = [quotedName, Number.isFinite(row.cost) ? row.cost.toFixed(2) : ''];
+        if (showCmp) {
+          const sp = state.salePrice && state.salePrice[row.id];
+          const margin = (sp !== '' && sp != null && Number.isFinite(parseFloat(sp)))
+            ? marginFromPrice(row.cost, parseFloat(sp), includeTax)
+            : NaN;
+          cells.push((sp === '' || sp == null) ? '' : String(sp));
+          cells.push(Number.isFinite(margin) ? margin.toFixed(2) : '');
+        }
+        (state.channels || []).forEach((channel) => {
+          const p = priceFromMargin(row.cost, channel.marginPct, includeTax);
+          cells.push(Number.isFinite(p) ? p.toFixed(2) : '');
+        });
+        lines.push(cells.join(','));
+      });
+      const blob = new Blob([lines.join('\n')], { type: 'text/csv;charset=utf-8;' });
+      const link = document.createElement('a');
+      link.href = URL.createObjectURL(blob);
+      link.download = `${(state.name || 'cliente').split(/\s+/).join('_')}_precios.csv`;
+      link.click();
+      setTimeout(() => URL.revokeObjectURL(link.href), 500);
+    };
+
+    document.getElementById('btnPDF').onclick = () => {
+      if (!state.license.activated) {
+        alert('Demo: PDF Pro está bloqueado. Activa tu licencia.');
+        return;
+      }
+      openReportWindow();
+    };
+
+    function openReportWindow(){
+      const includeTax = document.getElementById('chkIVA').checked;
+      const showCmp = document.getElementById('chkShowCompare').checked;
+      const rows = buildPriceRows(includeTax);
+      const channels = state.channels || [];
+      const now = new Date().toLocaleString(state.lang === 'en' ? 'en-US' : 'es-CR');
+
+      const popup = window.open('', '_blank');
+      if (!popup) {
+        alert('Bloqueado por el navegador. Permite ventanas emergentes.');
+        return;
+      }
+      const logo = state.logoUrl ? `<img src="${state.logoUrl}" alt="Logo" style="height:64px;object-fit:contain">` : '';
+      let thead = '<th>Receta</th><th>Costo/porción</th>';
+      if (showCmp) {
+        thead += '<th>Precio actual</th><th>Margen actual</th>';
+      }
+      channels.forEach((ch) => {
+        thead += `<th>${esc(ch.name)} (${ch.marginPct}%)</th>`;
+      });
+
+      let tbody = '';
+      rows.forEach((row) => {
+        let tr = `<td>${esc(row.name)}</td><td>${money(row.cost)}</td>`;
+        if (showCmp) {
+          const sp = state.salePrice && state.salePrice[row.id];
+          const margin = (sp !== '' && sp != null && Number.isFinite(parseFloat(sp)))
+            ? marginFromPrice(row.cost, parseFloat(sp), includeTax)
+            : NaN;
+          tr += `<td>${(sp === '' || sp == null) ? '—' : money(parseFloat(sp))}</td>`;
+          tr += `<td>${Number.isFinite(margin) ? margin.toFixed(1) + '%' : '—'}</td>`;
+        }
+        channels.forEach((ch) => {
+          const suggested = priceFromMargin(row.cost, ch.marginPct, includeTax);
+          tr += `<td>${Number.isFinite(suggested) ? money(suggested) : '—'}</td>`;
+        });
+        tbody += `<tr>${tr}</tr>`;
+      });
+
+      const html = `<!doctype html><html><head><meta charset="utf-8"><title>Reporte de Precios — ${esc(state.name || '')}</title>` +
+      `<style>body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial;color:#111;margin:24px}` +
+      `h1{margin:0 0 4px 0}.muted{color:#6b7280}table{width:100%;border-collapse:collapse;margin-top:12px}` +
+      `th,td{border:1px solid #e5e7eb;padding:6px 8px;text-align:left;font-size:12px}th{background:#f9fafb}` +
+      `.header{display:flex;justify-content:space-between;align-items:center}` +
+      `.brand{display:flex;gap:10px;align-items:center}</style></head><body>` +
+      `<div class="header"><div class="brand">${logo}<div><h1>${esc(state.brand?.name || 'CostoChef')}</h1>` +
+      `<div class="muted">${esc(state.name || 'Cliente')}</div></div></div><div class="muted">${now}</div></div>` +
+      `<h3>Reporte de precios ${includeTax ? '(con IVA)' : '(sin IVA)'}</h3>` +
+      `<table><thead><tr>${thead}</tr></thead><tbody>${tbody}</tbody></table>` +
+      `<p class="muted">Generado con CostoChef v2.1 — Plato y Pixel</p>` +
+      `<script>setTimeout(()=>window.print(),300);<\/script></body></html>`;
+
+      popup.document.open();
+      popup.document.write(html);
+      popup.document.close();
+    }
+
+    function buildPriceRows(){
+      return (state.recipes || []).map((r) => ({ id: r.id, name: r.name, cost: computeRecipeCost(r).cost }));
+    }
+
+    document.getElementById('chkShowCompare').onchange = renderPrices;
+    document.getElementById('chkIVA').onchange = renderPrices;
+
+    function bestTargetMargin(){
+      const arr = (state.channels || []).map((c) => parseFloat(c.marginPct || 0) || 0);
+      if (!arr.length) return 0;
+      arr.sort((a, b) => b - a);
+      return arr[0];
+    }
+
+    function renderPrices(){
+      const includeTax = document.getElementById('chkIVA').checked;
+      document.getElementById('ivaPctLabel').textContent = state.taxPct || 0;
+      document.getElementById('ivaNote').textContent = includeTax ? 'Incluye impuesto.' : 'Impuesto no incluido.';
+      const rows = buildPriceRows(includeTax);
+      const showCmp = document.getElementById('chkShowCompare').checked;
+      let heads = ['Receta', 'Costo/porción'];
+      if (showCmp) {
+        heads.push('Precio actual', 'Margen actual');
+      }
+      heads = heads.concat((state.channels || []).map((c) => `${c.name} (${c.marginPct}%)`));
+      let html = '<table><thead><tr>' + heads.map((h) => `<th>${h}</th>`).join('') + '</tr></thead><tbody>';
+      rows.forEach((row) => {
+        html += `<tr><td>${esc(row.name)}</td><td>${money(row.cost)}</td>`;
+        if (showCmp) {
+          const sp = state.salePrice && state.salePrice[row.id];
+          const spValue = (sp === '' || sp == null) ? '' : sp;
+          html += `<td><input type="number" step="0.01" data-sale="p" data-rec="${row.id}" value="${spValue}"></td>`;
+          const current = (sp !== '' && sp != null && Number.isFinite(parseFloat(sp)))
+            ? marginFromPrice(row.cost, parseFloat(sp), includeTax)
+            : NaN;
+          const target = bestTargetMargin();
+          let cls = 'cm ';
+          if (Number.isFinite(current)) {
+            if (current >= target) cls += 'ok';
+            else if (current >= target - 5) cls += 'warn';
+            else cls += 'bad';
+            html += `<td><span class="${cls}">${current.toFixed(1)}%</span></td>`;
+          } else {
+            html += '<td><span class="muted">—</span></td>';
+          }
+        }
+        (state.channels || []).forEach((channel) => {
+          const suggested = priceFromMargin(row.cost, channel.marginPct, includeTax);
+          html += `<td>${Number.isFinite(suggested) ? money(suggested) : '<span class="muted">—</span>'}</td>`;
+        });
+        html += '</tr>';
+      });
+      html += '</tbody></table>';
+      document.getElementById('pricesTable').innerHTML = html;
+      document.querySelectorAll('input[data-sale="p"]').forEach((input) => {
+        input.addEventListener('input', (event) => {
+          const rec = event.target.getAttribute('data-rec');
+          const value = event.target.value === '' ? '' : parseFloat(event.target.value || '0');
+          state.salePrice = state.salePrice || {};
+          state.salePrice[rec] = value;
+          save();
+          renderPrices();
+        });
+      });
+    }
+
+    document.getElementById('btnAddIng').onclick = () => {
+      if (!state.license.activated && (state.ingredients?.length || 0) >= DEMO_LIMITS.ingredients) {
+        alert('Demo: límite de insumos alcanzado. Activa tu licencia.');
+        return;
+      }
+      (state.ingredients || (state.ingredients = [])).push({ id: uid('ing'), name: '', purchaseUnit: 'kg', costPerPurchaseUnit: 0 });
+      save();
+      renderIngs();
+    };
+
+    function renderIngs(){
+      const el = document.getElementById('ingTable');
+      let html = '<table><thead><tr><th>Nombre</th><th>Unidad compra</th><th>Costo por unidad</th><th></th></tr></thead><tbody>';
+      (state.ingredients || []).forEach((ing) => {
+        html += `<tr>
+          <td><input data-ing="name" data-id="${ing.id}" value="${escAttr(ing.name || '')}"></td>
+          <td><select data-ing="unit" data-id="${ing.id}">${['kg','g','l','ml','unidad','porción'].map((u) => `<option ${ing.purchaseUnit === u ? 'selected' : ''}>${u}</option>`).join('')}</select></td>
+          <td><input type="number" min="0" step="0.01" data-ing="cost" data-id="${ing.id}" value="${ing.costPerPurchaseUnit || 0}"></td>
+          <td><button class="btn" data-ing="del" data-id="${ing.id}">Eliminar</button></td>
+        </tr>`;
+      });
+      html += '<tr><td colspan="4"><button class="btn pri" id="btnAddIngInline">+ Agregar insumo</button></td></tr>';
+      html += '</tbody></table>';
+      el.innerHTML = html;
+      el.querySelectorAll('input,select,button').forEach((ctrl) => {
+        const kind = ctrl.getAttribute('data-ing');
+        if (!kind) return;
+        if (kind === 'del') {
+          ctrl.addEventListener('click', onIngDelete);
+        } else {
+          ctrl.addEventListener('input', onIngChange);
+        }
+      });
+      const inlineBtn = document.getElementById('btnAddIngInline');
+      if (inlineBtn) inlineBtn.onclick = document.getElementById('btnAddIng').onclick;
+    }
+
+    function onIngChange(event){
+      const id = event.target.getAttribute('data-id');
+      const kind = event.target.getAttribute('data-ing');
+      const ing = (state.ingredients || []).find((item) => item.id === id);
+      if (!ing) return;
+      if (kind === 'name') ing.name = event.target.value;
+      if (kind === 'unit') ing.purchaseUnit = event.target.value;
+      if (kind === 'cost') ing.costPerPurchaseUnit = parseFloat(event.target.value || '0');
+      save();
+      renderPrices();
+    }
+
+    function onIngDelete(event){
+      const id = event.target.getAttribute('data-id');
+      if (!confirm('Eliminar insumo?')) return;
+      state.ingredients = (state.ingredients || []).filter((item) => item.id !== id);
+      (state.recipes || []).forEach((recipe) => {
+        recipe.items = (recipe.items || []).filter((it) => it.ingredientId !== id);
+      });
+      save();
+      renderIngs();
+      renderRecs();
+      renderPrices();
+    }
+
+    document.getElementById('btnAddRec').onclick = () => {
+      if (!state.license.activated && (state.recipes?.length || 0) >= DEMO_LIMITS.recipes) {
+        alert('Demo: límite de recetas alcanzado. Activa tu licencia.');
+        return;
+      }
+      (state.recipes || (state.recipes = [])).push({ id: uid('rec'), name: 'Receta', portionsPerBatch: 1, items: [] });
+      save();
+      renderRecs();
+    };
+
+    document.getElementById('recList').addEventListener('input', (event) => {
+      if (event.target && event.target.getAttribute('data-it')) onItemChange(event);
+    });
+
+    function renderRecs(){
+      const el = document.getElementById('recList');
+      let html = '';
+      (state.recipes || []).forEach((recipe) => {
+        const calc = computeRecipeCost(recipe);
+        html += `<div class="card" style="margin-bottom:10px">
+          <div class="row" style="justify-content:space-between">
+            <div class="row">
+              <input data-rec="name" data-id="${recipe.id}" value="${escAttr(recipe.name)}" style="width:220px">
+              <div class="row"><span class="muted">Porciones/batch</span> <input type="number" min="1" data-rec="ppb" data-id="${recipe.id}" value="${recipe.portionsPerBatch}" style="width:110px"></div>
+            </div>
+            <div class="row"><span class="badge">Costo/porción: ${money(calc.cost)}</span><button class="btn" data-rec="del" data-id="${recipe.id}">Eliminar</button></div>
+          </div>
+          <div style="overflow:auto;margin-top:8px"><table><thead><tr><th>Ingrediente</th><th>Cant.</th><th>Unidad</th><th>Rend. %</th><th></th></tr></thead><tbody>`;
+        (recipe.items || []).forEach((item, idx) => {
+          html += `<tr>
+            <td><select data-it="ing" data-id="${recipe.id}" data-idx="${idx}"><option value="">— seleccionar —</option>${(state.ingredients || []).map((ing) => `<option value="${ing.id}" ${ing.id === item.ingredientId ? 'selected' : ''}>${esc(ing.name || 'Insumo')}</option>`).join('')}</select></td>
+            <td><input type="number" min="0" step="0.01" data-it="qty" data-id="${recipe.id}" data-idx="${idx}" value="${item.qty || ''}"></td>
+            <td><select data-it="unit" data-id="${recipe.id}" data-idx="${idx}">${['kg','g','l','ml','unidad','porción'].map((u) => `<option ${u === item.unit ? 'selected' : ''}>${u}</option>`).join('')}</select></td>
+            <td><input type="number" min="1" max="100" step="1" data-it="yield" data-id="${recipe.id}" data-idx="${idx}" value="${item.yieldPct != null ? item.yieldPct : 100}"></td>
+            <td><button class="btn" data-it="del" data-id="${recipe.id}" data-idx="${idx}">Quitar</button></td>
+          </tr>`;
+        });
+        html += `<tr><td colspan="5"><button class="btn" data-rec="addItem" data-id="${recipe.id}">+ Agregar ingrediente</button></td></tr></tbody></table></div></div>`;
+      });
+      el.innerHTML = html || '<p class="muted">No hay recetas todavía.</p>';
+      el.querySelectorAll('[data-rec="name"]').forEach((input) => {
+        input.addEventListener('input', (event) => {
+          const id = event.target.dataset.id;
+          const recipe = (state.recipes || []).find((r) => r.id === id);
+          if (recipe) {
+            recipe.name = event.target.value;
+            save();
+            renderPrices();
+          }
+        });
+      });
+      el.querySelectorAll('[data-rec="ppb"]').forEach((input) => {
+        input.addEventListener('input', (event) => {
+          const id = event.target.dataset.id;
+          const recipe = (state.recipes || []).find((r) => r.id === id);
+          if (recipe) {
+            recipe.portionsPerBatch = parseFloat(event.target.value || '1');
+            save();
+            renderRecs();
+            renderPrices();
+          }
+        });
+      });
+      el.querySelectorAll('[data-rec="del"]').forEach((btn) => {
+        btn.addEventListener('click', (event) => {
+          const id = event.target.dataset.id;
+          if (!confirm('Eliminar receta?')) return;
+          state.recipes = (state.recipes || []).filter((r) => r.id !== id);
+          save();
+          renderRecs();
+          renderPrices();
+        });
+      });
+      el.querySelectorAll('[data-rec="addItem"]').forEach((btn) => {
+        btn.addEventListener('click', (event) => {
+          const id = event.target.dataset.id;
+          const recipe = (state.recipes || []).find((r) => r.id === id);
+          if (!recipe) return;
+          (recipe.items || (recipe.items = [])).push({ ingredientId: (state.ingredients[0] && state.ingredients[0].id) || '', qty: 1, unit: 'unidad', yieldPct: 100 });
+          save();
+          renderRecs();
+          renderPrices();
+        });
+      });
+      el.querySelectorAll('[data-it="del"]').forEach((btn) => {
+        btn.addEventListener('click', (event) => {
+          const id = event.target.getAttribute('data-id');
+          const idx = parseInt(event.target.getAttribute('data-idx'), 10);
+          const recipe = (state.recipes || []).find((r) => r.id === id);
+          if (!recipe) return;
+          recipe.items.splice(idx, 1);
+          save();
+          renderRecs();
+          renderPrices();
+        });
+      });
+    }
+
+    function onItemChange(event){
+      const id = event.target.getAttribute('data-id');
+      const idx = parseInt(event.target.getAttribute('data-idx'), 10);
+      const key = event.target.getAttribute('data-it');
+      const recipe = (state.recipes || []).find((r) => r.id === id);
+      if (!recipe) return;
+      const item = recipe.items?.[idx];
+      if (!item) return;
+      if (key === 'ing') item.ingredientId = event.target.value;
+      if (key === 'qty') item.qty = parseFloat(event.target.value || '0');
+      if (key === 'unit') item.unit = event.target.value;
+      if (key === 'yield') item.yieldPct = parseFloat(event.target.value || '100');
+      save();
+      renderRecs();
+      renderPrices();
+    }
+
+    document.getElementById('btnAddCh').addEventListener('click', () => {
+      (state.channels || (state.channels = [])).push({ id: uid('ch'), name: 'Canal', marginPct: 60 });
+      save();
+      renderCh();
+      renderPrices();
+    });
+
+    function renderCh(){
+      document.getElementById('inpCurrency').value = state.currency || '';
+      document.getElementById('inpTax').value = state.taxPct || 0;
+      const el = document.getElementById('chTable');
+      let html = '<table><thead><tr><th>Canales</th><th>Margen %</th><th></th></tr></thead><tbody>';
+      (state.channels || []).forEach((channel) => {
+        html += `<tr>
+          <td><input data-ch="name" data-id="${channel.id}" value="${escAttr(channel.name)}"></td>
+          <td><input type="number" min="0" max="95" step="1" data-ch="margin" data-id="${channel.id}" value="${channel.marginPct}"></td>
+          <td><button class="btn" data-ch="del" data-id="${channel.id}">Eliminar</button></td>
+        </tr>`;
+      });
+      html += '</tbody></table>';
+      el.innerHTML = html;
+      el.querySelectorAll('[data-ch]').forEach((ctrl) => ctrl.addEventListener('input', onChChange));
+      el.querySelectorAll('button[data-ch="del"]').forEach((btn) => btn.addEventListener('click', onChDelete));
+      document.getElementById('inpCurrency').oninput = (event) => {
+        state.currency = event.target.value;
+        save();
+        renderPrices();
+        renderRecs();
+      };
+      document.getElementById('inpTax').oninput = (event) => {
+        state.taxPct = parseFloat(event.target.value || '0');
+        save();
+        renderPrices();
+      };
+    }
+
+    function onChChange(event){
+      const id = event.target.getAttribute('data-id');
+      const key = event.target.getAttribute('data-ch');
+      const channel = (state.channels || []).find((c) => c.id === id);
+      if (!channel) return;
+      if (key === 'name') channel.name = event.target.value;
+      if (key === 'margin') channel.marginPct = parseFloat(event.target.value || '0');
+      save();
+      renderPrices();
+      renderCh();
+    }
+
+    function onChDelete(event){
+      const id = event.target.getAttribute('data-id');
+      state.channels = (state.channels || []).filter((c) => c.id !== id);
+      save();
+      renderCh();
+      renderPrices();
+    }
+
+    function renderAjustes(){
+      document.getElementById('inpBrand').value = (state.brand && state.brand.name) || '';
+      document.getElementById('inpColor').value = (state.brand && state.brand.primary) || '#8B5CF6';
+      document.getElementById('inpClient').value = state.name || '';
+      document.getElementById('inpLogoUrl').value = state.logoUrl || '';
+      document.getElementById('inpLang').value = state.lang || 'es';
+      document.getElementById('inpBrand').oninput = (event) => {
+        state.brand = state.brand || {};
+        state.brand.name = event.target.value;
+        save();
+      };
+      document.getElementById('inpColor').oninput = (event) => {
+        state.brand = state.brand || {};
+        state.brand.primary = event.target.value;
+        save();
+        document.documentElement.style.setProperty('--pri', state.brand.primary);
+      };
+      document.getElementById('inpClient').oninput = (event) => {
+        state.name = event.target.value;
+        save();
+        document.getElementById('brandName').textContent = state.name;
+      };
+      document.getElementById('inpLogoUrl').oninput = (event) => {
+        state.logoUrl = event.target.value;
+        save();
+      };
+      document.getElementById('inpLang').oninput = (event) => {
+        state.lang = event.target.value;
+        save();
+        renderPrices();
+      };
+    }
+
+    renderPrices();
+    renderIngs();
+    renderRecs();
+    renderCh();
+    renderAjustes();
+  })();
+  </script>
+  <script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('/service-worker.js').catch((err) => {
+        console.warn('SW registration failed', err);
+      });
+    });
+  }
+  </script>
 </body>
 </html>
