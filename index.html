@@ -47,22 +47,21 @@
     .opt-toppings{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
     .opt-chip{display:flex;align-items:center;gap:8px;padding:8px;border:1px solid #eee;border-radius:8px}
     .opt-protein-select{width:100%;padding:8px;border:1px solid #ddd;border-radius:8px}
+    .cta.pulse{animation:cta-pulse .4s ease}
+    @keyframes cta-pulse{0%{transform:scale(1);}50%{transform:scale(1.05);}100%{transform:scale(1);}}
+    .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
   </style>
   <link rel="manifest" href="/manifest.webmanifest">
   <meta name="theme-color" content="#C8102E">
-  <!-- ===== Estilo Taco’s Serrano: fuentes + color del sistema ===== -->
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
 
 </head>
 <body>
 <header class="header">
   <div class="brand">
-    <img src="assets/logo.png" alt="Taco's Serrano" class="logo"/>
+    <img id="brand-logo" src="assets/logo.png" alt="Taco's Serrano" class="logo"/>
     <div>
       <h1 id="brand-name">Taco's Serrano</h1>
-      <small class="tagline">Menú digital — Pedido por WhatsApp</small>
+      <small id="brand-tagline" class="tagline">Menú digital — Pedido por WhatsApp</small>
     </div>
   </div>
   <button class="cart-button" id="openCartBtn" aria-label="Abrir carrito">🛒 <span id="cartCount">0</span></button>
@@ -70,7 +69,8 @@
 
 <main>
   <section class="search">
-    <input id="searchInput" type="search" placeholder="Buscar: taco, burger, papas..." />
+    <label class="sr-only" for="searchInput">Buscar en el menú</label>
+    <input id="searchInput" type="search" placeholder="Buscar: taco, burger, papas..." aria-label="Buscar en el menú" />
   </section>
 
   <nav id="categoryTabs" class="tabs"></nav>
@@ -79,7 +79,7 @@
 </main>
 
 <footer class="footer">
-  <button id="openCartBtnFooter" class="cta">Ver carrito (₡<span id="cartTotal">0</span>)</button>
+  <button id="openCartBtnFooter" class="cta">Ver carrito (<span id="cartCurrency">₡</span><span id="cartTotal">0</span>)</button>
 </footer>
 
 <div class="modal" id="cartModal" aria-hidden="true">
@@ -121,7 +121,7 @@
 
 
     <div class="total" style="margin-top:8px">
-      <strong>Total:</strong> <span>₡</span><span id="cartTotalModal">0</span>
+      <strong>Total:</strong> <span id="cartModalCurrency">₡</span><span id="cartTotalModal">0</span>
     </div>
 
     <div class="actions">

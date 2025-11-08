@@ -13,90 +13,298 @@
 <script src="https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore-compat.js"></script>
 <script src="config.js"></script>
 <style>
-:root{--y:#FFD100;--r:#C8102E;--b:#00A3E0;--g:#2BB673}
-body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:radial-gradient(1200px 600px at 50% -120px,#FFF0B3 0%,#FFF7CC 35%,#FFFFFF 70%)}
-.card{box-shadow:0 12px 28px rgba(0,0,0,.08)}
-.stamp{border:1px dashed #e5e7eb;border-radius:14px;display:flex;align-items:center;justify-content:center;text-align:center;padding:2px}
-.stamp.filled{border:1px solid #fbbf24;background:linear-gradient(180deg,#FFE27A,#FFC400)}
-.bar{height:10px;border-radius:9999px;background:#ececec;overflow:hidden}
-.bar>div{height:10px;background:linear-gradient(90deg,var(--r),var(--y))}
-.fab{position:fixed;right:16px;bottom:16px;background:var(--r);color:#fff;padding:14px 16px;border-radius:9999px;box-shadow:0 8px 20px rgba(0,0,0,.25);font-weight:600}
-.tagline{font-style:italic;opacity:.8}
-.cardItem{transition:transform .12s ease, box-shadow .12s ease; background:linear-gradient(180deg,#ffffff,#fafafa)}
-.cardItem:hover{transform:translateY(-2px); box-shadow:0 10px 24px rgba(0,0,0,.08)}
-.badge{background:#FFF3D1;border:1px solid #F8D776;color:#7A4B00;padding:4px 8px;border-radius:9999px;font-size:11px;}
-.thumb{width:56px;height:56px;border-radius:16px;object-fit:cover;box-shadow:inset 0 0 0 1px #eee}
-.btn{border-radius:14px}
-.modal{position:fixed;inset:0;background:rgba(0,0,0,.38);display:none;place-items:center;padding:16px}
-.modal .box{background:#fff;border-radius:20px;max-width:360px;width:100%;padding:18px}
-.greet{display:none}
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap');
+:root{
+  --ts-yellow:#FFD100;
+  --ts-red:#C8102E;
+  --ts-orange:#FF5C00;
+  --ts-ink:#1C1C1C;
+  --ts-light:#FFFFFF;
+}
+
+*{box-sizing:border-box;}
+.hidden{display:none !important;}
+.opacity-50{opacity:.5;}
+.pointer-events-none{pointer-events:none;}
+body{
+  font-family:"Inter",system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+  margin:0;
+  background:linear-gradient(180deg,#fff7dd 0%,#ffffff 28%,#f8f5ff 100%);
+  color:var(--ts-ink);
+  min-height:100vh;
+}
+a{color:inherit;}
+button{font:inherit;}
+
+.container{width:min(1000px,92vw);margin:0 auto;padding:32px 0 96px;}
+
+.site-header{display:flex;align-items:center;justify-content:space-between;gap:20px;margin-bottom:28px;flex-wrap:wrap;}
+.brand{display:flex;align-items:center;gap:16px;}
+.brand img{width:72px;height:72px;border-radius:24px;object-fit:cover;box-shadow:0 10px 24px rgba(0,0,0,.12);}
+.brand-title{font-size:34px;line-height:1;color:var(--ts-red);margin:0;}
+.brand-meta{font-size:14px;color:rgba(0,0,0,.6);margin-top:4px;}
+.header-tagline{font-size:14px;color:rgba(0,0,0,.7);max-width:320px;}
+
+.ts-card{
+  background:var(--ts-light);
+  border-radius:16px;
+  border:1px solid rgba(0,0,0,.06);
+  box-shadow:0 10px 24px rgba(0,0,0,.08);
+  overflow:hidden;
+}
+
+.dashboard-card{padding:24px;border-radius:24px;display:flex;flex-direction:column;gap:20px;--accent-text:var(--ts-red);}
+.dashboard-header{display:flex;flex-wrap:wrap;align-items:flex-start;justify-content:space-between;gap:16px;}
+.dashboard-header p{margin:6px 0 0;font-size:14px;color:rgba(0,0,0,.68);}
+.dashboard-card #cards{margin-top:10px;}
+.card-head{display:flex;align-items:center;gap:16px;}
+
+.logo-chip{
+  width:44px;height:44px;border-radius:50%;background:var(--accent,var(--ts-red));color:#fff;display:grid;place-items:center;font-weight:800;font-size:18px;
+}
+.card-title{font-family:"Bebas Neue",sans-serif;letter-spacing:.5px;font-size:28px;margin:0;color:var(--accent-text,var(--ts-ink));}
+.badge{background:linear-gradient(90deg,var(--accent,var(--ts-orange)),var(--accent-soft,var(--ts-red)));color:#fff;border-radius:999px;padding:6px 10px;font-weight:700;font-size:12px;display:inline-flex;align-items:center;gap:6px;box-shadow:0 10px 20px rgba(0,0,0,.12);}
+
+#cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px;}
+.loyalty-card{position:relative;z-index:0;padding:20px;display:flex;flex-direction:column;gap:16px;transition:transform .18s ease,box-shadow .18s ease;--accent:var(--ts-red);--accent-soft:#ff8c7f;--accent-text:var(--ts-ink);overflow:hidden;}
+.loyalty-card::before{content:"";position:absolute;inset:0;background:radial-gradient(120% 120% at 100% 0%,rgba(255,255,255,.05)0%,rgba(255,255,255,0)45%),linear-gradient(135deg,var(--accent-soft,#ff8c7f)0%,rgba(255,255,255,0)70%);opacity:.2;pointer-events:none;transition:opacity .2s ease;z-index:0;}
+.loyalty-card>*{position:relative;z-index:1;}
+.loyalty-card:hover{transform:translateY(-2px);box-shadow:0 16px 30px rgba(0,0,0,.16);}
+.loyalty-card:hover::before{opacity:.32;}
+.loyalty-card .card-head{display:flex;align-items:center;gap:12px;justify-content:space-between;}
+.loyalty-card .card-head .card-title{font-size:24px;}
+.loyalty-card .card-info{display:flex;flex-direction:column;gap:4px;font-size:13px;color:rgba(0,0,0,.68);}
+.loyalty-card .card-info .card-tagline{font-size:12px;color:rgba(0,0,0,.55);}
+.loyalty-card .progress-meta{display:flex;align-items:center;justify-content:space-between;font-size:13px;color:rgba(0,0,0,.7);}
+.loyalty-card .bar{margin:8px 0;}
+.loyalty-card .logo-chip{box-shadow:0 6px 14px rgba(0,0,0,.2);}
+.loyalty-card .btn{--btn-bg:var(--accent,var(--ts-red));}
+.card-summary{display:flex;flex-direction:column;gap:12px;}
+.card-customer{font-size:12px;color:rgba(0,0,0,.6);font-weight:600;letter-spacing:.4px;text-transform:uppercase;}
+.progress-meta span{color:rgba(0,0,0,.72);}
+
+.inputs-row{display:flex;flex-direction:column;gap:12px;}
+@media (min-width:640px){.inputs-row{flex-direction:row;}}
+
+input[type="text"],
+input[type="email"],
+input[type="password"]{
+  width:100%;
+  padding:12px 14px;
+  border-radius:14px;
+  border:1px solid rgba(0,0,0,.16);
+  background:rgba(255,255,255,.9);
+  font-size:14px;
+  transition:border-color .2s ease,box-shadow .2s ease;
+}
+input:focus-visible{outline:3px solid rgba(200,16,46,.25);outline-offset:2px;border-color:var(--ts-red);box-shadow:0 0 0 4px rgba(200,16,46,.08);}
+
+.info-hint{font-size:12px;color:rgba(0,0,0,.6);margin-top:-4px;}
+.warning{font-size:12px;color:var(--ts-red);margin-top:-4px;}
+.logout-link{background:none;border:0;color:var(--ts-red);font-size:12px;font-weight:600;text-decoration:underline;cursor:pointer;padding:0;margin-left:8px;}
+.logout-link:focus-visible{outline:3px solid rgba(200,16,46,.3);outline-offset:2px;}
+
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:10px 16px;border-radius:12px;font-weight:700;border:0;cursor:pointer;font-size:14px;transition:transform .15s ease,box-shadow .15s ease;}
+.btn:focus-visible{outline:3px solid rgba(200,16,46,.3);outline-offset:2px;}
+.btn:hover{transform:translateY(-1px);box-shadow:0 10px 18px rgba(0,0,0,.12);}
+.btn-primary{background:var(--btn-bg,var(--ts-red));color:#fff;}
+.btn-outline{background:#fff;color:var(--btn-bg,var(--ts-red));border:2px solid var(--btn-bg,var(--ts-red));}
+.btn:disabled{opacity:.5;pointer-events:none;box-shadow:none;transform:none;}
+
+.greet{display:none;background:rgba(255,209,0,.14);border:1px solid rgba(255,209,0,.5);padding:10px 12px;border-radius:14px;font-size:13px;color:rgba(0,0,0,.72);margin-top:-6px;}
+
+.progress-chip{background:var(--accent,var(--ts-ink));color:var(--accent-chip-text,#fff);border-radius:999px;padding:4px 10px;font-size:12px;font-weight:600;box-shadow:0 8px 18px rgba(0,0,0,.16);}
+.progress-block{display:flex;flex-direction:column;gap:10px;}
+.back-link,.share-link{background:none;border:0;color:var(--ts-red);font-weight:600;cursor:pointer;text-decoration:underline;font-size:14px;padding:0;}
+.back-link:focus-visible,.share-link:focus-visible{outline:3px solid rgba(200,16,46,.3);outline-offset:2px;}
+.bar{height:10px;background:#f0f0f0;border-radius:999px;overflow:hidden;position:relative;}
+.bar>div{height:100%;background:linear-gradient(90deg,var(--accent,var(--ts-yellow)),var(--accent-soft,#ffe667));border-radius:999px;transition:width .3s ease;box-shadow:0 8px 18px rgba(0,0,0,.18);}
+
+.detail-card{padding:24px;border-radius:24px;display:flex;flex-direction:column;gap:24px;--accent:var(--ts-red);--accent-soft:#ff8c7f;--accent-text:var(--ts-ink);}
+.detail-head{display:flex;flex-direction:column;gap:10px;}
+.detail-top{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;}
+.detail-meta{display:flex;align-items:center;gap:12px;flex-wrap:wrap;}
+.detail-meta .card-title{font-size:32px;line-height:1.1;}
+.customer-id{font-size:12px;color:rgba(0,0,0,.6);}
+
+.detail-hero{position:relative;border-radius:20px;overflow:hidden;min-height:160px;background:linear-gradient(135deg,var(--accent,var(--ts-red)),var(--accent-soft,#ff8c7f));box-shadow:0 20px 36px rgba(0,0,0,.2);}
+.detail-hero img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;filter:brightness(.72);}
+.detail-hero::after{content:"";position:absolute;inset:0;background:linear-gradient(120deg,rgba(0,0,0,.45),rgba(0,0,0,.1));}
+.detail-hero-content{position:relative;z-index:1;display:flex;flex-direction:column;justify-content:flex-end;height:100%;padding:20px;gap:12px;color:#fff;}
+.detail-hero-pill{align-self:flex-start;background:rgba(0,0,0,.36);backdrop-filter:blur(6px);padding:6px 12px;border-radius:999px;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;}
+.detail-hero-title{font-family:"Bebas Neue",sans-serif;font-size:40px;letter-spacing:.5px;margin:0;}
+.detail-hero-tagline{font-size:16px;max-width:70%;line-height:1.4;opacity:.92;font-weight:500;}
+@media (max-width:600px){
+  .detail-hero{min-height:140px;}
+  .detail-hero-title{font-size:32px;}
+  .detail-hero-tagline{max-width:100%;font-size:14px;}
+}
+
+.stamps-section{display:flex;flex-direction:column;gap:12px;}
+.stamps-title{font-size:14px;font-weight:600;color:rgba(0,0,0,.72);}
+
+.admin-card{background:#f9fafb;border-radius:20px;padding:20px;display:flex;flex-direction:column;gap:16px;border:1px solid rgba(0,0,0,.06);box-shadow:0 16px 28px rgba(0,0,0,.08);}
+.admin-card p{margin:0;font-size:13px;color:rgba(0,0,0,.68);}
+.admin-actions{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;}
+
+#rewardHint{font-size:12px;color:rgba(0,0,0,.6);margin-top:4px;}
+
+.history-card{display:flex;flex-direction:column;gap:8px;}
+#history{list-style:none;padding:0;margin:0;max-height:220px;overflow:auto;font-size:12px;}
+#history li{padding:6px 8px;border-radius:10px;background:rgba(0,0,0,.04);}
+
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.38);display:none;place-items:center;padding:16px;z-index:9999;}
+.modal .box{background:#fff;border-radius:24px;max-width:360px;width:100%;padding:24px;display:flex;flex-direction:column;gap:14px;box-shadow:0 20px 38px rgba(0,0,0,.18);}
+.modal .box h3{margin:0;font-size:20px;}
+.modal .box p{margin:0;font-size:13px;color:rgba(0,0,0,.7);}
+.modal .box .grid{display:flex;flex-direction:column;gap:12px;}
+
+.fab{position:fixed;right:16px;bottom:16px;background:var(--ts-red);color:#fff;padding:14px 18px;border-radius:9999px;box-shadow:0 12px 28px rgba(0,0,0,.25);font-weight:600;text-decoration:none;}
+.fab:focus-visible{outline:3px solid rgba(255,209,0,.5);outline-offset:4px;}
+
+#toast{font-size:13px;}
+
+@media (max-width:600px){
+  .brand img{width:60px;height:60px;}
+  .brand-title{font-size:28px;}
+  .dashboard-card,.detail-card{padding:20px;}
+  .loyalty-card{padding:18px;}
+}
+
+/* ===== Rejilla de sellos ===== */
+.stamps-grid { display:grid; gap:8px; grid-template-columns: repeat(5, minmax(0,1fr)); }
+@media (min-width: 900px){
+  .stamps-grid { grid-template-columns: repeat(10, minmax(0,1fr)); }
+}
+
+/* Envoltorio para poder colocar el premio encima */
+.stamp-wrap { position: relative; }
+
+/* Pill con el texto del premio sobre el sello */
+.stamp-prize {
+  position: absolute; top: -18px; left: 50%; transform: translateX(-50%);
+  background: linear-gradient(90deg, var(--ts-orange, #FF5C00), var(--ts-red, #C8102E));
+  color:#fff; border-radius:999px; padding:2px 6px; font-size:10px; font-weight:800;
+  white-space:nowrap; box-shadow:0 6px 12px rgba(0,0,0,.15);
+}
+
+/* Sello base y lleno */
+.stamp {
+  height: 44px; border:1px dashed #e5e7eb; border-radius:14px; display:grid; place-items:center; background:#fff;
+  font-weight:700;
+}
+.stamp.filled {
+  border:1px solid #ffbd24;
+  background: linear-gradient(180deg, #fff3d6, #ffd36a);
+}
+
+/* Confeti: canvas flotante */
+#ts-confetti { position: fixed; inset:0; pointer-events:none; z-index: 99999; }
+
+/* Feedback visual rápido al ganar premio */
+.stamp.flash { animation: tsFlash .6s ease; }
+@keyframes tsFlash {
+  0% { transform: scale(1); box-shadow: none; }
+  50% { transform: scale(1.08); box-shadow: 0 10px 24px rgba(0,0,0,.18); }
+  100% { transform: scale(1); box-shadow: none; }
+}
 </style>
 </head>
-<body class="min-h-screen text-gray-900">
-<main class="max-w-md mx-auto p-4">
-  <header class="flex items-center gap-3">
-    <img src="imagotipo.png" class="w-14 h-14 bg-white rounded-2xl object-contain"/>
-    <div><h1 class="text-3xl font-bold text-[#C8102E]">Taco’s Serrano</h1><p class="text-xs opacity-70">Ciudad Quesada · 24610007</p></div>
-  </header>
-
-  <section id="dashboard" class="mt-5 card bg-white rounded-3xl p-5">
-    <div class="flex items-center justify-between">
-      <div>
-        <h2 class="text-xl font-bold">Centro de fidelidad</h2>
-        <p class="text-sm opacity-80">Ingresá el <b>teléfono</b> o <b>nombre</b> del cliente y elegí el programa.</p>
-      </div>
-      <button id="cashierBtn" class="btn px-4 py-2 font-semibold text-white" style="background:var(--r)">Panel de caja</button>
-    </div>
-    <div id="greet" class="greet mt-2 text-sm bg-[#FFF3D1] border border-[#F8D776] rounded-xl px-3 py-2">
-      <span id="greetText">Bienvenido 👋</span>
-      <button id="logoutBtn" class="ml-2 underline text-xs">Salir</button>
-    </div>
-    <div class="mt-3 flex gap-2">
-      <input id="idInput" class="flex-1 border rounded-xl p-3" placeholder="e.g. 8313-7606"/>
-      <button id="useIdBtn" class="btn bg-[#C8102E] text-white px-4 py-3 font-semibold">Ver tarjetas</button>
-    </div>
-    <div id="idHint" class="text-xs opacity-70 mt-2 hidden"></div>
-    <div id="fbWarn" class="mt-2 text-xs text-red-700 hidden">⚠️ Firebase no está inicializado.</div>
-    <div id="cards" class="mt-4 grid gap-3"></div>
-  </section>
-
-  <section id="detail" class="hidden mt-6 card bg-white p-5 rounded-3xl">
-    <div class="flex items-center justify-between">
-      <div>
-        <button id="backBtn" class="text-sm underline">&larr; Volver</button>
-        <div class="flex items-center gap-2 mt-1">
-          <span class="badge" id="programBadge">Programa</span>
-          <h3 id="progName" class="text-xl font-bold"></h3>
+<body>
+<main>
+  <div class="container">
+    <header class="site-header">
+      <div class="brand">
+        <img src="imagotipo.png" alt="Taco’s Serrano"/>
+        <div>
+          <h1 class="brand-title">Taco’s Serrano</h1>
+          <p class="brand-meta">Ciudad Quesada · 24610007</p>
         </div>
-        <p id="cid" class="text-xs opacity-70"></p>
       </div>
-      <button id="shareBtn" class="underline text-sm">Compartir</button>
-    </div>
+      <p class="header-tagline">Centro de fidelidad para clientes frecuentes. Acumulá sellos, descubrí premios y administrá canjes al instante.</p>
+    </header>
 
-    <div class="mt-4">
-      <div class="flex items-center justify-between text-xs"><span>Progreso</span><span id="progressText" class="px-2 py-1 rounded-full bg-gray-900 text-white">0/10</span></div>
-      <div class="bar mt-1"><div id="progressBar" style="width:0%"></div></div>
-    </div>
-
-    <div id="stamps" class="grid grid-cols-5 gap-1 mt-3"></div>
-
-    <div class="mt-4 bg-gray-50 p-3 rounded-2xl">
-      <div class="text-sm font-semibold">Acceso para colaboradores</div>
-      <div class="text-xs opacity-70">Los botones se habilitan al iniciar sesión desde <b>Panel de caja</b>.</div>
-      <div id="adminPanel" class="mt-3 grid grid-cols-2 gap-2 opacity-50 pointer-events-none">
-        <button id="addBtn" class="btn px-4 py-3 font-semibold text-white" style="background:var(--r)">+1 punto</button>
-        <button id="remBtn" class="btn px-4 py-3 font-semibold bg-white border">-1</button>
-        <button id="redeemBtn" class="btn px-4 py-3 font-semibold" style="background:var(--y)">Registrar canje</button>
-        <button id="resetBtn" class="btn px-4 py-3 font-semibold bg-white border">Reiniciar</button>
+    <section id="dashboard" class="ts-card dashboard-card">
+      <div class="dashboard-header">
+        <div class="dashboard-title">
+          <div class="card-head">
+            <div class="logo-chip">TS</div>
+            <div>
+              <h2 class="card-title">Centro de fidelidad</h2>
+              <p>Ingresá el <b>teléfono</b> o <b>nombre</b> del cliente y elegí el programa.</p>
+            </div>
+          </div>
+        </div>
+        <button id="cashierBtn" class="btn btn-primary" type="button">Panel de caja</button>
       </div>
-      <div id="rewardHint" class="text-xs opacity-70 mt-3"></div>
-    </div>
+      <div id="greet" class="greet">
+        <span id="greetText">Bienvenido 👋</span>
+        <button id="logoutBtn" class="logout-link" type="button">Salir</button>
+      </div>
+      <div class="inputs-row">
+        <input id="idInput" type="text" placeholder="e.g. 8313-7606"/>
+        <button id="useIdBtn" class="btn btn-primary" type="button">Ver tarjetas</button>
+      </div>
+      <div id="idHint" class="info-hint hidden"></div>
+      <div id="fbWarn" class="warning hidden">⚠️ Firebase no está inicializado.</div>
+      <div id="cards"></div>
+    </section>
 
-    <div class="mt-4">
-      <div class="text-sm font-semibold mb-1">Historial</div>
-      <ul id="history" class="space-y-1 max-h-36 overflow-auto pr-1 text-[12px]"></ul>
-    </div>
-  </section>
+    <section id="detail" class="ts-card detail-card hidden">
+      <div class="detail-head">
+        <div class="detail-top">
+          <button id="backBtn" class="back-link" type="button">&larr; Volver</button>
+          <button id="shareBtn" class="share-link" type="button">Compartir</button>
+        </div>
+        <div class="detail-meta">
+          <span class="badge" id="programBadge">Programa</span>
+          <h3 id="progName" class="card-title"></h3>
+        </div>
+        <p id="cid" class="customer-id"></p>
+      </div>
+
+      <div class="detail-hero">
+        <img id="progHero" alt="" loading="lazy"/>
+        <div class="detail-hero-content">
+          <span class="detail-hero-pill" id="progHeroLabel">Programa de fidelidad</span>
+          <h2 class="detail-hero-title" id="progHeroTitle"></h2>
+          <p class="detail-hero-tagline" id="progTagline"></p>
+        </div>
+      </div>
+
+      <div class="progress-block">
+        <div class="progress-meta">
+          <span>Progreso</span>
+          <span id="progressText" class="progress-chip">0/10</span>
+        </div>
+        <div class="bar"><div id="progressBar" style="width:0%"></div></div>
+      </div>
+
+      <div class="stamps-section">
+        <div class="stamps-title">Tus sellos</div>
+        <div id="stamps"></div>
+      </div>
+
+      <div class="admin-card">
+        <div>
+          <div class="stamps-title">Acceso para colaboradores</div>
+          <p>Los botones se habilitan al iniciar sesión desde <b>Panel de caja</b>.</p>
+        </div>
+        <div id="adminPanel" class="admin-actions opacity-50 pointer-events-none">
+          <button id="addBtn" class="btn btn-primary" type="button">+1 punto</button>
+          <button id="remBtn" class="btn btn-outline" type="button">-1</button>
+          <button id="redeemBtn" class="btn btn-primary" type="button">Registrar canje</button>
+          <button id="resetBtn" class="btn btn-outline" type="button">Reiniciar</button>
+        </div>
+        <div id="rewardHint"></div>
+      </div>
+
+      <div class="history-card">
+        <div class="stamps-title">Historial</div>
+        <ul id="history"></ul>
+      </div>
+    </section>
+  </div>
 </main>
 
 <!-- Modal login -->
@@ -107,7 +315,7 @@ body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;backgr
     <div class="grid gap-2">
       <input id="email" class="rounded-xl border p-2" placeholder="caja@tacosserrano.com" />
       <input id="pass" type="password" class="rounded-xl border p-2" placeholder="••••••••" />
-      <button id="loginBtn" class="btn px-4 py-2 font-semibold text-white" style="background:var(--r)">Entrar</button>
+      <button id="loginBtn" class="btn px-4 py-2 font-semibold text-white" style="--btn-bg:var(--ts-red);background:var(--ts-red);">Entrar</button>
       <button id="closeLogin" class="text-sm underline">Cancelar</button>
     </div>
   </div>
@@ -119,10 +327,36 @@ body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;backgr
 <script>
 const ADMIN_PIN = "24610007"; // reservado por si luego lo querés reactivar
 const PROGRAMS = {
-  economico: { n:"Menú económico", goal:10, rewards:{5:"30% de descuento (menú económico)",8:"Papas grandes gratis",10:"Menú económico gratis"}, color:getCss('--r'), tagline:"Aquí siempre te damos más", thumb:"media/economico.jpg" },
-  combos:    { n:"Combos",           goal:10, rewards:{5:"30% de descuento",8:"Papas grandes gratis",10:"Combo gratis"},               color:getCss('--b'), tagline:"Elegí tu combo — cada compra suma", thumb:"media/combos.jpg" },
-  deluxe:    { n:"Hamburguesas Deluxe", goal:10, rewards:{5:"30% de descuento",8:"Papas grandes gratis",10:"Deluxe gratis"},          color:getCss('--g'), tagline:"Comer rico no es caro", thumb:"media/deluxe.jpg" }
+  economico: {
+    n:"Menú económico",
+    goal:10,
+    rewards:{5:"30% de descuento (menú económico)",8:"Papas grandes gratis",10:"Menú económico gratis"},
+    accent:"#C8102E",
+    accentSoft:"#f56d7a",
+    tagline:"Aquí siempre te damos más",
+    thumb:"media/economico.jpg"
+  },
+  combos: {
+    n:"Combos",
+    goal:10,
+    rewards:{5:"30% de descuento",8:"Papas grandes gratis",10:"Combo gratis"},
+    accent:"#FF5C00",
+    accentSoft:"#ff9542",
+    tagline:"Elegí tu combo — cada compra suma",
+    thumb:"media/combos.jpg"
+  },
+  deluxe: {
+    n:"Hamburguesas Deluxe",
+    goal:10,
+    rewards:{5:"30% de descuento",8:"Papas grandes gratis",10:"Deluxe gratis"},
+    accent:"#FFD100",
+    accentSoft:"#ffe680",
+    tagline:"Comer rico no es caro",
+    thumb:"media/deluxe.jpg"
+  }
 };
+
+const PROGRAM_ICONS = { economico:"💛", combos:"🥡", deluxe:"🍔" };
 
 const $ = s=>document.querySelector(s);
 const qs = new URLSearchParams(location.search);
@@ -132,16 +366,72 @@ let isAuthed = false, currentUserEmail = "";
 
 const dashboard = $("#dashboard"), cardsWrap = $("#cards"), idInput=$("#idInput"), useIdBtn=$("#useIdBtn"), idHint=$("#idHint");
 const detail = $("#detail"), backBtn=$("#backBtn"), progName=$("#progName"), programBadge=$("#programBadge"), cid=$("#cid");
+const progHero = $("#progHero"), progHeroTitle=$("#progHeroTitle"), progHeroLabel=$("#progHeroLabel"), progTagline=$("#progTagline");
 const progressText=$("#progressText"), progressBar=$("#progressBar"), stamps=$("#stamps"), rewardHint=$("#rewardHint");
 const adminPanel=$("#adminPanel");
 const historyUl=$("#history"); const fbWarn=$("#fbWarn");
 const loginModal=$("#loginModal"), cashierBtn=$("#cashierBtn"), closeLogin=$("#closeLogin");
 const email=$("#email"), pass=$("#pass"), loginBtn=$("#loginBtn"), greet=$("#greet"), greetText=$("#greetText"), logoutBtn=$("#logoutBtn");
 const toast=$("#toast");
-
-function getCss(v){ return getComputedStyle(document.documentElement).getPropertyValue(v).trim(); }
 function toastMsg(m){ toast.textContent=m; toast.classList.remove('hidden'); setTimeout(()=>toast.classList.add('hidden'),1600); }
 function fmtDate(d=new Date()){ return d.toLocaleString(undefined,{dateStyle:'medium', timeStyle:'short'}); }
+
+function accentTextColor(hex){
+  if (!hex || typeof hex !== 'string') return 'var(--ts-ink)';
+  let value = hex.trim();
+  if (!value.startsWith('#')) return 'var(--ts-ink)';
+  value = value.slice(1);
+  if (value.length === 3){ value = value.split('').map(ch=>ch+ch).join(''); }
+  if (value.length !== 6) return 'var(--ts-ink)';
+  const r = parseInt(value.slice(0,2),16)/255;
+  const g = parseInt(value.slice(2,4),16)/255;
+  const b = parseInt(value.slice(4,6),16)/255;
+  const luminance = 0.2126*r + 0.7152*g + 0.0722*b;
+  return luminance > 0.7 ? '#1C1C1C' : hex;
+}
+
+/* ===== Helpers de celebración ===== */
+let __prevPoints = null;
+
+function tsBuzz(ms=80){
+  try { if (navigator?.vibrate) navigator.vibrate(ms); } catch(_) {}
+}
+
+function tsConfetti(duration=1000){
+  const canvas = document.createElement('canvas');
+  canvas.id = 'ts-confetti';
+  document.body.appendChild(canvas);
+  const ctx = canvas.getContext('2d');
+  const W = canvas.width = window.innerWidth;
+  const H = canvas.height = window.innerHeight;
+
+  const N = 140;
+  const parts = Array.from({length:N}, () => ({
+    x: Math.random()*W, y: -20 - Math.random()*H*0.5,
+    r: 3 + Math.random()*4,
+    vx: (-1 + Math.random()*2) * 2,
+    vy: 2 + Math.random()*3,
+    a: Math.random()*Math.PI*2
+  }));
+
+  let running = true;
+  const t0 = performance.now();
+
+  (function loop(ts){
+    const dt = ts - t0;
+    if (dt > duration) running = false;
+
+    ctx.clearRect(0,0,W,H);
+    parts.forEach(p=>{
+      p.x += p.vx; p.y += p.vy; p.a += 0.08;
+      ctx.fillStyle = `hsl(${(p.a*180/Math.PI)%360},95%,55%)`;
+      ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, Math.PI*2); ctx.fill();
+    });
+
+    if (running) requestAnimationFrame(loop);
+    else canvas.remove();
+  })(performance.now());
+}
 
 // Firebase init + persistence
 let db=null, auth=null;
@@ -189,16 +479,29 @@ let unsub=null; function listenRemote(p,id,onChange){ if(!db||!id) return ()=>{}
 
 function cardTemplate(p, pts=0){
   const prog = PROGRAMS[p];
-  return `<div class="cardItem rounded-2xl border p-4 flex items-center gap-3">
-    <img src="${prog.thumb}" class="thumb" alt="${prog.n}"/>
-    <div class="flex-1">
-      <div class="text-[11px] opacity-70">${customerId||"Sin ID"}</div>
-      <div class="font-semibold">${prog.n}</div>
-      <div class="tagline text-xs">${prog.tagline}</div>
-      <div class="text-xs mt-1">${pts}/${prog.goal} sellos</div>
+  const goal = prog.goal || 1;
+  const icon = PROGRAM_ICONS[p] || "TS";
+  const percent = Math.min(100, Math.round((pts*100)/goal));
+  const summaryLabel = pts === 1 ? "1 sello" : `${pts} sellos`;
+  const accentText = accentTextColor(prog.accent);
+  return `<article class="ts-card loyalty-card" style="--accent:${prog.accent};--accent-soft:${prog.accentSoft};--accent-text:${accentText};">
+    <div class="card-head">
+      <div class="logo-chip">${icon}</div>
+      <div class="card-info">
+        <div class="card-title">${prog.n}</div>
+        <div class="card-tagline">${prog.tagline}</div>
+      </div>
+      <span class="badge">${pts}/${goal} sellos</span>
     </div>
-    <button class="btn px-3 py-2 text-white font-semibold" style="background:${prog.color}" data-open="${p}">Ver</button>
-  </div>`;
+    <div class="card-summary">
+      <div class="card-customer">${customerId||"Sin ID"}</div>
+      <div class="bar"><div style="width:${percent}%"></div></div>
+      <div class="progress-meta">
+        <span>${summaryLabel}</span>
+        <button class="btn btn-primary" type="button" style="--btn-bg:${prog.accent};" data-open="${p}">Ver</button>
+      </div>
+    </div>
+  </article>`;
 }
 
 async function renderDashboard(){
@@ -213,24 +516,82 @@ async function renderDashboard(){
   cardsWrap.querySelectorAll("button[data-open]").forEach(btn=> btn.addEventListener("click", ()=> openDetail(btn.getAttribute("data-open"))));
 }
 
-function renderStamps(state){
-  const pts = state.points||0;
-  const goal = PROGRAMS[programKey].goal;
-  progressText.textContent = `${pts}/${goal}`;
-  progressBar.style.width = `${(pts*100/goal)}%`;
-  stamps.innerHTML="";
-  for (let i=0;i<goal;i++){
-    const d=document.createElement('div'); d.className='stamp h-12';
-    const isMilestone = (i===4)||(i===7)||(i===9);
-    if (i<pts){ d.classList.add('filled'); d.textContent = (programKey==='economico') ? 'TS' : (programKey==='combos' ? '🍟🥤' : '🍔'); }
-    else if (isMilestone){ const label = (i===4)?'30%':(i===7)?'Papas grandes':'Producto gratis'; d.innerHTML=`<div class='text-[10px] leading-tight'>${label}</div>`; }
-    else { d.textContent = i+1; }
-    stamps.appendChild(d);
+  function renderStamps(state){
+    const pts = state.points || 0;
+    const goal = PROGRAMS[programKey].goal;
+    const percent = Math.min(100, (pts*100/goal));
+    progressText.textContent = `${pts}/${goal}`;
+    progressBar.style.width = `${percent}%`;
+
+    // Asegurar layout de grilla
+    stamps.classList.add('stamps-grid');
+
+    // Premios por hito
+    const rewardsObj = PROGRAMS[programKey].rewards || {};
+    const fallback = { "5":"30%", "8":"Papas grandes", "10":"Producto gratis" };
+    const src = Object.keys(rewardsObj).length ? rewardsObj : fallback;
+
+    // Mapa índice (0-based) → etiqueta
+    const rewardLabels = {};
+    Object.entries(src).forEach(([k,v])=>{
+      const idx = Math.max(1, parseInt(k,10)) - 1;
+      rewardLabels[idx] = String(v);
+    });
+
+    // Sellos
+    stamps.innerHTML = "";
+    for (let i=0;i<goal;i++){
+      const wrap = document.createElement('div');
+      wrap.className = 'stamp-wrap';
+
+      if (rewardLabels[i]){
+        const tag = document.createElement('div');
+        tag.className = 'stamp-prize';
+        tag.textContent = rewardLabels[i];
+        wrap.appendChild(tag);
+      }
+
+      const s = document.createElement('div');
+      s.className = 'stamp';
+      if (i < pts){
+        s.classList.add('filled');
+        s.textContent = (programKey==='economico') ? 'TS' : (programKey==='combos' ? '🍟🥤' : '🍔');
+      } else {
+        s.textContent = (i+1);
+      }
+
+      wrap.appendChild(s);
+      stamps.appendChild(wrap);
+    }
+
+    // Texto de premios debajo si existe el hint
+    try {
+      const list = Object.entries(src).map(([k,v])=> `#${k} ${v}`).join(" · ");
+      rewardHint.textContent = "Premios: " + list;
+    } catch(_){ }
+
+    // Historial si viene en state
+    historyUl.innerHTML = (state.history||[]).map(h=> `<li>• ${h.type||h.change||'?'} — ${h.at||h.timestamp||''}</li>`).join("");
+
+    // Celebraciones al cruzar hitos/meta
+    if (__prevPoints !== null && pts > __prevPoints){
+      const justHitIndex = pts - 1;
+      const hitPrize = rewardLabels[justHitIndex];
+      if (hitPrize){
+        tsBuzz(90);
+        const lastStamp = stamps.children[justHitIndex]?.querySelector('.stamp');
+        if (lastStamp){ lastStamp.classList.add('flash'); setTimeout(()=>lastStamp.classList.remove('flash'), 600); }
+        if (/gratis|free|combo|papas|descuento|30%/i.test(hitPrize) || pts===goal){
+          tsConfetti(1200);
+        }
+      }
+      if (pts === goal){
+        tsBuzz(200);
+        tsConfetti(1600);
+      }
+    }
+    __prevPoints = pts;
   }
-  rewardHint.textContent = "Premios: " + Object.entries(PROGRAMS[programKey].rewards).map(([k,v])=> "#" + k + " " + v).join(" · ");
-  // history
-  historyUl.innerHTML = (state.history||[]).map(h=> `<li>• ${h.type||h.change||'?'} — ${h.at||h.timestamp||''}</li>`).join("");
-}
 
 async function openDetail(p){
   if (!customerId){ toastMsg("Ingresá un ID arriba primero"); return; }
@@ -239,7 +600,30 @@ async function openDetail(p){
   history.replaceState(null,"","?"+params.toString());
   dashboard.classList.add("hidden"); detail.classList.remove("hidden");
   const prog = PROGRAMS[programKey];
-  programBadge.textContent = programKey; progName.textContent = prog.n; cid.textContent = customerId;
+  const accent = prog.accent || getComputedStyle(document.documentElement).getPropertyValue('--ts-red').trim() || '#C8102E';
+  const accentSoft = prog.accentSoft || accent;
+  const accentText = accentTextColor(accent);
+  const chipText = accentText === '#1C1C1C' ? '#1C1C1C' : '#fff';
+  detail.style.setProperty('--accent', accent);
+  detail.style.setProperty('--accent-soft', accentSoft);
+  detail.style.setProperty('--accent-text', accentText);
+  detail.style.setProperty('--accent-chip-text', chipText);
+  detail.style.setProperty('--btn-bg', accent);
+  programBadge.textContent = programKey.toUpperCase();
+  progName.textContent = prog.n;
+  cid.textContent = customerId;
+  progHeroTitle.textContent = prog.n;
+  progHeroLabel.textContent = `Programa ${prog.n}`;
+  progTagline.textContent = prog.tagline || "Sumá y ganá recompensas";
+  if (prog.thumb){
+    progHero.src = prog.thumb;
+    progHero.alt = prog.n;
+    progHero.classList.remove('hidden');
+  } else {
+    progHero.removeAttribute('src');
+    progHero.classList.add('hidden');
+  }
+  __prevPoints = null;
   const state = await loadRemote(programKey, customerId); renderStamps(state);
   listenRemote(programKey, customerId, (st)=> renderStamps(st));
 }
