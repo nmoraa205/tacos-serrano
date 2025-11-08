@@ -101,6 +101,7 @@
           "name": "Wrap Evolution (Grill/Meat/Crispy)",
           "price": 1700,
           "img": "assets/wrap-evolution.png",
+          "optionLabel": "Aderezo",
           "options": [
             "Chipotle",
             "Ranch",
@@ -122,6 +123,7 @@
           "name": "6 Alitas (BBQ o Picantes)",
           "price": 3000,
           "img": "assets/alitas-6.jpg",
+          "optionLabel": "Salsa",
           "options": [
             "BBQ",
             "Picantes"
@@ -145,6 +147,7 @@
           "name": "Combo Económico: Quesoburguesa + Papas + Bebida",
           "price": 3000,
           "img": "assets/combo-quesoburguesa.png",
+          "optionLabel": "Bebida",
           "options": [
             "Té frío",
             "Gaseosa en lata",
@@ -156,6 +159,7 @@
           "name": "Combo Económico: Monchi + Papas + Bebida",
           "price": 3000,
           "img": "assets/combo-monchi.png",
+          "optionLabel": "Bebida",
           "options": [
             "Té frío",
             "Gaseosa en lata",
@@ -167,6 +171,7 @@
           "name": "Combo Económico: Chicken JR + Papas + Bebida",
           "price": 3000,
           "img": "assets/combo-chicken-jr.png",
+          "optionLabel": "Bebida",
           "options": [
             "Té frío",
             "Gaseosa en lata",
@@ -178,6 +183,7 @@
           "name": "Combo Económico: Pop Chicken + Papas + Bebida",
           "price": 3000,
           "img": "assets/combo-pop-chicken.png",
+          "optionLabel": "Bebida",
           "options": [
             "Té frío",
             "Gaseosa en lata",
@@ -189,6 +195,7 @@
           "name": "Combo Económico: Batatas + Papas + Bebida",
           "price": 3000,
           "img": "assets/combo-batatas.png",
+          "optionLabel": "Bebida",
           "options": [
             "Té frío",
             "Gaseosa en lata",
